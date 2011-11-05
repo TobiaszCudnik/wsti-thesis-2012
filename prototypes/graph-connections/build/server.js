@@ -7,18 +7,18 @@
     child.prototype = new ctor;
     child.__super__ = parent.prototype;
     return child;
-  };
+  }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   SocketServer = require("websocket-server").Server;
   module.exports.Server = (function() {
     __extends(Server, SocketServer);
     function Server(port) {
       Server.__super__.constructor.call(this);
-      this.addListener("connection", function(connection) {
-        return connection.addListener("message", function(msg) {
+      this.addListener("connection", __bind(function(connection) {
+        return connection.addListener("message", __bind(function(msg) {
           console.log("Server " + port + " received message");
-          return server.send(msg);
-        });
-      });
+          return this.send(msg);
+        }, this));
+      }, this));
       console.log("Server listening on " + port);
       this.listen(port);
     }
