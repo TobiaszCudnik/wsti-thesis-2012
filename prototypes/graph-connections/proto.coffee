@@ -56,23 +56,25 @@ schema =
 nodes = {}
 connections = {}
 
-for name, clients of schema
-		nodes[ name ] = new Server "800#{name}"
+flow.exec(
+	->
+		for server, clients of schema
+				nodes[ server ] = new Server "800#{server}", @MULTI()
 
-		connections[name] = {}
-		for node in clients
-			connections[name][node] = new Client "800#{node}"
+	# when all server ready
+	->
+		for server, clients of schema
+			connections[ server ] = {}
+			for client in clients
+				connections[ server ][ client ] = new Client "800#{server}", @MULTI()
 
-console.log sys.inspect nodes
-console.log sys.inspect connections
+	# when all clients connected
+	->
+		console.log 'All clients connected'
 
-debugger
-connections[1][2].send 'foo'
-connections[1][1].send 'foo'
+		connections[1][2].send 'foo'
 
-setTimeout(
-	-> console.log 'exit'
-	5000
+		console.log 'Test data sent'
 )
 
 console.log 'Finished WebSocket proto.coffee'

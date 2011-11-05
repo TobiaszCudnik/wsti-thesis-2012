@@ -11,8 +11,9 @@
   SocketServer = require("websocket-server").Server;
   module.exports.Server = (function() {
     __extends(Server, SocketServer);
-    function Server(port) {
+    function Server(port, next) {
       Server.__super__.constructor.call(this);
+      this.addListener('listening', next);
       this.addListener("connection", __bind(function(connection) {
         return connection.addListener("message", __bind(function(msg) {
           console.log("Server " + port + " received message");
