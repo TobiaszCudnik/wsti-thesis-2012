@@ -4,7 +4,7 @@
   Client = require('./client').Client;
   flow = require('flow');
   sys = require('sys');
-  console.log('Web socket prototype starting...');
+  console.log('Socket IO prototype starting...');
   schema = {
     1: [2, 3],
     2: [1],
