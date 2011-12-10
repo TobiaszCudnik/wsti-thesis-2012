@@ -1,4 +1,4 @@
-io = require 'node2node' 
+io = require '../node_modules/node2node-socket.io' 
 
 class module.exports.Client
 	constructor: (port, next, name = '') ->
