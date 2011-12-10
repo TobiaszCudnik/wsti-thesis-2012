@@ -1,0 +1,396 @@
+info it worked if it ends with ok
+verbose cli [ 'node', '/usr/bin/npm', 'link' ]
+info using npm@1.1.0-alpha-2
+info using node@v0.6.3
+verbose config file /root/.npmrc
+verbose config file /usr/etc/npmrc
+verbose config file /usr/lib/node_modules/npm/npmrc
+verbose caching /home/bob/Dropbox/workspace/arch-dell/engineer-thesis/prototypes/graph-connections-node2node/package.json
+verbose loadDefaults graph-connections-node2node@0.0.1
+verbose link: build target /usr/lib/node_modules/graph-connections-node2node
+verbose install(where, what) [ '/home/bob/Dropbox/workspace/arch-dell/engineer-thesis/prototypes/graph-connections-node2node',
+verbose install(where, what)   [] ]
+verbose from cache /home/bob/Dropbox/workspace/arch-dell/engineer-thesis/prototypes/graph-connections-node2node/package.json
+verbose where, deps [ '/home/bob/Dropbox/workspace/arch-dell/engineer-thesis/prototypes/graph-connections-node2node',
+verbose where, deps   [ 'socket.io-client', 'policyfile', 'redis' ] ]
+verbose from cache /home/bob/Dropbox/workspace/arch-dell/engineer-thesis/prototypes/graph-connections-node2node/package.json
+info preinstall graph-connections-node2node@0.0.1
+verbose from cache /home/bob/Dropbox/workspace/arch-dell/engineer-thesis/prototypes/graph-connections-node2node/package.json
+verbose into /home/bob/Dropbox/workspace/arch-dell/engineer-thesis/prototypes/graph-connections-node2node [ 'socket.io-client@0.8.7', 'policyfile@0.0.4', 'redis@0.6.7' ]
+verbose cache add socket.io-client@0.8.7
+verbose cache add [ 'socket.io-client@0.8.7', null ]
+silly cache add: name, spec, args [ undefined,
+silly cache add: name, spec, args   'socket.io-client@0.8.7',
+silly cache add: name, spec, args   [ 'socket.io-client@0.8.7', null ] ]
+verbose parsed url { pathname: 'socket.io-client@0.8.7',
+verbose parsed url   path: 'socket.io-client@0.8.7',
+verbose parsed url   href: 'socket.io-client@0.8.7' }
+silly cache add: name, spec, args [ 'socket.io-client', '0.8.7', [ 'socket.io-client', '0.8.7' ] ]
+verbose parsed url { pathname: '0.8.7', path: '0.8.7', href: '0.8.7' }
+info addNamed [ 'socket.io-client', '0.8.7' ]
+verbose addNamed [ '0.8.7', '0.8.7' ]
+verbose cache add policyfile@0.0.4
+verbose cache add [ 'policyfile@0.0.4', null ]
+silly cache add: name, spec, args [ undefined, 'policyfile@0.0.4', [ 'policyfile@0.0.4', null ] ]
+verbose parsed url { pathname: 'policyfile@0.0.4',
+verbose parsed url   path: 'policyfile@0.0.4',
+verbose parsed url   href: 'policyfile@0.0.4' }
+silly cache add: name, spec, args [ 'policyfile', '0.0.4', [ 'policyfile', '0.0.4' ] ]
+verbose parsed url { pathname: '0.0.4', path: '0.0.4', href: '0.0.4' }
+info addNamed [ 'policyfile', '0.0.4' ]
+verbose addNamed [ '0.0.4', '0.0.4' ]
+verbose cache add redis@0.6.7
+verbose cache add [ 'redis@0.6.7', null ]
+silly cache add: name, spec, args [ undefined, 'redis@0.6.7', [ 'redis@0.6.7', null ] ]
+verbose parsed url { pathname: 'redis@0.6.7',
+verbose parsed url   path: 'redis@0.6.7',
+verbose parsed url   href: 'redis@0.6.7' }
+silly cache add: name, spec, args [ 'redis', '0.6.7', [ 'redis', '0.6.7' ] ]
+verbose parsed url { pathname: '0.6.7', path: '0.6.7', href: '0.6.7' }
+info addNamed [ 'redis', '0.6.7' ]
+verbose addNamed [ '0.6.7', '0.6.7' ]
+verbose GET socket.io-client/0.8.7
+verbose raw, before any munging socket.io-client/0.8.7
+verbose url resolving [ 'https://registry.npmjs.org/', './socket.io-client/0.8.7' ]
+verbose url resolved https://registry.npmjs.org/socket.io-client/0.8.7
+verbose GET redis/0.6.7
+verbose raw, before any munging redis/0.6.7
+verbose url resolving [ 'https://registry.npmjs.org/', './redis/0.6.7' ]
+verbose url resolved https://registry.npmjs.org/redis/0.6.7
+verbose etag "CCSVRZLQEZVIE99K3SXLXPOB7"
+verbose GET policyfile/0.0.4
+verbose raw, before any munging policyfile/0.0.4
+verbose url resolving [ 'https://registry.npmjs.org/', './policyfile/0.0.4' ]
+verbose url resolved https://registry.npmjs.org/policyfile/0.0.4
+verbose etag "5OYQ4WKN9GOQNPI6LHOTZ10TX"
+silly get cb [ 200,
+silly get cb   { vary: 'Accept',
+silly get cb     server: 'CouchDB/1.1.0 (Erlang OTP/R14B04)',
+silly get cb     etag: '"ER6UYEC3XUYCGGO9VXSHTTH2K"',
+silly get cb     date: 'Sat, 10 Dec 2011 11:02:04 GMT',
+silly get cb     'content-type': 'application/json',
+silly get cb     'content-length': '1010' } ]
+silly get cb [ 200,
+silly get cb   { vary: 'Accept',
+silly get cb     server: 'CouchDB/1.1.0 (Erlang OTP/R14B04)',
+silly get cb     etag: '"BRYY8G8Z7AJTZURIFQV6QV65T"',
+silly get cb     date: 'Sat, 10 Dec 2011 11:02:05 GMT',
+silly get cb     'content-type': 'application/json',
+silly get cb     'content-length': '984' } ]
+verbose bin dist [ '0.6-ares1.7.5-DEV-evundefined-openssl1.0.0e-v83.6.6.8-linux-x64-3.0-ARCH',
+verbose bin dist   { shasum: '0f17f913468a5cb2bf0864e4d56669d058668d46',
+verbose bin dist     tarball: 'http://registry.npmjs.org/redis/-/redis-0.6.7.tgz' } ]
+verbose addRemoteTarball [ 'https://registry.npmjs.org/redis/-/redis-0.6.7.tgz',
+verbose addRemoteTarball   '0f17f913468a5cb2bf0864e4d56669d058668d46' ]
+verbose bin dist [ '0.6-ares1.7.5-DEV-evundefined-openssl1.0.0e-v83.6.6.8-linux-x64-3.0-ARCH',
+verbose bin dist   { shasum: 'd6b82ead98ae79ebe228e2daf5903311ec982e4d',
+verbose bin dist     tarball: 'http://registry.npmjs.org/policyfile/-/policyfile-0.0.4.tgz' } ]
+verbose addRemoteTarball [ 'https://registry.npmjs.org/policyfile/-/policyfile-0.0.4.tgz',
+verbose addRemoteTarball   'd6b82ead98ae79ebe228e2daf5903311ec982e4d' ]
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1323514925048'
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1323514925048'
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1323514925048/1323514925048-0.34896575449965894'
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1323514925048/1323514925048-0.16505857836455107'
+verbose mkdir done: /tmp/npm-1323514925048/1323514925048-0.34896575449965894 755
+verbose mkdir done: /tmp/npm-1323514925048/1323514925048-0.16505857836455107 755
+info fetch https://registry.npmjs.org/redis/-/redis-0.6.7.tgz
+verbose fetch to /tmp/npm-1323514925048/1323514925048-0.34896575449965894/tmp.tgz
+info fetch https://registry.npmjs.org/policyfile/-/policyfile-0.0.4.tgz
+verbose fetch to /tmp/npm-1323514925048/1323514925048-0.16505857836455107/tmp.tgz
+silly get cb [ 200,
+silly get cb   { vary: 'Accept',
+silly get cb     server: 'CouchDB/1.1.0 (Erlang OTP/R14B04)',
+silly get cb     etag: '"ERHOU38XZ45ABT4BUMTCGFUCV"',
+silly get cb     date: 'Sat, 10 Dec 2011 11:02:05 GMT',
+silly get cb     'content-type': 'application/json',
+silly get cb     'content-length': '1328' } ]
+verbose mkdir (expected) error ENOENT, no such file or directory '/root/.npm/socket.io-client/0.8.7'
+verbose mkdir done: /root/.npm/socket.io-client/0.8.7 755
+verbose bin dist [ '0.6-ares1.7.5-DEV-evundefined-openssl1.0.0e-v83.6.6.8-linux-x64-3.0-ARCH',
+verbose bin dist   { shasum: '61c5953acbefebcd45dd47d0c8b1ad8a5bf86e1b',
+verbose bin dist     tarball: 'http://registry.npmjs.org/socket.io-client/-/socket.io-client-0.8.7.tgz' } ]
+verbose addRemoteTarball [ 'https://registry.npmjs.org/socket.io-client/-/socket.io-client-0.8.7.tgz',
+verbose addRemoteTarball   '61c5953acbefebcd45dd47d0c8b1ad8a5bf86e1b' ]
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1323514925048/1323514925205-0.065232596360147'
+verbose mkdir done: /tmp/npm-1323514925048/1323514925205-0.065232596360147 755
+info fetch https://registry.npmjs.org/socket.io-client/-/socket.io-client-0.8.7.tgz
+verbose fetch to /tmp/npm-1323514925048/1323514925205-0.065232596360147/tmp.tgz
+silly updated sha bytes 11900
+info shasum d6b82ead98ae79ebe228e2daf5903311ec982e4d
+info shasum /tmp/npm-1323514925048/1323514925048-0.16505857836455107/tmp.tgz
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm'
+verbose mkdir done: /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm 755
+verbose unpack_ uid, gid [ 0, 0 ]
+verbose unpackTarget /tmp/npm-1323514925048/1323514925048-0.16505857836455107/package
+silly gunzTarPerm modes [ '755', '644' ]
+silly afterUntar undefined
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/Makefile
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/README.md
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/LICENSE
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/index.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/package.json
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/.gitignore
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/examples
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/examples/basic.fallback.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/examples/basic.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/lib
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/lib/server.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/doc
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/doc/index.html
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/tests
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/tests/unit.test.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/tests/ssl
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/tests/ssl/ssl.private.key
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package/tests/ssl/ssl.crt
+verbose gunzed /tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package
+verbose rm'ed /tmp/npm-1323514925048/1323514925048-0.16505857836455107/package
+verbose renamed [ '/tmp/npm-1323514925048/1323514925048-0.16505857836455107/___package.npm/package',
+verbose renamed   '/tmp/npm-1323514925048/1323514925048-0.16505857836455107/package' ]
+verbose caching /tmp/npm-1323514925048/1323514925048-0.16505857836455107/package/package.json
+verbose loadDefaults policyfile@0.0.4
+verbose tarball contents [ 'package', 'tmp.tgz' ]
+verbose from cache /tmp/npm-1323514925048/1323514925048-0.16505857836455107/package/package.json
+verbose pack /tmp/npm-1323514925048/1323514925048-0.16505857836455107/package /root/.npm/policyfile/0.0.4/package.tgz
+silly makeList /tmp/npm-1323514925048/1323514925048-0.16505857836455107/package
+verbose tarball /root/.npm/policyfile/0.0.4/package.tgz
+verbose parent /tmp/npm-1323514925048/1323514925048-0.16505857836455107/package
+verbose mkdir (expected) error ENOENT, no such file or directory '/root/.npm/policyfile/0.0.4/___package.npm'
+verbose mkdir done: /root/.npm/policyfile/0.0.4/___package.npm 755
+verbose unpack_ uid, gid [ 0, 0 ]
+verbose unpackTarget /root/.npm/policyfile/0.0.4/package
+silly gunzTarPerm modes [ '755', '644' ]
+silly afterUntar undefined
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/Makefile
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/package.json
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/README.md
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/index.js
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/.gitignore
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/LICENSE
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/examples
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/examples/basic.js
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/examples/basic.fallback.js
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/doc
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/doc/index.html
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/lib
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/lib/server.js
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/tests
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/tests/unit.test.js
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/tests/ssl
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/tests/ssl/ssl.crt
+silly asyncMap in gTP /root/.npm/policyfile/0.0.4/___package.npm/package/tests/ssl/ssl.private.key
+verbose gunzed /root/.npm/policyfile/0.0.4/___package.npm/package
+verbose rm'ed /root/.npm/policyfile/0.0.4/package
+verbose renamed [ '/root/.npm/policyfile/0.0.4/___package.npm/package',
+verbose renamed   '/root/.npm/policyfile/0.0.4/package' ]
+verbose caching /root/.npm/policyfile/0.0.4/package/package.json
+verbose loadDefaults policyfile@0.0.4
+silly updated sha bytes 12180
+info shasum 913d514611a9fed7f6069e6de82e83b416892b5f
+info shasum /root/.npm/policyfile/0.0.4/package.tgz
+verbose from cache /root/.npm/policyfile/0.0.4/package/package.json
+verbose chmod /root/.npm/policyfile/0.0.4/package.tgz 644
+verbose chown [ '/root/.npm/policyfile/0.0.4/package.tgz', 0, 0 ]
+silly updated sha bytes 40960
+silly updated sha bytes 1308
+info shasum 0f17f913468a5cb2bf0864e4d56669d058668d46
+info shasum /tmp/npm-1323514925048/1323514925048-0.34896575449965894/tmp.tgz
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm'
+verbose mkdir done: /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm 755
+verbose unpack_ uid, gid [ 0, 0 ]
+verbose unpackTarget /tmp/npm-1323514925048/1323514925048-0.34896575449965894/package
+silly gunzTarPerm modes [ '755', '644' ]
+silly afterUntar undefined
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/README.md
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/changelog.md
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/test.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/index.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/simple_test.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/eval_test.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/multi_bench.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/package.json
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/generate_commands.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/subquery.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/psubscribe.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/file.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/backpressure_drain.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/simple.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/mget.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/multi2.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/pub_sub.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/monitor.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/multi.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/extend.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/auth.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/subqueries.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/web_server.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/examples/unix_socket.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/lib
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/lib/queue.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/lib/to_array.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/lib/commands.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/lib/util.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/lib/parser
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/lib/parser/javascript.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/lib/parser/hiredis.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/buffer_bench.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/test_start_stop.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/sub_quit_test.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/reconnect_test.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/codec.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/pubsub
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/pubsub/pub.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/pubsub/run
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/pubsub/server.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/rpushblpop
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/rpushblpop/pub.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/rpushblpop/run
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/rpushblpop/server.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/speed
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/speed/00
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/speed/speed.js
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/speed/size-rate.png
+silly asyncMap in gTP /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package/tests/stress/speed/plot
+verbose gunzed /tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package
+verbose rm'ed /tmp/npm-1323514925048/1323514925048-0.34896575449965894/package
+verbose renamed [ '/tmp/npm-1323514925048/1323514925048-0.34896575449965894/___package.npm/package',
+verbose renamed   '/tmp/npm-1323514925048/1323514925048-0.34896575449965894/package' ]
+verbose caching /tmp/npm-1323514925048/1323514925048-0.34896575449965894/package/package.json
+verbose loadDefaults redis@0.6.7
+verbose tarball contents [ 'package', 'tmp.tgz' ]
+verbose from cache /tmp/npm-1323514925048/1323514925048-0.34896575449965894/package/package.json
+verbose pack /tmp/npm-1323514925048/1323514925048-0.34896575449965894/package /root/.npm/redis/0.6.7/package.tgz
+silly makeList /tmp/npm-1323514925048/1323514925048-0.34896575449965894/package
+verbose tarball /root/.npm/redis/0.6.7/package.tgz
+verbose parent /tmp/npm-1323514925048/1323514925048-0.34896575449965894/package
+verbose mkdir (expected) error ENOENT, no such file or directory '/root/.npm/redis/0.6.7/___package.npm'
+verbose mkdir done: /root/.npm/redis/0.6.7/___package.npm 755
+verbose unpack_ uid, gid [ 0, 0 ]
+verbose unpackTarget /root/.npm/redis/0.6.7/package
+silly gunzTarPerm modes [ '755', '644' ]
+silly afterUntar undefined
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/changelog.md
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/package.json
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/simple_test.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/eval_test.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/test.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/generate_commands.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/README.md
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/multi_bench.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/index.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/file.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/auth.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/subquery.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/web_server.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/mget.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/extend.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/psubscribe.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/monitor.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/multi.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/subqueries.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/multi2.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/pub_sub.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/backpressure_drain.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/unix_socket.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/examples/simple.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/lib
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/lib/commands.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/lib/util.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/lib/queue.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/lib/to_array.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/lib/parser
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/lib/parser/javascript.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/lib/parser/hiredis.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/test_start_stop.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/sub_quit_test.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/buffer_bench.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/reconnect_test.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/codec.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/speed
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/speed/plot
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/speed/size-rate.png
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/speed/speed.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/speed/00
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/rpushblpop
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/rpushblpop/pub.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/rpushblpop/run
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/rpushblpop/server.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/pubsub
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/pubsub/pub.js
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/pubsub/run
+silly asyncMap in gTP /root/.npm/redis/0.6.7/___package.npm/package/tests/stress/pubsub/server.js
+verbose gunzed /root/.npm/redis/0.6.7/___package.npm/package
+verbose rm'ed /root/.npm/redis/0.6.7/package
+verbose renamed [ '/root/.npm/redis/0.6.7/___package.npm/package',
+verbose renamed   '/root/.npm/redis/0.6.7/package' ]
+verbose caching /root/.npm/redis/0.6.7/package/package.json
+verbose loadDefaults redis@0.6.7
+silly updated sha bytes 40960
+silly updated sha bytes 2374
+info shasum 2302f6f1aac61f5e09809c860604245ef58fd354
+info shasum /root/.npm/redis/0.6.7/package.tgz
+verbose from cache /root/.npm/redis/0.6.7/package/package.json
+verbose chmod /root/.npm/redis/0.6.7/package.tgz 644
+verbose chown [ '/root/.npm/redis/0.6.7/package.tgz', 0, 0 ]
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 40960
+silly updated sha bytes 10240
+info shasum 61c5953acbefebcd45dd47d0c8b1ad8a5bf86e1b
+info shasum /tmp/npm-1323514925048/1323514925205-0.065232596360147/tmp.tgz
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1323514925048/1323514925205-0.065232596360147/___package.npm'
+verbose mkdir done: /tmp/npm-1323514925048/1323514925205-0.065232596360147/___package.npm 755
+verbose unpack_ uid, gid [ 0, 0 ]
+verbose unpackTarget /tmp/npm-1323514925048/1323514925205-0.065232596360147/package
+silly gunzTarPerm modes [ '755', '644' ]
+ERR! TypeError: Bad argument
+ERR!     at Object._open (fs.js:224:11)
+ERR!     at open (/usr/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:73:6)
+ERR!     at Object.open (/usr/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:67:3)
+ERR!     at Object.lutimes (/usr/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:28:6)
+ERR!     at setProps (/usr/lib/node_modules/npm/node_modules/fstream/lib/writer.js:267:18)
+ERR!     at Object.oncomplete (/usr/lib/node_modules/npm/node_modules/fstream/lib/writer.js:205:7)
+ERR! Report this *entire* log at:
+ERR!     <http://github.com/isaacs/npm/issues>
+ERR! or email it to:
+ERR!     <npm-@googlegroups.com>
+ERR! 
+ERR! System Linux 3.0-ARCH
+ERR! command "node" "/usr/bin/npm" "link"
+ERR! cwd /home/bob/Dropbox/workspace/arch-dell/engineer-thesis/prototypes/graph-connections-node2node
+ERR! node -v v0.6.3
+ERR! npm -v 1.1.0-alpha-2
+ERR! message Bad argument
+verbose exit [ 1, true ]
