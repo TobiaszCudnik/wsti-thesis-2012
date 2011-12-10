@@ -16,7 +16,6 @@
       this.addListener('listening', next);
       this.addListener("connection", __bind(function(connection) {
         return connection.addListener("message", __bind(function(msg) {
-          console.log("Server " + port + " received message");
           return this.send(msg);
         }, this));
       }, this));

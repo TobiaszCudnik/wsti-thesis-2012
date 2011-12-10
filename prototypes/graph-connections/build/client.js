@@ -11,13 +11,14 @@
   SocketClient = require('websocket-client').WebSocket;
   module.exports.Client = (function() {
     __extends(Client, SocketClient);
-    function Client(port, name) {
+    function Client(port, next, name) {
       if (name == null) {
         name = '';
       }
-      console.log("module.exports.Client " + name + port);
+      console.log("Connecting to " + name + port);
       Client.__super__.constructor.call(this, "ws://localhost:" + port + "/" + name, "" + name + port);
       this.on('open', __bind(function(sessionId) {
+        next();
         console.log("Websocket open with session id: " + sessionId);
         return this.send('This is a test message');
       }, this));

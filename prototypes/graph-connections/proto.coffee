@@ -3,7 +3,7 @@ Client = require('./client').Client
 flow = require 'flow'
 sys = require 'sys'
 
-console.log 'Web sockete prototype starting...'
+console.log 'Web socket prototype starting...'
 
 #nodes =
 #	# first node
@@ -59,14 +59,17 @@ connections = {}
 flow.exec(
 	->
 		for server, clients of schema
-				nodes[ server ] = new Server "800#{server}", @MULTI()
+			nodes[ server ] = new Server "800#{server}", @MULTI()
 
 	# when all server ready
 	->
-		for server, clients of schema
-			connections[ server ] = {}
-			for client in clients
-				connections[ server ][ client ] = new Client "800#{server}", @MULTI()
+		connections[1] = 2: new Client "8001", @
+	# when all server ready
+#	->
+#		for server, clients of schema
+#			connections[ server ] = {}
+#			for client in clients
+#				connections[ server ][ client ] = new Client "800#{server}", @MULTI()
 
 	# when all clients connected
 	->

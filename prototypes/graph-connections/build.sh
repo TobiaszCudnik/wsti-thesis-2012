@@ -1,2 +1,2 @@
-#!/usr/env sh
+#!/usr/bin/env sh
 coffee -o build -cw .

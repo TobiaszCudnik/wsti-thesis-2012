@@ -8,7 +8,7 @@ class module.exports.Server extends SocketServer
 
 		@addListener "connection", (connection) =>
 			connection.addListener "message", (msg) =>
-				console.log "Server #{port} received message"
+#				console.log "Server #{port} received message"
 				# echo server
 				@send msg
 
