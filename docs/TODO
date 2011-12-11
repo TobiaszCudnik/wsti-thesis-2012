@@ -1,0 +1,3 @@
+1. Bind deps to git via submodules
+- https://github.com/alaingilbert/node-websocket-client
+- https://github.com/Ragnis/node-websocket-server
