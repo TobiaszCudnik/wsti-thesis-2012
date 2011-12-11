@@ -5,6 +5,7 @@
 	"dependencies": {
 		"mocha": "0.3.6",
 		"flow": "0.2.2",
-		"should": "0.3.2"
+		"should": "0.3.2",
+		"underscore": "1.2.3"
 	}
 }

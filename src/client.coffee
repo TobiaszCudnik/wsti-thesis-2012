@@ -1,14 +1,15 @@
 SocketClient = require('websocket-client').WebSocket
 config = require '../config'
+Logger = require './logger'
 
-Client = class module.exports extends SocketClient
+module.exports = class Client extends SocketClient
 	# TODO support host
 	constructor: (@port, next, name = '') ->
 		@log "Connecting to localhost:#{@port}"
 		super "ws://localhost:#{@port}/#{name}"
 
 		@on 'open', (sessionId) =>
-			next()
+			next?()
 			@log "Websocket opened"
 
 		@on 'close', (sessionId) ->
@@ -19,6 +20,6 @@ Client = class module.exports extends SocketClient
 #			@close()
 
 	log: (msg) ->
-		return if not config.debug
-		config.log? and config.log.push msg
+		return if not Logger.log.apply @, arguments
 		console.log "[CLIENT:#{@port}] #{msg}"
+		
