@@ -14,8 +14,8 @@ Client = class module.exports extends SocketClient
 		@on 'close', (sessionId) ->
 			@log "Websocket closed"
 
-		@on 'message', (message) =>
-			@log "Got message: #{message}"
+#		@on 'message', (message) =>
+#			@log "Got message: #{message}"
 #			@close()
 
 	log: (msg) ->

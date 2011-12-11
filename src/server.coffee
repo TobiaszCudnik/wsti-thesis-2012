@@ -13,11 +13,11 @@ Server = class module.exports extends SocketServer
 
 		@addListener "connection", (connection) =>
 			@log "Got new connection #{connection.id}"
-			connection.addListener "message", (message) =>
-				@log "Got message: #{message}"
-#				console.log "Server #{port} received message"
-				# echo server
-				@send connection.id, message
+#			connection.addListener "message", (message) =>
+#				@log "Got message: #{message}"
+##				console.log "Server #{port} received message"
+#				# echo server
+#				@send connection.id, message
 		
 		@addListener "disconnect", (connection) =>
 			@log "Disconnected with #{connection.id}"
