@@ -3,12 +3,11 @@ http = require 'http'
 config = require '../config'
 
 Server = class module.exports extends SocketServer
-	debug: true
 	constructor: (@port, next) ->
 		# TODO needed?
 #		@server = http.createServer()
 #		super server: @server, debug: @debug
-		super debug: @debug
+		super debug: config.debug
 
 		@addListener 'listening', next
 

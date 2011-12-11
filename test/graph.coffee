@@ -5,17 +5,25 @@ Server = require '../src/server'
 # debug
 i = require('util').inspect
 l = (ms...) -> console.log i m for m in ms  
-
-config.debug = yes
+config.debug = no
 
 describe 'server', ->
-	it 'should listen on a port', (done) -> 
-		server = new Server 8756, ->
-			i server
-			debugger
+	server = null
+	port = 8756
+	beforeEach (done) ->
+		# TODO dispose the old server
+#		server? and server.
+		server = new Server ++port, done
+		
+	it 'should listen on a port', ->
+		server.port.should.equal port
+				
+	it 'should allow a client to connect', (done) ->
+		client = null
+		client = new Client port, ->
+			server.server.connections.should.equal 1
+			done()
 		yes
-#  it 'should allow a client to connect', -> 
-#		no.should.eql yes
 #  it 'should send messages', -> 
 #		no.should.eql yes
 #  it 'should receive messages', -> 
