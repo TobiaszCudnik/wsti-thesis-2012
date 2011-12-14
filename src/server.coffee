@@ -20,3 +20,6 @@ module.exports = class Server extends SocketServer
 	log: (msg) ->
 		return if not Logger.log.apply @, arguments
 		console.log "[SERVER:#{@port}] #{msg}"
+
+#	send: (next) ->
+#	listen: (next) ->

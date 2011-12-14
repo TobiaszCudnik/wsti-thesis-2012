@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 ROOT=`dirname $0`
-watch $ROOT/../node_modules/.bin/mocha $ROOT/../test/graph.coffee -r should -R spec
+~/bin/watch $ROOT/../node_modules/.bin/mocha $ROOT/../test/graph.coffee -r should -R spec
 #$ROOT/../node_modules/.bin/mocha $ROOT/../test/graph.coffee -r should -R spec -w
