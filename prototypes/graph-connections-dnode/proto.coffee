@@ -28,13 +28,13 @@ flow.exec(
 			connections[ server ] = {}
 			for client in clients
 				multi = @MULTI()
-				((server, client)->
+				((server, client) ->
 					dnode.connect "800#{server}", (remote) ->
 						connections[ server ][ client ] = remote
 						multi()
 				)(server, client)
 
-	(remotes) -> # when all clients connected
+	-> # when all clients connected
 		console.log 'All clients connected'
 
 		connections[1][2].foo 'bar'

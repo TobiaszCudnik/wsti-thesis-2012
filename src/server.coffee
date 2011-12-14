@@ -1,21 +1,14 @@
-SocketServer = require("websocket-server").Server
+dnode = require 'dnode'
 config = require '../config'
 Logger = require './logger'
 
-module.exports = class Server extends SocketServer
-	constructor: (@port, next) ->
-		super debug: config.debug
-
-		@addListener 'listening', next
-
-		@addListener "connection", (connection) =>
-			@log "Got new connection #{connection.id}"
+module.exports = class Server
+	dnode: null
 		
-		@addListener "disconnect", (connection) =>
-			@log "Disconnected with #{connection.id}"
-
+	constructor: (@port, scope, next) ->
+		@dnode = dnode scope
+		@dnode.listen @port
 		@log "Binding to port #{@port}"
-		@listen @port
 
 	log: (msg) ->
 		return if not Logger.log.apply @, arguments

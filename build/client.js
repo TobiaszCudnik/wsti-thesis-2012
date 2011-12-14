@@ -13,22 +13,17 @@
   Logger = require('./logger');
   module.exports = Client = (function() {
     __extends(Client, SocketClient);
+    Client.prototype.scope = null;
     function Client(port, next, name) {
       this.port = port;
       if (name == null) {
         name = '';
       }
       this.log("Connecting to localhost:" + this.port);
-      Client.__super__.constructor.call(this, "ws://localhost:" + this.port + "/" + name);
-      this.on('open', __bind(function(sessionId) {
-        if (typeof next === "function") {
-          next();
-        }
-        return this.log("Websocket opened");
+      dnode.connect(this.port, __bind(function() {
+        this.scope = dnode;
+        return next(this.scope);
       }, this));
-      this.on('close', function(sessionId) {
-        return this.log("Websocket closed");
-      });
     }
     Client.prototype.log = function(msg) {
       if (!Logger.log.apply(this, arguments)) {
