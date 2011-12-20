@@ -5,7 +5,7 @@ flow = require 'flow'
 net = require 'net'
 
 # debug
-config.debug = no
+config.debug = yes
 i = require('util').inspect
 l = (ms...) -> console.log i m for m in ms
 
@@ -22,7 +22,8 @@ describe 'Connection Graph', ->
 		afterEach ->
 			# close all connections
 			# TODO collect free ports, reuse
-			server.close()
+			# TODU handle Error: connect ECONNRESET
+#			server.close()
 
 		describe 'server', ->
 

@@ -13,6 +13,12 @@ module.exports = class Server
 		@dnode = dnode scope
 		@server = new http.Server
 
+		# Socket listener
+#		@dnode.listen @port
+#		@dnode.on 'ready', next
+#		return
+
+		# HTTP listener
 		@dnode.listen @server
 		@log "Binding to port #{@port}"
 		@server.listen @port, next

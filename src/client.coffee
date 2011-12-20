@@ -3,23 +3,25 @@ config = require '../config'
 Logger = require './logger'
 
 module.exports = class Client
-	scope: null
+	remote: null
 	dnode: null
 	connection: null
 		
 	# TODO support host
-	constructor: (@port, next, name = '') ->
+	constructor: (@port, next) ->
 		@log "Connecting to localhost:#{@port}"
 		opts =
 			port: @port
+			reconnect: yes
 
-		@dnode = dnode.connect opts, (scope, connection) =>
-			@scope = scope
+		# TODO support exposing clients scope
+		@dnode = dnode.connect opts, (remote, connection) =>
+			@log 'CONNECTED!'
+			@remote = remote
 			@connection = connection
-			next @scope
+			next()
 
-	close: ->
-		@connection.end()
+	close: -> @connection.end()
 
 	log: (msg) ->
 		return if not Logger.log.apply @, arguments
