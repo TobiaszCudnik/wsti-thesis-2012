@@ -6,7 +6,7 @@ class Node
 	servers_: null
 	clients_: null
 	sockets_: null
-	connections: 
+	connections: null
 	requires: null
 	provides: null
 
