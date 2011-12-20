@@ -5,7 +5,7 @@ flow = require 'flow'
 net = require 'net'
 
 # debug
-config.debug = yes
+config.debug = no
 i = require('util').inspect
 l = (ms...) -> console.log i m for m in ms
 
@@ -23,7 +23,7 @@ describe 'Connection Graph', ->
 			# close all connections
 			# TODO collect free ports, reuse
 			# TODU handle Error: connect ECONNRESET
-#			server.close()
+			server.close()
 
 		describe 'server', ->
 
@@ -39,14 +39,17 @@ describe 'Connection Graph', ->
 		describe 'client', ->
 
 			it 'should connect to a port', (done) ->
-				client = new Client port, done
-
-			it 'should send messages', (done) ->
 				client = new Client port, ->
-					client.send 'foo'
-					done()
+					client.close done
+
+			it 'should access scope on the server', (done) ->
+				client = new Client port, ->
+					client.remote.foo.should.equal 'bar'
+					client.close ->
+						done()
+
 		#		no.should.eql yes
-			it 'should receive messages', (done) -> 
+			it 'should receive callbacks from the server', (done) ->
 				msg = 'foo'
 				client = null
 				server.addListener 'connection', (connection) ->
@@ -66,7 +69,7 @@ describe 'Connection Graph', ->
 					done()
 				yes
 
-			it 'should send messages', (done) -> 
+			it 'should send messages', (done) ->
 				msg = 'foo'
 				client = null
 				server.addListener 'connection', (connection) ->
@@ -75,7 +78,7 @@ describe 'Connection Graph', ->
 
 				client = new Client port
 
-			it 'should receive messages', (done) -> 
+			it 'should receive messages', (done) ->
 				msg = 'foo'
 				client = null
 				# msg flow
