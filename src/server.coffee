@@ -9,21 +9,30 @@ module.exports = class Server
 	port: null
 	server: null
 
-	constructor: (@port, scope, next) ->
+	constructor: (@host, @port, scope, next) ->
 		@dnode = dnode scope
-		@server = new http.Server
 
 		# Socket listener
-#		@dnode.listen @port
-#		@dnode.on 'ready', next
-#		return
+		params =
+			host: 'localhost'
+			port: @port
+			block: (client) =>
+				@log "Client #{client} connected."
+
+		@dnode.listen params
+		@server = @dnode.server
+		@dnode.on 'ready', next
 
 		# HTTP listener
-		@dnode.listen @server
-		@log "Binding to port #{@port}"
-		@server.listen @port, next
+#		@server = new http.Server
+#		@dnode.listen @server
+#		@log "Binding to port #{@port}"
+#		@server.listen @port, next
 
-	close: -> @server.close()
+	close: (next) ->
+		@server.on 'close', next
+		@dnode.end()
+		@dnode.close()
 
 	log: (msg) ->
 		return if not Logger.log.apply @, arguments

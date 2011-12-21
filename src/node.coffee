@@ -50,6 +50,7 @@ class Transaction extends GraphConnection
 class GraphPath
 	# ordered array of nodes for the connection flow
 	nodes: null
+
 class GraphDirectionStrategy
 	getPath: (source, target, service) ->
 		GraphPath

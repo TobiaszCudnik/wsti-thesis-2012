@@ -5,7 +5,7 @@ flow = require 'flow'
 net = require 'net'
 
 # debug
-config.debug = no
+config.debug = yes
 i = require('util').inspect
 l = (ms...) -> console.log i m for m in ms
 
@@ -17,13 +17,13 @@ describe 'Connection Graph', ->
 
 		# TODO reduce overflow
 		beforeEach (next) ->
-			server = new Server ++port, scope, next
+			server = new Server 'localhost', ++port, scope, next
 
-		afterEach ->
+		afterEach (next) ->
 			# close all connections
 			# TODO collect free ports, reuse
 			# TODU handle Error: connect ECONNRESET
-			server.close()
+			server.close next
 
 		describe 'server', ->
 

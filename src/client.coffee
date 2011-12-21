@@ -1,5 +1,5 @@
-#dnode = require 'dnode'
-dnode = require 'dnode/browser/index'
+dnode = require 'dnode'
+#dnode = require 'dnode/browser/index'
 config = require '../config'
 Logger = require './logger'
 
@@ -8,16 +8,16 @@ module.exports = class Client
 	connection: null
 		
 	# TODO support host
-	constructor: (@port, next) ->
+	constructor: (@port, scope, next) ->
 		@log "Connecting to localhost:#{@port}"
 		opts =
-			proto: 'http'
-			host: 'localhost'
+#			proto: 'http'
+#			host: 'localhost'
 			port: @port
 			reconnect: yes
 
 		# TODO support exposing clients scope
-		dnode.connect opts, (remote, connection) =>
+		dnode(scope).connect opts, (remote, connection) =>
 			@log 'CONNECTED!'
 			@remote = remote
 			@connection = connection
