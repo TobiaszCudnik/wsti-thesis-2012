@@ -10,14 +10,15 @@ module.exports = class Server
 	server: null
 
 	constructor: (@host, @port, scope, next) ->
+		@log "Starting server on #{@host}:#{port}"
 		@dnode = dnode scope
 
 		# Socket listener
 		params =
 			host: 'localhost'
 			port: @port
-			block: (client) =>
-				@log "Client #{client} connected."
+#			block: (client, connection) =>
+#				@log "Client #{connection.id} connected."
 
 		@dnode.listen params
 		@server = @dnode.server

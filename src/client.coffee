@@ -6,9 +6,11 @@ Logger = require './logger'
 module.exports = class Client
 	remote: null
 	connection: null
+	scope: null
 		
 	# TODO support host
-	constructor: (@port, scope, next) ->
+	# TODO? support scope as optional param?
+	constructor: (@port, @scope, next) ->
 		@log "Connecting to localhost:#{@port}"
 		opts =
 #			proto: 'http'
@@ -16,12 +18,14 @@ module.exports = class Client
 			port: @port
 			reconnect: yes
 
-		# TODO support exposing clients scope
-		dnode(scope).connect opts, (remote, connection) =>
+		@dnode = dnode @scope
+		@dnode.connect opts, (remote, connection) =>
 			@log 'CONNECTED!'
 			@remote = remote
 			@connection = connection
-			next()
+			next remote, connection
+#			@connection.on 'read', ->
+#				next remote, connection
 
 	close: (next) ->
 		@connection.once 'end', next
