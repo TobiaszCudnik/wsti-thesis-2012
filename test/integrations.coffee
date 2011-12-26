@@ -67,115 +67,136 @@ describe 'Connection Graph', ->
 				# return
 				copy
 
+			test = {}
 
-			beforeEach (next) ->
+			beforeEach ->
 				class ImagePromise
 					constructor: (@name, @width, @height) ->
 						l 'new image promise'
 
-				@schema =
+				test.schema =
 					# website server
-					1: 'name': 'website', data: [ 2, 3,
-						events: get_event_emitter @, 'events'
-					]
-					# image server
-					2: 'name': 'image', data: [ 4
-						images: ['img1', 'img2', 'img3']
-						getImagesPromise: (specs, next) ->
-							# TODO allow local to node connections here based on the service
-							next @images
-						events: get_event_emitter @, 'events'
-					]
-					# users db server
-					3: 'name': 'users-db', data: [ 1,
-						users: [
-							{name: 'user1', photo: 'img1'}
-							{name: 'user2', photo: 'img2'}
-							{name: 'user3', photo: 'img3'}
+					1: {
+						'name': 'website',
+						data: [ 2, 3,
+							events: get_event_emitter @, 'events'
 						]
-						getUserImageNames: (specs, next) ->
-							# TODO specs
-							next _.map @users, (obj) ->
-								return obj.photo
-						events: get_event_emitter @, 'events'
-					]
+					}
+					# image server
+					2: {
+						'name': 'image',
+						data: [ 4,
+							images: ['img1', 'img2', 'img3']
+							getImagesPromise: (specs, next) ->
+								# TODO allow local to node connections here based on the service
+								next @images
+							events: get_event_emitter @, 'events'
+						]
+					}
+					# users db server
+					3: {
+						'name': 'users-db'
+						data: [ 1,
+							users: [
+								{name: 'user1', photo: 'img1'}
+								{name: 'user2', photo: 'img2'}
+								{name: 'user3', photo: 'img3'}
+							]
+							getUserImageNames: (specs, next) ->
+								# TODO specs
+								next _.map @users, (obj) ->
+									return obj.photo
+							events: get_event_emitter @, 'events'
+						]
+					}
 					# image resize server
-					4: 'name': 'image-resize', data: [ 2,
-						getCachedImages: -> @images
-						resizeImage: (name, width, height) ->
-							# TODO communicate with external service
-							promise = new ImagePromise(name, width, height)
-							setTimeout =>
-								@events.emit 'after_resize_image', promise
-						clearCache: @images = [] 
-						# event before_image_input images: []
-						# event after_image_input images: []
-						# event before_data_output images: []
-						# event after_data_output images: []
-						# event before_resize_image images: [], size: '\dx\d'
-						# event after_resize_image images: [], size: '\dx\d'
-						# event before_clear_cache
-						# event after_clear_cache
-						events: get_event_emitter @, 'events'
+					4: {
+						'name': 'image-resize',
+						data: [ 2,
+							getCachedImages: -> @images
+							resizeImage: (name, width, height) ->
+								# TODO communicate with external service
+								promise = new ImagePromise(name, width, height)
+								setTimeout =>
+									@events.emit 'after_resize_image', promise
+							clearCache: @images = []
+							# event before_image_input images: []
+							# event after_image_input images: []
+							# event before_data_output images: []
+							# event after_data_output images: []
+							# event before_resize_image images: [], size: '\dx\d'
+							# event after_resize_image images: [], size: '\dx\d'
+							# event before_clear_cache
+							# event after_clear_cache
+							events: get_event_emitter @, 'events'
 					]
+				}
 
-				@nodes = {}
-				@connections = {}
+				test.nodes = {}
+				test.connections = {}
 
 				l 'beforeEach finished'
 
 			it 'should provide user images with a correct size', (next) ->
 				flow.exec(
 
+					## get servers running
 					-> # start
 						l 'started'
-						for server, clients of @schema
+						for server, clients of test.schema
 							port = "800#{server}"
 							scope = clients[-1]
 							# bind methods to a scope
 							for fn, name of scope
 								scope[ name ] = fn.bind scope
-							@nodes[ server ] = new Server 'localhost', port, scope, @MULTI()
+							test.nodes[ server ] = new Server 'localhost', port, scope, @MULTI()
 
 						l 'all servers initialized'
 
+					## get clients running
 					->
+						debugger
 						l 'all servers listening'
-						for server, clients of @schema
-							name = clients[0]
+						for server, clients of test.schema
+							name = clients.data[0]
 							# index by server id and name
-							@connections[ server ] = @connections[ name ] = {}
+							test.connections[ server ] = test.connections[ name ] = {}
 							# create connections
-							clients[1...-1].forEach (client) =>
+							l clients
+							clients.data[1...-1].forEach (client) =>
 								port ="800#{server}"
 								# TODO no scope for the client
 								node = new Client port, {}, @MULTI()
-								@connections[ server ][ client ] = node
-								client_name = @schema[ client ][0]
+								test.connections[ server ][ client ] = node
+								client_name = test.schema[ client ][0]
 								# index by client name
-								@connections[ name ][ client_name ] = @connections[ server ][ client ]
+								test.connections[ name ][ client_name ] = test.connections[ server ][ client ]
 						l 'all client initialized'
 
+					## get user images names
 					->
 						l 'all clients listening'
-						w2u = @connections['website']['users-db'].remote
+						w2u = test.connections['website']['users-db'].remote
 						w2u.getUserImageNames @
 
+					## get sized images
 					(images) ->
 						l 'after getUserImageNames'
-						w2i = @connections['website']['images'].remote
+						w2i = test.connections['website']['images'].remote
 						# TODO get size from website service (layout actually)
 						specs = ( name: img, size: { width: 100, height: 100 } for img in images )
 						w2i.getImagesPromise specs, @
 
+					## resize images
 					(specs) ->
 						l 'getImagesPromise'
-						w2r = @connections['images']['image-resize'].remote
+						w2r = test.connections['images']['image-resize'].remote
 						specs.forEach (image) ->
 							callback = @MULTI()
 							w2r.events.on 'after_resize_image', (image_promise) ->
 								callback() if image_promise.name is image
 							w2r.resizeImage image.name, image.size.with, image.size.height
+					## return
 					->
 						l 'END!'
 					)
@@ -183,11 +204,11 @@ describe 'Connection Graph', ->
 			afterEach (next) ->
 				flow.exec(
 					->
-						for client in @connections
+						for client in test.connections
 							client.close @MULTI()
 
 					->
-						for server in @nodes
+						for server in test.nodes
 							server.close @MULTI()
 
 					next
