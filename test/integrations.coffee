@@ -132,12 +132,12 @@ describe 'Connection Graph', ->
 			afterEach (next) ->
 				flow.exec(
 					->
-						for server in @nodes
-							server.close @MULTI()
-						
-					->
 						for client in @connections
 							client.close @MULTI()
+						
+					->
+						for server in @nodes
+							server.close @MULTI()
 							
 					next
 				)
