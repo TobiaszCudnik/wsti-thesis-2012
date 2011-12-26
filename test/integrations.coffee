@@ -15,31 +15,29 @@ l = (ms...) -> console.log i m for m in ms
 
 describe 'Connection Graph', ->
 	port = 8756
-	describe 'Milestone1', ->
-#		server = null
-#		scope = (client, connection) ->
-#			emitter = new events.EventEmitter
-#			# string property
-#			@foo = 'bar'
-#			# echo function
-#			@echo = (echo) -> echo
-#			# echo callback
-#			@callback = (callback, args...) -> callback.apply null, args
-#			# event emitter func bindings
-#			@['on'] = emitter.on.bind emitter
-#			@emit = emitter.emit.bind emitter
-#			# async version of emit
-#			@emitAsync = (name, params...) ->
-#				params = _.union name, params
-#				setTimeout emitter.emit( params ), 0
-#			connection.on 'ready', =>
-#				if client.callback
-#					callback = -> client.callback('foo')
-#					setTimeout callback, 0
-#			# undefined as return needed
-#			undefined
-		
-		# ######### #
+	#		server = null
+	#		scope = (client, connection) ->
+	#			emitter = new events.EventEmitter
+	#			# string property
+	#			@foo = 'bar'
+	#			# echo function
+	#			@echo = (echo) -> echo
+	#			# echo callback
+	#			@callback = (callback, args...) -> callback.apply null, args
+	#			# event emitter func bindings
+	#			@['on'] = emitter.on.bind emitter
+	#			@emit = emitter.emit.bind emitter
+	#			# async version of emit
+	#			@emitAsync = (name, params...) ->
+	#				params = _.union name, params
+	#				setTimeout emitter.emit( params ), 0
+	#			connection.on 'ready', =>
+	#				if client.callback
+	#					callback = -> client.callback('foo')
+	#					setTimeout callback, 0
+	#			# undefined as return needed
+	#			undefined
+	describe 'Milestone1', ->		# ######### #
 		#
 		# PROTOTYPE 2
 		#
@@ -53,24 +51,27 @@ describe 'Connection Graph', ->
 		# QUESTIONS:
 		# who is eventemitter? everybody?
 		describe 'prototype2', ->
-			get_event_emitter (root, datastore) ->
+			get_event_emitter = (root, datastore) ->
 				emitter = new EventEmitter
+				copy = {}
 				# dnode doesn't accept objects from constructors (TODO why?)
-				copy = Object.clone emitter
 				# bind
-				for func, k in copy
-					copy[ k ] = func.bind emitter
+				for name, func of emitter
+					# TODO...
+					if func.constructor is Function
+						copy[ name ] = func.bind emitter
 				# make disposable
 				copy.on 'dispose', ->
 					emitter = null
 					root[ datastore ] = null
 				# return
 				copy
-			
-			
+
+
 			beforeEach (next) ->
 				class ImagePromise
 					constructor: (@name, @width, @height) ->
+						l 'new image promise'
 
 				@schema =
 					# website server
@@ -117,44 +118,58 @@ describe 'Connection Graph', ->
 						# event after_clear_cache
 						events: get_event_emitter @, 'events'
 					]
+
 				@nodes = {}
 				@connections = {}
+
+				l 'beforeEach finished'
 
 			it 'should provide user images with a correct size', (next) ->
 				flow.exec(
 
 					-> # start
+						l 'started'
 						for server, clients of @schema
 							port = "800#{server}"
-							@nodes[ server ] = new Server 'localhost', port, @MULTI()
-
-					->
-						for server, clients of @schema
-							name = clients[0]
 							scope = clients[-1]
-							@connections[ server ] = @connections[ name ] = {}
 							# bind methods to a scope
 							for fn, name of scope
 								scope[ name ] = fn.bind scope
-							# create connection
-							clients[1...-1].forEach (client) =>
-								port ="800#{server}"
-								node = new Client port, scope, @MULTI()
-								@connections[ server ][ client ] = node
-								client_name = @schema[ client ][0]
-								@connections[ name ][ client_name ] = @connections[ server ][ client ]
+							@nodes[ server ] = new Server 'localhost', port, scope, @MULTI()
+
+						l 'all servers initialized'
 
 					->
+						l 'all servers listening'
+						for server, clients of @schema
+							name = clients[0]
+							# index by server id and name
+							@connections[ server ] = @connections[ name ] = {}
+							# create connections
+							clients[1...-1].forEach (client) =>
+								port ="800#{server}"
+								# TODO no scope for the client
+								node = new Client port, {}, @MULTI()
+								@connections[ server ][ client ] = node
+								client_name = @schema[ client ][0]
+								# index by client name
+								@connections[ name ][ client_name ] = @connections[ server ][ client ]
+						l 'all client initialized'
+
+					->
+						l 'all clients listening'
 						w2u = @connections['website']['users-db'].remote
 						w2u.getUserImageNames @
 
 					(images) ->
+						l 'after getUserImageNames'
 						w2i = @connections['website']['images'].remote
 						# TODO get size from website service (layout actually)
 						specs = ( name: img, size: { width: 100, height: 100 } for img in images )
 						w2i.getImagesPromise specs, @
 
 					(specs) ->
+						l 'getImagesPromise'
 						w2r = @connections['images']['image-resize'].remote
 						specs.forEach (image) ->
 							callback = @MULTI()
@@ -162,18 +177,18 @@ describe 'Connection Graph', ->
 								callback() if image_promise.name is image
 							w2r.resizeImage image.name, image.size.with, image.size.height
 					->
-						console.log 'END!'
+						l 'END!'
+					)
 
-							
 			afterEach (next) ->
 				flow.exec(
 					->
 						for client in @connections
 							client.close @MULTI()
-						
+
 					->
 						for server in @nodes
 							server.close @MULTI()
-							
+
 					next
 				)
