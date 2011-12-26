@@ -58,7 +58,8 @@ describe 'Connection Graph', ->
 				# dnode doesn't accept objects from constructors (TODO why?)
 				copy = Object.clone emitter
 				# bind
-				func.bind emitter for func in copy
+				for func, k in copy
+					copy[ k ] = func.bind emitter
 				# make disposable
 				copy.on 'dispose', ->
 					emitter = null
@@ -74,7 +75,7 @@ describe 'Connection Graph', ->
 						events: get_event_emitter @, 'events'
 					]
 					# image server
-					2: [ 2, 3,
+					2: [ 4
 						images: ['img1', 'img2', 'img3']
 						getImages: (specs, next) -> next @images
 						events: get_event_emitter @, 'events'
@@ -86,22 +87,29 @@ describe 'Connection Graph', ->
 							{name: 'user2', photo: 'img2'}
 							{name: 'user3', photo: 'img3'}
 						]
-						getUserImages: (specs, next) ->
+						getUserImageNames: (specs, next) ->
 							next @users
 						events: get_event_emitter @, 'events'
 					]
 					# image resize server
 					4: [ 2,
-						getCachedImages
-						resizeImages: 
-						# event image_added
-						# event image_removed
+						getCachedImages: -> @images
+						resizeImage: () 
+						clearCache: @images = [] 
+						# event before_image_input images: []
+						# event after_image_input images: []
+						# event before_data_output images: []
+						# event after_data_output images: []
+						# event before_resize_image images: [], size: '\dx\d'
+						# event after_resize_image images: [], size: '\dx\d'
+						# event before_clear_cache
+						# event after_clear_cache
 						events: get_event_emitter @, 'events'
 					]
 				@nodes = {}
 				@connections = {}
 
-			it 'should listen on a port', (next) ->
+			it 'it should provide user images with a correct size', (next) ->
 				flow.exec(
 					-> # start
 						for server, clients of @schema
@@ -111,6 +119,10 @@ describe 'Connection Graph', ->
 						for server, clients of @schema
 							@connections[ server ] = {}
 							scope = clients[-1]
+							# bind methods to a scope
+							for fn, name of scope
+								scope[ name ] = fn.bind scope
+							# create connection
 							clients[0...-1].forEach (client) =>
 								port ="800#{server}"
 								node = new Client port, {}, @MULTI()
