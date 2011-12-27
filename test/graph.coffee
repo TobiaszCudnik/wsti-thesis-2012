@@ -41,11 +41,13 @@ describe 'Connection Graph', ->
 		beforeEach (next) ->
 			server = new Server 'localhost', ++port, scope, next
 
-		afterEach (next) ->
+		afterEach ->
 			# close all connections
 			# TODO collect free ports, reuse
 			# TODO handle Error: connect ECONNRESET
-			server.close next
+#			server.close next
+			# async server close
+			server.close
 
 		describe 'server', ->
 
