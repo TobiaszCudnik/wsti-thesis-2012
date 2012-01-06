@@ -1,6 +1,6 @@
-config = require '../config'
-Client = require '../src/client'
-Server = require '../src/server'
+config = require '../../config'
+Client = require '../../src/client'
+Server = require '../../src/server'
 flow = require 'flow'
 net = require 'net'
 events = require 'events'
@@ -93,9 +93,14 @@ describe 'prototype3', ->
 						{name: 'user3', photo: 'img3'}
 					]
 					getUserImageNames: (next, ret, specs) ->
+						#async
 						# TODO specs
-						next _.map @users, (obj) ->
-							return obj.photo
+						setTimeout(
+							=>
+								next _.map @users, (obj) ->
+									return obj.photo
+							0
+						)
 					events: get_event_emitter @, 'events'
 					constructor: ->
 						@events.on 'getUserImageNames', =>
@@ -113,6 +118,7 @@ describe 'prototype3', ->
 						# TODO communicate with external service
 						spec.done = yes
 						spec.output = '/path/to/file'
+						#async
 						setTimeout (-> next ret), 0
 
 					clearCache: @images = []
