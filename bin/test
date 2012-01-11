@@ -2,8 +2,8 @@
 ROOT=`dirname $0`
 
 $ROOT/../node_modules/.bin/mocha \
-	$ROOT/../test/graph.coffee \
-	$ROOT/../test/integrations.coffee \
+	$ROOT/../test/*.coffee \
+	$ROOT/../test/**/*.coffee \
 	-r should \
 	-R spec
 

@@ -1,24 +1,35 @@
 dnode = require 'dnode'
 http = require 'http'
+_ = require 'underscore'
 
 config = require '../config'
 Logger = require './logger'
 
 module.exports = class Server
 	dnode: null
+	host: null
 	port: null
 	server: null
+	clients: null
 
 	constructor: (@host, @port, scope, next) ->
 		@log "Starting server on #{@host}:#{port}"
 		@dnode = dnode scope
+		@clients = []
+		a = @
 
 		# Socket listener
 		params =
 			host: 'localhost'
 			port: @port
-#			block: (client, connection) =>
-#				@log "Client #{connection.id} connected."
+			block: (remote, connection) =>
+				@clients.push remote: remote, connection: connection
+				connection.on 'end', =>
+					# remove the dead client, then remove empty array elements
+					@clients = _.compact _.map @clients, (client) ->
+						return client if client.connection isnt connection
+
+				@log "Client #{connection.id} connected."
 
 		@dnode.listen params
 		@server = @dnode.server

@@ -123,8 +123,8 @@ describe 'prototype2', ->
 					# event before_clear_cache
 					# event after_clear_cache
 					events: get_event_emitter @, 'events'
-			]
-		}
+        ]
+      }
 
 		test.nodes = {}
 		test.connections = {}

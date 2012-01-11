@@ -29,7 +29,10 @@ describe 'Connection Graph', ->
 			# async version of emit
 			@emitAsync = (name, params...) ->
 				params = _.union name, params
-				setTimeout emitter.emit( params ), 0
+				setTimeout(
+					-> emitter.emit.apply( emitter, params )
+					0
+				)
 			connection.on 'ready', =>
 				if client.callback
 					callback = -> client.callback('foo')
@@ -60,6 +63,22 @@ describe 'Connection Graph', ->
 				socket.on 'error', ->
 					socket.destroy()
 					'connection can be established'.should.be.ok
+
+			it 'should allow a client to connect', (next) ->
+				client = new Client port, {}, ->
+					server.clients.length.should.equal 1
+					client.close next
+
+			it 'should access the dispose client when disconnected', (next) ->
+				client = new Client port, {}, ->
+					client.close ->
+						server.clients.length.should.equal 0
+						next()
+
+			it 'should access the client\'s scope', (next) ->
+				client = new Client port, client_foo: 'bar', ->
+					server.clients[0].remote.client_foo.should.equal 'bar'
+					client.close next
 
 		describe 'client', ->
 #
@@ -98,18 +117,17 @@ describe 'Connection Graph', ->
 						@client.close done
 				)
 
-#			it 'should subscribe to an ASYNC event from the server', (done) ->
-#				flow.exec(
-#					->
-#						@client = new Client port, {}, @
-#					(remote, conn) ->
-#						# TODO check if this is sync-safe
-#						remote.on 'foo', @
-#						remote.emitAsync 'foo', 'bar'
-#					(param) ->
-#						param.should.equal 'bar'
-#						@client.close done
-#				)
+			it 'should subscribe to an ASYNC event from the server', (done) ->
+				flow.exec(
+					->
+						@client = new Client port, {}, @
+					(remote, conn) ->
+						remote.on 'foo', @
+						remote.emitAsync 'foo', 'bar'
+					(param) ->
+						param.should.equal 'bar'
+						@client.close done
+				)
 
 #		describe 'server', ->
 #

@@ -79,7 +79,6 @@ describe 'prototype3', ->
 					events: get_event_emitter @, 'events'
 					constructor: ->
 						@events.on 'getImagesPromise', =>
-							debugger
 							@getImagesPromise.apply @, arguments
 				]
 			}
@@ -134,8 +133,8 @@ describe 'prototype3', ->
 					constructor: ->
 						@events.on 'resizeImage', =>
 							@resizeImage.apply @, arguments
-			]
-		}
+			  ]
+		  }
 
 		test.nodes = {}
 		test.connections = {}
