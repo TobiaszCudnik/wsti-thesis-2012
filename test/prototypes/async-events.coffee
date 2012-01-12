@@ -1,6 +1,6 @@
 config = require '../../config'
 Client = require '../../src/client'
-Server = require '../../src/server'
+Server = require('../../src/server').Server
 flow = require 'flow'
 net = require 'net'
 events = require 'events'
