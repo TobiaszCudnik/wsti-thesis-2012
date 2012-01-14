@@ -6,7 +6,7 @@ net = require 'net'
 events = require 'events'
 _ = require 'underscore'
 sugar = require 'sugar'
-EventEmitter2 = require('eventemitter2').EventEmitter2
+EventEmitter2 = require('eventemitter2async').EventEmitter2
 assert = require('assert').ok
 
 # debug
