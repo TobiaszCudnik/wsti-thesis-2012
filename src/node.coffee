@@ -1,35 +1,51 @@
-Server = require './server'
+RestServer = require('./server').RestServer
 Client = require './client'
 _ = require 'unserscore'
 EventEmitter2Async = require('eventemitter2async').EventEmitter2Async
+config = require '../config'
 
 module.exports =
 class Node extends EventEmitter2Async
-	servers_: null
-	clients_: null
-	sockets_: null # why?
-	connections: null
+	server: null
+	scope: null
+	clients: null
 	requires: null
 	provides: null
+	planner: null
 
-	construct: (requires, provides) ->
-		@servers_ = []
-		@clients_ = []
-		@connections_ = []
+	construct: (address, services, next) ->
 		@requires = []
 		@provides = []
+		@clients = []
 
-		for r in requires
-			@addRequire r
+		@addRequire requires for requires in services.requires
+		@addProvide provides for provides in services.provides
 
-		for r in provides
-			@addProvide provides
+		@scope =
+			requires: @requires
+			provides: @provides
 
-    @onConnection = (listener) => @on 'connection', listener
+		routes = []
+
+		$ = @
+		flow.exec(
+			->
+				$server = new RestServer address.host, address.port, address.rest_port,
+					routes, address.port, $scope, @MULTI()
+				$planner = new Client config.planner.host, config.planner.rest_port, @MULTI()
+			->
+				$planner.remote.emit.getConnections
+
+		# signals
+    @onNewClient = (listener) => @on 'newClient', listener
     @onTransaction = (listener) => @on 'transaction', listener
+    @onRequiredServices = (listener) => @on 'transaction', listener
+    @onProvidedServices = (listener) => @on 'transaction', listener
+    @onConnection = (listener) => @on 'newConnection', listener
+    @onDisconnect = (listener) => @on 'disconnect', listener
 
-  connect: (node_uri) ->
-  get_services_provides: (include_connections = no) ->
+  connectToNode: (host, port, next) ->
+  get_services_provided: (include_connections = no) ->
   get_services_required: (include_connections = no) ->
 
   # getters / setters

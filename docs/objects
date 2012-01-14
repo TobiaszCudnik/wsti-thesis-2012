@@ -1,0 +1,23 @@
+node
+	has one server
+	has many clients
+	has many provided services
+	has many required services
+client
+	has one socket connection
+server
+	has many socket connections
+path
+	has many node-to-node connections
+transfer
+	node to node
+	belongs to transaction
+transaction extends path
+	service to service communication
+	has many transfers
+
+node API
+	local
+	remote
+	events
+	rest
