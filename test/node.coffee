@@ -1,12 +1,9 @@
 config = require '../config'
-Client = require '../src/client'
-Server = require('../src/server').Server
-RestServer = require('../src/server').RestServer
+Node = require '../src/node'
+Service = require '../src/service'
 flow = require 'flow'
-net = require 'net'
-events = require 'events'
-request = require 'request'
 _ = require 'underscore'
+require '../src/utils'
 
 # debug
 config.debug = no
@@ -14,17 +11,38 @@ i = require('util').inspect
 l = (ms...) -> console.log i m for m in ms
 
 describe 'Node', ->
-				
+								
 	describe 'services', ->
+		new_service = (name) ->
+			new Service name
+	  
 		it 'should provide services', ->
-			no.should.be.ok
+			services_names = 2.times (i) -> "service#{i}"
+			services = ( new_service name for name in services_names )
+			node = new Node services
+			node.getProvidedServices(no).map( (v) -> v.name ).should.equal services_names      
+			      
 		it 'should know services provided by connected nodes', ->
-			no.should.be.ok
+			s = 0
+			nodes = []
+			while s++ < 4
+				services_names = [s, s+2].upto (i) -> "service#{i}"
+				services = ( new_service name for name in services_names )
+				nodes.push new Node services
+				nodes[-1].connectTo nodes[0] if s > 1 and s < 3 
+			      
+			nodes[0].connectTo nodes[-1]
+		    
+			nodes
+			services_names = 8.times (i) -> "service#{i}"
+		    
+			node.getProvidedServices(yes).should.equal services_names
+			      
 		it 'should require services', ->
 			no.should.be.ok
 		it 'should know services required by connected nodes', ->
 			no.should.be.ok
-		
+				
 	describe 'connections', ->
 		it 'should be connected to other nodes', ->
 			no.should.be.ok

@@ -1,11 +1,11 @@
 RestServer = require('./server').RestServer
 Client = require './client'
-_ = require 'unserscore'
-EventEmitter2Async = require('eventemitter2async').EventEmitter2Async
+_ = require 'underscore'
+EventEmitter2Async = require('eventemitter2').EventEmitter2Async
 config = require '../config'
 
-module.exports =
-class Node extends EventEmitter2Async
+e = module.exports
+class e.Node extends EventEmitter2Async
 	server: null
 	scope: null
 	clients: null
@@ -35,69 +35,70 @@ class Node extends EventEmitter2Async
 				$planner = new Client config.planner.host, config.planner.rest_port, @MULTI()
 			->
 				$planner.remote.emit.getConnections
+		)
 
 		# signals
-    @onNewClient = (listener) => @on 'newClient', listener
-    @onTransaction = (listener) => @on 'transaction', listener
-    @onRequiredServices = (listener) => @on 'transaction', listener
-    @onProvidedServices = (listener) => @on 'transaction', listener
-    @onConnection = (listener) => @on 'newConnection', listener
-    @onDisconnect = (listener) => @on 'disconnect', listener
+		@onNewClient = (listener) => @on 'newClient', listener # TODO
+		@onClientClose = (listener) => @on 'newClient', listener # TODO
+    
+		@onaBeforeTransaction = (listener) => @on 'transaction', listener
+		@onaTransaction = (listener) => @on 'transaction', listener
+		@onaAfterTransaction = (listener) => @on 'transaction', listener
+    
+		@onaGetProvidedServices = (listener) => @on 'transaction', listener
+		@onaGetRequiredServices = (listener) => @on 'transaction', listener
+    
+		@onServerStarted = (listener) => @server.on 'ready', listener
+		@onDisconnect = (listener) => @server.on 'close', listener
 
-  connectToNode: (host, port, next) ->
-  get_services_provided: (include_connections = no) ->
-  get_services_required: (include_connections = no) ->
+	connectToNode: (host, port, next) ->
+	getProvidedServices: (include_connections, next) ->
+    include_connections ?= no
+    if include_connections
+      # TODO
+    else
+      next @provides
+    
+	getRequiredServices: (include_connections, next) ->
+    include_connections ?= no
+    if include_connections
+      clients = @clients
+      # broadcast to all client the request in parallel
+      flow.exec(
+        ->
+          for client in clients
+            client.getRequiredServices @MULTI()
+        (services) ->
+          # after fetching ALL callbacks, merge and push to main callback
+          next _.merge.apply null, services
+      )
+    else
+      next @requires
 
-  # getters / setters
+	# getters / setters
 	addRequire: (req) -> @requires.push req
 	deleteRequire: (req) -> @requires = _.without @requires, req
 
-	addProvide: (provide) ->
-	deleteProvide: (provide) ->
+	addProvide: (name, args...) ->
+    @provides.push 
+	deleteProvide: (provide) -> # TODO
 
-  # events
+	# events
 	onConnection: (listener) ->
 	onTransaction: (listener) ->
-		
-class GraphConnection
-	started_at: null
-	connect_log: []
-	source_node: null
-	target_node: null
-		
-class GraphPath
-	# ordered array of nodes for the connection flow
-	nodes: null
-	visited_nodes: []
-
-class Transaction extends GraphPath
-	finished_at: null
-	started_at: null
-
-	requires: [
-	  # []< []<service_name, []service_params>
-	]
-
-	provides: [
-	  # []< []<service_name, []service_params>
-	]
-
-class GraphDirectionStrategy
-	getPath: (source, target, service) ->
-		GraphPath
-		
-class Graph
-	nodes: null
-		
-	constructor: (nodes) ->
-		@nodes = []
-		
-		for node in nodes
-			@addNode node
-		
-	addNode: (node) ->
-	removeNode: (node) ->
-		
-class GraphConnectionsStrategy
-	getConnections: (limit_to_nodes) ->
-	getConnectionsForNode: (node) ->
+    
+  ## SYMBOLS  ##
+  ###--------###
+    
+  onNewClient: null
+  oClientClose: null
+  
+  onaBeforeTransaction: null
+  onaTransaction: null
+  onaAfterTransaction: null
+  
+  onaGetProvidedServices: null
+  onaGetRequiredServices: null
+  
+  onServerStarted: null
+  onDisconnect: null
