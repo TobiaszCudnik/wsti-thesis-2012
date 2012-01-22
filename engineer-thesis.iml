@@ -12,6 +12,10 @@
       <excludeFolder url="file://$MODULE_DIR$/prototypes/graph-connections-socketio/build" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
+<<<<<<< HEAD
+=======
+    <orderEntry type="library" name="lib" level="project" />
+>>>>>>> Misc.
   </component>
 </module>
 
