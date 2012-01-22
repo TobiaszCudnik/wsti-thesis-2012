@@ -1,5 +1,6 @@
 config = require '../config'
 Node = require '../src/node'
+PlannerNode = require '../src/plannernode'
 Service = require '../src/service'
 flow = require 'flow'
 _ = require 'underscore'
@@ -11,41 +12,69 @@ i = require('util').inspect
 l = (ms...) -> console.log i m for m in ms
 
 describe 'Node', ->
-								
+		
+	describe 'object', ->
+		it 'should convert methods to events', (next) ->
+			no.should.be.ok
+																
 	describe 'services', ->
 		new_service = (name) ->
 			new Service name
-	  
+			  
 		it 'should provide services', ->
 			services_names = 2.times (i) -> "service#{i}"
-			services = ( new_service name for name in services_names )
-			node = new Node services
-			node.getProvidedServices(no).map( (v) -> v.name ).should.equal services_names      
-			      
+			provides = ( new_service name for name in services_names )
+			services = provides: provides
+			node = new Node null, services
+			node.getProvidedServices(no)
+				.map( (v) -> v.name )
+					.should.equal services_names      
+									      
 		it 'should know services provided by connected nodes', ->
+			# TODO mock connection, write helpers
+			no.should.be.ok
 			s = 0
 			nodes = []
 			while s++ < 4
 				services_names = [s, s+2].upto (i) -> "service#{i}"
 				services = ( new_service name for name in services_names )
-				nodes.push new Node services
-				nodes[-1].connectTo nodes[0] if s > 1 and s < 3 
+				nodes.push new Node {}, services
+				if s > 1 and s < 3
+#					addr = 
+					nodes[-1].connectTo nodes[0]  
 			      
-			nodes[0].connectTo nodes[-1]
-		    
+			addr = nodes[-1].address
+			nodes[0].connectToNode addr.host, addr.port 
+						    
 			nodes
 			services_names = 8.times (i) -> "service#{i}"
-		    
+						    
 			node.getProvidedServices(yes).should.equal services_names
-			      
-		it 'should require services', ->
-			no.should.be.ok
-		it 'should know services required by connected nodes', ->
-			no.should.be.ok
-				
+									      
+#		it 'should require services', ->
+#			no.should.be.ok
+#		it 'should know services required by connected nodes', ->
+#			no.should.be.ok
+								
 	describe 'connections', ->
-		it 'should be connected to other nodes', ->
+		planner_node = null
+#		beforeEach (next) ->
+#			config.planner_node = port: 1234, host: 'localhost'
+#			planner_scope = {
+#				graph: [
+#					{ host: 'localhost', port: 2000, connections: [ 1, 2 ] }
+#					{ host: 'localhost', port: 2001, connections: [ 2 ] }
+#					{ host: 'localhost', port: 2002 }
+#				]
+#			}
+#			c = config.planner_node
+#			planner_node = new PlannerNode host: c.host, port: c.port, graph
+		
+		it 'should get connection to the planner node', ->
 			no.should.be.ok
+		it 'should be connected to other nodes', ->
+			node1 = new Node host: 'localhost', port: 1234, {}
+			node2 = new Node host: 'localhost', port: 1235, {}
 		it 'should get connection list from the planner node', ->
 			no.should.be.ok
 		it 'should have weight of each connection', ->

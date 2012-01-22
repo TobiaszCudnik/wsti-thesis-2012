@@ -1,0 +1,81 @@
+    <section class="suite">
+      <h1>Connection Graph</h1>
+      <dl>
+        <section class="suite">
+          <h1>server</h1>
+          <dl>
+            <dt>should listen on a port</dt>
+            <dd><pre><code>
+return server.port.should.equal(port);</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>client</h1>
+          <dl>
+            <dt>should connect to a port</dt>
+            <dd><pre><code>
+var client;
+return client = new Client(port, done);</code></pre></dd>
+            <dt>should send messages</dt>
+            <dd><pre><code>
+var client;
+return client = new Client(port, function() {
+  client.send('foo');
+  return done();
+});</code></pre></dd>
+            <dt>should receive messages</dt>
+            <dd><pre><code>
+var client, msg;
+msg = 'foo';
+client = null;
+server.addListener('connection', function(connection) {
+  return server.send(connection.id, msg);
+});
+return client = new Client(port, function() {
+  return client.on('message', function(message) {
+    message.should.equal(msg);
+    return done();
+  });
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>server</h1>
+          <dl>
+            <dt>should allow a client to connect</dt>
+            <dd><pre><code>
+var client;
+client = null;
+client = new Client(port, function() {
+  server.server.connections.should.equal(1);
+  return done();
+});
+return true;</code></pre></dd>
+            <dt>should send messages</dt>
+            <dd><pre><code>
+var client, msg;
+msg = 'foo';
+client = null;
+server.addListener('connection', function(connection) {
+  server.send(connection.id, msg);
+  return done();
+});
+return client = new Client(port);</code></pre></dd>
+            <dt>should receive messages</dt>
+            <dd><pre><code>
+var client, msg;
+msg = 'foo';
+client = null;
+server.addListener('connection', flow.define(function(connection) {
+  return connection.addListener(&quot;message&quot;, this);
+}, function(message) {
+  message.should.equal(msg);
+  return done();
+}));
+return client = new Client(port, function() {
+  return client.send(msg);
+});</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>

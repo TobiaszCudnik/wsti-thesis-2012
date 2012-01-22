@@ -4,5 +4,6 @@ ROOT=`dirname $0`
 node debug $ROOT/../node_modules/.bin/mocha \
 	$ROOT/../test/*.coffee \
 	$ROOT/../test/**/*.coffee \
+	$ROOT/../node_modules/semaphores/test/semaphore.coffee \
 	-r should \
 	-R spec

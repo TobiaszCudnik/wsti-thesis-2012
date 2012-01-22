@@ -18,7 +18,6 @@ module.exports.Server = class Server
 		@log "Starting server on #{@host}:#{port}"
 		@dnode = dnode scope
 		@clients = []
-		a = @
 
 		# Socket listener
 		params =

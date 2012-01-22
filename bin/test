@@ -4,7 +4,10 @@ ROOT=`dirname $0`
 $ROOT/../node_modules/.bin/mocha \
 	$ROOT/../test/*.coffee \
 	$ROOT/../test/**/*.coffee \
+	$ROOT/../node_modules/semaphores/test/semaphore.coffee \
 	-r should \
 	-R spec
+	
+# TODO add asyncemitter tests
 
 #$ROOT/../node_modules/.bin/mocha $ROOT/../test/graph.coffee -r should -R spec -w
