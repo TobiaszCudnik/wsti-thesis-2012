@@ -21,19 +21,19 @@ class Node extends EventEmitter2Async
 	# @type Client
 	planner_node: null
 
-	construct: (@address, services, next) ->
+	constructor: (@address, services, next) ->
 		@requires = []
 		@provides = []
 		@clients = []
 
-		@addRequire requires for requires in services.requires
-		@addProvide provides for provides in services.provides
+		@addRequire requires for requires in services?.requires?
+		@addProvide provides for provides in services?.provides?
 
 		@prepareScope()
-		
+				
 		@connectToGraph if @address
 		@initializeSignals()
-		
+				
 	prepareScope: ->
 		@scope = {}
 
@@ -63,35 +63,35 @@ class Node extends EventEmitter2Async
 					$.connectToNode( addr.host, addr.port, @MULTI() )
 			->
 		)
-		
+				
 	getRestRoutes: -> []
 
 	initializeSignals: ->
 		# signals
 		@onNewClient = (listener) => @on 'newClient', listener # TODO
 		@onClientClose = (listener) => @on 'newClient', listener # TODO
-		    
+						    
 		@onaBeforeTransaction = (listener) => @on 'transaction', listener
 		@onaTransaction = (listener) => @on 'transaction', listener
 		@onaAfterTransaction = (listener) => @on 'transaction', listener
-		    
+						    
 		@onaGetProvidedServices = (listener) => @on 'transaction', listener
 		@onaGetRequiredServices = (listener) => @on 'transaction', listener
-		    
+						    
 		@onServerStarted = (listener) => @server.on 'ready', listener
 		@onDisconnect = (listener) => @server.on 'close', listener
 
 	connectToNode: (host, port, next) ->
 		@clients.push new Client host, port, next
 		@clients[-1]
-		
+				
 	getProvidedServices: (include_connections, next) ->
 		include_connections ?= no
 		if include_connections
 			# TODO
 		else
 			next @provides
-		    
+						    
 	getRequiredServices: (include_connections, next) ->
 		include_connections ?= no
 		if include_connections
@@ -119,21 +119,21 @@ class Node extends EventEmitter2Async
 	# events
 	onConnection: (listener) ->
 	onTransaction: (listener) ->
-		    
+						    
 	onNewClient: null
 	oClientClose: null
-		    
+						    
 	## SYMBOLS  ##
 	##----------##
-	  
+			  
 	onaBeforeTransaction: null
 	onaTransaction: null
 	onaAfterTransaction: null
-	  
+			  
 	onaGetProvidedServices: null
 	onaGetRequiredServices: null
-	  
+			  
 	onServerStarted: null
 	onDisconnect: null
-		
+				
 module.exports = Node

@@ -14,6 +14,13 @@ l = (ms...) -> console.log i m for m in ms
 describe 'Node', ->
 		
 	describe 'object', ->
+		it 'should create dnode server', (next) ->
+			node = new Node { host: 'localhost', port: 1234 }
+			no.should.be.ok
+		
+		it 'should create REST server', (next) ->
+			no.should.be.ok
+		
 		it 'should convert methods to events', (next) ->
 			no.should.be.ok
 																

@@ -18,8 +18,9 @@ describe 'plannernode', ->
 			c = config.planner_node
 			addr = host: c.host, port: c.port
 			planner_node = new PlannerNode graph, addr, null, next
-			
+						
 		it 'should return connections for a node', (next) ->
+			debugger
 			callback = (connections) ->
 				debugger
 			planner_node.getConnections callback, null, host: graph[0].host, port: graph[0].port

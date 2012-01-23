@@ -2,9 +2,10 @@ Node = require '../src/node'
 _ = require 'underscore'
 
 class PlannerNode extends Node
-	constructor: (@graph, args...) ->
-		debugger
-		super args[0], args[1], args[2]
+	constructor: (@graph, address, services, next) ->
+		super address, services, next
+		
+		# TODO? move to signals
 		@on 'getConnections', @getConnections
 		
 	# TODO
