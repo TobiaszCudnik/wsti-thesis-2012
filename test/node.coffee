@@ -14,16 +14,38 @@ l = (ms...) -> console.log i m for m in ms
 describe 'Node', ->
 		
 	describe 'object', ->
+		it 'should construct with a callback', (next) ->
+			node = new Node { host: 'localhost', port: 1234 }, null, (args...) ->
+				debugger
+				# TODO asserts
+				node.close next
+		
+		it 'should close with a callback', (next) ->
+			node = new Node { host: 'localhost', port: 1234 }, null, (args...) ->
+				node.close next
+		
 		it 'should create dnode server', (next) ->
-			node = new Node { host: 'localhost', port: 1234 }
+			node = new Node { host: 'localhost', port: 1234 }, null, (args...) ->
+				# TODO test with a client
+				debugger
+				
 			no.should.be.ok
 		
 		it 'should create REST server', (next) ->
+			# TODO test with request module
 			no.should.be.ok
 		
 		it 'should convert methods to events', (next) ->
+			# TODO test with a client and some signals
 			no.should.be.ok
-																
+		
+		it 'should have signals defined', (next) ->
+			# TODO signals definitions
+			no.should.be.ok
+	
+		# TODO? maybe each signals TC
+	
+###
 	describe 'services', ->
 		new_service = (name) ->
 			new Service name
@@ -98,3 +120,5 @@ describe 'Node', ->
 	describe 'stats', ->
 		it 'should report all transfers to the stat node', ->
 		it 'should report own transactions to the stat node', ->
+		
+###

@@ -4,7 +4,9 @@ Client = require './client'
 _ = require 'underscore'
 EventEmitter2Async = require('eventemitter2async').EventEmitter2
 config = require '../config'
+#Semaphore = require('semaphores').Semaphore
 
+# FIXME scope setter, maybe in contructor
 class Node extends EventEmitter2Async
 	# @type Object<host, port, rest_port>
 	address: null
@@ -31,13 +33,30 @@ class Node extends EventEmitter2Async
 
 		@prepareScope()
 				
+		# creates @server
 		@connectToGraph if @address
 		@initializeSignals()
+		
+		@on 'start', next
 				
 	prepareScope: ->
 		@scope = {}
+		
+	#async
+	close: (next) ->
+		$ = @
+		flow.exec(
+			->
+				$.server.close @MULTI()
+				for conn in $.connections
+					conn.close @MULTI()
+			-> $.emit 'stop', @
+			next
+		)
 
-	connectToGraph: ->		
+	# Asyncly initialize all connections/servers 
+	# Emits 'start' signal
+	connectToGraph: (next) ->		
 		$ = @
 		flow.exec(
 			->
@@ -53,15 +72,22 @@ class Node extends EventEmitter2Async
 						$.address.host, $.address.port, $.scope, @MULTI()
 					)
 				# Connect to the planner node.
-				$.planner_node = $.connectToNode( 
-					config.planner_node.host, config.planner_node.port, @MULTI()
-				)
-			->
-				$.planner_node.remote.emit('getConnections', address, @)
-			(graph_connections) ->
+				# Planner flow
+				MULTI = @MULTI()
+				flow.exec(
+					->
+						$.planner_node = $.connectToNode( 
+							config.planner_node.host, config.planner_node.port, @
+						)
+					-> $.planner_node.remote.emit('getConnections', address, MULTI)
+				)				
+			(args) ->
+				graph_connections = args[1]
 				for addr in graph_connections
-					$.connectToNode( addr.host, addr.port, @MULTI() )
+					$.connectToNode addr.host, addr.port, @MULTI()
 			->
+				$.emit 'start', @
+			next
 		)
 				
 	getRestRoutes: -> []
