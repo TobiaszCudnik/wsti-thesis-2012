@@ -4,6 +4,7 @@ Client = require './client'
 _ = require 'underscore'
 EventEmitter2Async = require('eventemitter2async').EventEmitter2
 config = require '../config'
+flow = require 'flow'
 #Semaphore = require('semaphores').Semaphore
 
 # FIXME scope setter, maybe in contructor
@@ -34,7 +35,7 @@ class Node extends EventEmitter2Async
 		@prepareScope()
 				
 		# creates @server
-		@connectToGraph if @address
+		@connectToGraph() if @address
 		@initializeSignals()
 		
 		@on 'start', next
@@ -48,8 +49,9 @@ class Node extends EventEmitter2Async
 		flow.exec(
 			->
 				$.server.close @MULTI()
-				for conn in $.connections
-					conn.close @MULTI()
+				if $.connections?
+					for conn in $.connections 
+						conn.close @MULTI()
 			-> $.emit 'stop', @
 			next
 		)
@@ -57,6 +59,7 @@ class Node extends EventEmitter2Async
 	# Asyncly initialize all connections/servers 
 	# Emits 'start' signal
 	connectToGraph: (next) ->		
+		throw new Error 'no-address' if not @address
 		$ = @
 		flow.exec(
 			->
@@ -72,6 +75,8 @@ class Node extends EventEmitter2Async
 						$.address.host, $.address.port, $.scope, @MULTI()
 					)
 				# Connect to the planner node.
+				# Only if node planner configured.
+				return if not config.planner_node?
 				# Planner flow
 				MULTI = @MULTI()
 				flow.exec(
@@ -82,6 +87,8 @@ class Node extends EventEmitter2Async
 					-> $.planner_node.remote.emit('getConnections', address, MULTI)
 				)				
 			(args) ->
+				# connect only if node planner configured
+				return @() if not config.planner_node?
 				graph_connections = args[1]
 				for addr in graph_connections
 					$.connectToNode addr.host, addr.port, @MULTI()

@@ -8,8 +8,7 @@ module.exports = class Client
 	connection: null
 	scope: null
 		
-	# TODO support host
-	# TODO? support scope as optional param?
+	# FIXME support host
 	constructor: (@port, @scope, next) ->
 		@log "Connecting to localhost:#{@port}"
 		opts =
