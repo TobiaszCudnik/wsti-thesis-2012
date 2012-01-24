@@ -29,7 +29,8 @@ describe 'Node', ->
 			node = new Node { host: 'localhost', port: 1234 }, null, (args...) ->
 				node.close ->
 					yes.should.be.ok
-					next()
+					# jump out of stack trace
+					process.nextTick next
 				
 		it 'should create dnode server', (next) ->
 			addr = host: 'localhost', port: 1234
@@ -39,12 +40,30 @@ describe 'Node', ->
 					client.close node.close.bind node, next
 				
 		it 'should create REST server', (next) ->
-			# TODO test with request module
-			no.should.be.ok
+			addr = host: 'localhost', port: 1234
+			node = new Node addr, null, (on_start_finish) ->
+				request = require 'request'
+				request "http://localhost:1234", (err, res, body) ->
+					# TODO check
+					expect(err).toBeFalsy()
+					next()
 				
 		it 'should convert methods to events', (next) ->
-			# TODO test with a client and some signals
-			no.should.be.ok
+			addr = host: 'localhost', port: 1234
+			flow.exec(
+				->
+					@node = new Node addr, null, @
+				(on_start_finish) ->
+					@node.on 'test', (next, ret) ->
+						next 'foo'
+					# FIXME connect to full addr object
+					client = new Client addr.port, null, @
+				->
+					client.remote.emit 'test', @
+				(ret) ->
+					expect(ret).to.equal 'foo'
+					client.close node.close.bind node, next
+			)
 				
 		it 'should have signals defined', (next) ->
 			# TODO signals definitions
