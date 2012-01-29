@@ -63,12 +63,12 @@ describe 'Server', ->
 			server.clients.length.should.equal 1
 			client.close next
 
-	it 'should access the dispose client when disconnected', (next) ->
+	it 'should dispose the client when disconnected', (next) ->
 		client = new Client port, {}, ->
 			client.close ->
 				server.clients.length.should.equal 0
 				next()
-
+	
 	it 'should access the client\'s scope', (next) ->
 		client = new Client port, client_foo: 'bar', ->
 			server.clients[0].remote.client_foo.should.equal 'bar'
@@ -79,8 +79,8 @@ describe 'REST Server', ->
 	port = 8756
 	rest_port = 8757
 	routes = [
-		['get', '/', (req, res) -> res.end('GET /') ]
-		['get', '/foo', (req, res) -> res.end('GET /foo') ]
+		['get', '/', (req, res) -> res.end 'GET /' ]
+		['get', '/foo', (req, res) -> res.end 'GET /foo' ]
 	]
 	scope = foo: 'bar'
 

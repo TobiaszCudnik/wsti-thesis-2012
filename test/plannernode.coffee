@@ -3,6 +3,7 @@ PlannerNode = require '../src/plannernode'
 
 describe 'plannernode', ->
 	describe 'statnode data', ->
+
 	describe 'graph structures', ->
 		planner_node = null
 		graph = [
@@ -13,11 +14,14 @@ describe 'plannernode', ->
 		beforeEach (next) ->
 			config.planner_node = port: 1234, host: 'localhost'
 			planner_scope = {
-				graph: graph	
+				graph: graph
 			}
 			c = config.planner_node
 			addr = host: c.host, port: c.port
 			planner_node = new PlannerNode graph, addr, null, next
+		
+		afterEach (next) ->
+			planner_node.close()
 						
 		it 'should return connections for a node', (next) ->
 			debugger

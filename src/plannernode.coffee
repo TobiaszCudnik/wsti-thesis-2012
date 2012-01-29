@@ -5,13 +5,36 @@ class PlannerNode extends Node
 	constructor: (@graph, address, services, next) ->
 		super address, services, next
 		
-		# TODO? move to signals
-		@on 'getConnections', @getConnections
+		# bind to signals
+		@onGetConnections @getConnections_
+		@onGetGraphMap @getGraphMap_
 		
-	# TODO
-	getConnections: (next, ret, node_addr) ->
+	getRoutes: ->
+		_.merge([
+				'getGraph', @rest 'get', @getGraph
+				'getConnections', @rest 'get', @getConnections
+			]
+			super
+		)
+		
+	### 
+	@param listener Function.<ret>
+	###
+	getConnections: (next, node_addr) -> @emit 'getConnections', next
+		
+	###
+	@param listener Function.<next, ret>
+	Map reduce event listener. Push return val to the next one.
+	###
+	onGetConnections: (listener) -> @on 'getConnections', listener
+
+	###
+	Returns all sibling connection for a specific node. 
+	###
+	getConnections_: (next, ret, node_addr) ->
 		matching_nodes = _.filter @graph, (v) ->
-			v.host is node_addr.host and v.port is node_addr.port
+			v.host is node_addr.host and 
+				v.port is node_addr.port
 		
 		connections = matching_nodes.map (v) -> v.connections
 		
@@ -20,5 +43,25 @@ class PlannerNode extends Node
 			nodes_to_connect.push @graph[ i ] for i in c
 			
 		next nodes_to_connect
+		
+	### 
+	@param listener Function.<ret>
+	ret can be an Error
+	@see getGraphMap_
+	###
+	getGraphMap: (next) -> @emit 'getGraphMap', next
+		
+	###
+	@param listener Function.<next, ret>
+	Map reduce event listener. Push return val to the next one.
+	@see getGraphMap_
+	###
+	onGetGraphMap: (listener) -> @on 'getGraphMap', listener
+
+	###
+	Returns whole graph map.
+	###
+	getGraphMap_: (next, ret, node_addr) ->
+		@graph
 		
 module.exports = PlannerNode

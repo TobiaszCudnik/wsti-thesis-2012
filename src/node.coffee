@@ -38,10 +38,14 @@ class Node extends EventEmitter2Async
 		@connectToGraph() if @address
 		@initializeSignals()
 		
-		@on 'start', next
+		@once 'start', -> next
 				
 	prepareScope: ->
-		@scope = {}
+		@scope = []
+		for fn in @
+			if fn.constructor is Function
+				@scope[ fn ] = fn.bind @
+		@scope
 		
 	#async
 	close: (next) ->
@@ -58,7 +62,7 @@ class Node extends EventEmitter2Async
 
 	# Asyncly initialize all connections/servers 
 	# Emits 'start' signal
-	connectToGraph: (next) ->		
+	connectToGraph: (next) ->
 		throw new Error 'no-address' if not @address
 		$ = @
 		flow.exec(
@@ -76,7 +80,9 @@ class Node extends EventEmitter2Async
 					)
 				# Connect to the planner node.
 				# Only if node planner configured.
-				return if not config.planner_node?
+				# TODO define plannernode skip for this logic
+				# override? setting flag?
+				return if not config.planner_node? or @graph
 				# Planner flow
 				MULTI = @MULTI()
 				flow.exec(
@@ -84,11 +90,12 @@ class Node extends EventEmitter2Async
 						$.planner_node = $.connectToNode( 
 							config.planner_node.host, config.planner_node.port, @
 						)
-					-> $.planner_node.remote.emit('getConnections', address, MULTI)
+					-> $.planner_node.remote.emit 'getConnections', address, MULTI
 				)				
 			(args) ->
 				# connect only if node planner configured
-				return @() if not config.planner_node?
+				# TODO define plannernode skip for this logic (override?)
+				return @() if not config.planner_node? or @graph
 				graph_connections = args[1]
 				for addr in graph_connections
 					$.connectToNode addr.host, addr.port, @MULTI()

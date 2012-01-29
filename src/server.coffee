@@ -28,7 +28,7 @@ module.exports.Server = class Server
 				connection.on 'end', =>
 					# remove the dead client, then remove empty array elements
 					@clients = _.compact _.map @clients, (client) ->
-						return client if client.connection isnt connection
+						client if client.connection isnt connection
 
 				@log "Client #{connection.id} connected."
 
