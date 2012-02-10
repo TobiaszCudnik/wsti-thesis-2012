@@ -19,6 +19,8 @@ class PlannerNode extends Node
 			super
 		)
 
+	getConnections: new Signal @, 'getConnections'
+
 	#
 	# getConnections
 	#

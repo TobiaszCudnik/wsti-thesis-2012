@@ -8,17 +8,21 @@ class exports.Property
 	@new: -> new exports.Property arguments[0], arguments[1]
 
 	constructor: (@obj, prop, funcs) ->
-		if not obj[prop]
+		name = @getPropertyName prop
+		if not obj[ name ]
 			setter = funcs['set'] or @getSetter prop
 			getter = funcs['get'] or @getGetter prop
 			init = funcs['init'] or @getInit prop
-			obj[prop] = (v) =>
+			obj[ name ] = (v) =>
 				if arguments.length > @getter_args_length_
 					setter.apply @, arguments
 				else
 					getter.apply @, arguments
-			obj[prop].init = _.bind init, @
+			obj[ name ].init = _.bind init, @
+			# TODO wrap constructor and init the property?
 
+	getPropertyName: (prop) ->
+		@prop
 	getSetter: (v) ->
 		-> @value = v
 	getGetter: ->
