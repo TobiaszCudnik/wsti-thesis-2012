@@ -6,40 +6,43 @@ class exports.Property
 	value: undefined,
 	getter_args_length_: 0,
 	@new: -> new exports.Property arguments[0], arguments[1]
-	constructor: (obj, prop, funcs) ->
+
+	constructor: (@obj, prop, funcs) ->
 		if not obj[prop]
 			setter = funcs['set'] or @getSetter prop
 			getter = funcs['get'] or @getGetter prop
-			obj[prop] = (v) ->
+			init = funcs['init'] or @getInit prop
+			obj[prop] = (v) =>
 				if arguments.length > @getter_args_length_
 					setter.apply @, arguments
 				else
 					getter.apply @, arguments
+			obj[prop].init = _.bind init, @
+
 	getSetter: (v) ->
 		-> @value = v
 	getGetter: ->
 		-> @value
-	# TODO set setter
+	getInit: ->
+		-> @value = undefined
+	# TODO set setter, getter, int
 
 class exports.AsyncProperty extends exports.Property
 	@new: -> new exports.AsyncProperty arguments[0], arguments[1]
 	getter_args_length_: 1,
-	constructor: (obj, prop, init_val = undefined) ->
 	getSetter: (prop) ->
-		(val, next) ->
-			@on prop, next
+		throw new Error 'setter needed for AsyncProperty'
 	getGetter: (prop) ->
-		(next) ->
-			@emit prop, next
+		throw new Error 'getter needed for AsyncProperty'
 
 class exports.Signal extends exports.Property
 	getter_args_length_: 1,
 	getSetter: (prop) ->
-		(val, next) ->
-			@on prop, next
+		(arg1, arg2, next) ->
+			@obj.emit.apply @obj, arguments
 	getGetter: (prop) ->
 		(next) ->
-			@emit prop, next
+			@on prop, next
 
 
 `if (!Number.prototype.times) {
