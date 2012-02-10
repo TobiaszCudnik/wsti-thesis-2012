@@ -5,7 +5,7 @@ PlannerNode = require '../src/plannernode'
 Service = require '../src/service'
 flow = require 'flow'
 _ = require 'underscore'
-require '../src/utils'
+require '../src/utils.coffee'
 require 'should'
 
 # debug
@@ -49,7 +49,7 @@ describe 'Node', ->
 #					next()
 		
 		it 'should provide an async event emitter', (next) ->
-			no.should.be.ok()
+			throw new Error 'not implemented'
 				
 		# FIXME
 		it 'should convert methods to events', (next) ->
@@ -73,7 +73,7 @@ describe 'Node', ->
 		# FIXME
 		it 'should have signals defined', (next) ->
 			# TODO signals definitions
-			no.should.be.ok
+			throw new Error 'not implemented'
 		
 		# TODO? maybe each signals TC
 		
@@ -93,7 +93,7 @@ describe 'Node', ->
 									      
 		it 'should know services provided by connected nodes', ->
 			# TODO mock connection, write helpers
-			no.should.be.ok
+			throw new Error 'not implemented'
 			s = 0
 			nodes = []
 			while s++ < 4
@@ -102,20 +102,20 @@ describe 'Node', ->
 				nodes.push new Node {}, services
 				if s > 1 and s < 3
 #					addr = 
-					nodes[-1].connectTo nodes[0]  
-			      
+					nodes[-1].connectTo nodes[0]
+
 			addr = nodes[-1].address
 			nodes[0].connectToNode addr.host, addr.port 
-						    
+
 			nodes
 			services_names = 8.times (i) -> "service#{i}"
-						    
+
 			node.getProvidedServices(yes).should.equal services_names
 									      
 #		it 'should require services', ->
-#			no.should.be.ok
+#			throw new Error 'not implemented'
 #		it 'should know services required by connected nodes', ->
-#			no.should.be.ok
+#			throw new Error 'not implemented'
 								
 	describe 'connections', ->
 		planner_node = null
@@ -132,19 +132,19 @@ describe 'Node', ->
 #			planner_node = new PlannerNode host: c.host, port: c.port, graph
 		
 		it 'should get connection to the planner node', ->
-			no.should.be.ok
+			throw new Error 'not implemented'
 		it 'should be connected to other nodes', ->
 			node1 = new Node host: 'localhost', port: 1234, {}
 			node2 = new Node host: 'localhost', port: 1235, {}
 		it 'should get connection list from the planner node', ->
-			no.should.be.ok
+			throw new Error 'not implemented'
 		it 'should have weight of each connection', ->
-			no.should.be.ok
+			throw new Error 'not implemented'
 		it 'should adjust weight of connections', ->
-			no.should.be.ok
+			throw new Error 'not implemented'
 		# TODO graph?
 		it 'should forward a transfer according to strategies', ->
-			no.should.be.ok
+			throw new Error 'not implemented'
 
 	describe 'stats', ->
 		it 'should report all transfers to the stat node', ->
