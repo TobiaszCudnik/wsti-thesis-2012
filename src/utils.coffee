@@ -17,9 +17,11 @@ class exports.Property
 		getter_args_length_ = @getter_args_length_
 		prop_value = "#{name}_value"
 
-		setter = funcs['set']?(prop_value) or @getSetter prop_value
-		getter = funcs['get']?(prop_value) or @getGetter prop_value
-		init = funcs['init']?(prop_value) or @getInit prop_value
+		set = @setObjectValue()
+		get = @setObjectValue()
+		setter = funcs['set'] or @getSetter set
+		getter = funcs['get'] or @getGetter get
+		init = funcs['init'] or @getInit set
 		      
 		# attach to the prototype
 		obj.prototype[ name ] = (v) ->
@@ -38,13 +40,13 @@ class exports.Property
 				console.log 'get property val'
 				@callGetter getter, [ @, prop_value ], arguments
 
+	setObjectValue: (prop_value) -> (v) -> @[ prop_value ] = v
+	getObjectValue: (prop_value) -> @[ prop_value ]
+
 	getPropertyName: (name) -> name
-	getSetter: (prop_value) ->
-		(v) -> @[ prop_value ] = v
-	getGetter: (prop_value) ->
-		-> @[ prop_value ]
-	getInit: (prop_value) ->
-		-> @[ prop_value ] = null
+	getGetter: (prop_value) -> @getObjectValue
+	getSetter: (prop_value) -> @setObjectValue
+	getInit: (prop_value) -> @setObjectValue.bind null
 	# TODO set setter, getter, int
 
 class exports.AsyncProperty extends exports.Property
@@ -56,21 +58,31 @@ class exports.AsyncProperty extends exports.Property
 
 	callSetter: (setter, ctx, args) ->
 		# TODO cache setter
-		setter = exports.Property::getSetter.call(ctx[1], arguments
+		setter = exports.Property::getSetter.call ctx[1], arguments
 
 	getSetter: (prop_value) ->
 		throw new Error 'setter needed for AsyncProperty'
 	getGetter: (prop_value) ->
 		throw new Error 'getter needed for AsyncProperty'
 
+# TODO init
 class exports.Signal extends exports.Property
 	getter_args_length_: 1,
-	getSetter: (prop_value) ->
+
+	getGetter: ( set ) ->
 		(arg1, arg2, next) ->
-			@obj.emit.apply @obj, arguments
-	getGetter: (prop_value) ->
+			set.apply arguments
+	getSetter: ( get ) ->
 		(next) ->
-			@on prop_value, next
+			set.call next
+	getInit: ( set, prop_value ) ->
+		-> @[ prop_value] = 'signal'
+
+	setObjectValue: (prop_value) ->
+		@on.apply.bind @, prop_value
+
+	getObjectValue: (prop_value) ->
+		@emit.bind @ prop_value
 
 
 `if (!Number.prototype.times) {
