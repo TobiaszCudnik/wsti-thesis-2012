@@ -1,4 +1,4 @@
-props = require './props'
+props = require '../src/utils'
 Property = props.Property
 AsyncProperty = props.AsyncProperty
 Signal = props.Signal
@@ -31,8 +31,8 @@ describe 'Properties', ->
 	describe 'basics', ->
 		beforeEach ->
 			class klass
-#				property 'foo', @, 'bar'
-				@property 'foo', 'bar'
+				property 'foo', @, 'bar'
+#				@property 'foo', 'bar'
 
 				constructor: ->
 			obj = new klass
@@ -66,27 +66,27 @@ describe 'Signals', ->
 			obj.foo().on next
 			obj.emit 'foo'
 
-describe 'AsyncProperties', ->
-	obj = klass = null
-
-	describe 'basics', ->
-		beforeEach ->
-			class klass
-				property 'foo', @,
-					init: -> 'bar'
-					set: (set, val, next) ->
-						setTimeout ->
-							set val
-							do next
-
-				constructor: ->
-			obj = new klass
-
-		it 'should work like a getter', ->
-	#        expect( obj.foo() ).to.eql 'bar'
-			debugger
-			obj.foo().should.eql 'bar'
-
-		it 'should work like setter', ->
-			obj.foo 'baz'
-			obj.foo().should.eql 'baz'
+#describe 'AsyncProperties', ->
+#	obj = klass = null
+#
+#	describe 'basics', ->
+#		beforeEach ->
+#			class klass
+#				property 'foo', @,
+#					init: -> 'bar'
+#					set: (set, val, next) ->
+#						setTimeout ->
+#							set val
+#							do next
+#
+#				constructor: ->
+#			obj = new klass
+#
+#		it 'should work like a getter', ->
+#	#        expect( obj.foo() ).to.eql 'bar'
+#			debugger
+#			obj.foo().should.eql 'bar'
+#
+#		it 'should work like setter', ->
+#			obj.foo 'baz'
+#			obj.foo().should.eql 'baz'

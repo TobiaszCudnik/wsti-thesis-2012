@@ -9,7 +9,7 @@ class exports.Property
 
 	constructor: (prop, @obj, funcs) ->
 		# prepare default value
-		if funcs typeof String
+		if typeof funcs is String
 			funcs = init: funcs
 		name = @getPropertyName prop
 		return if obj[ name ]
@@ -35,10 +35,10 @@ class exports.Property
 			# regular getter/setter code
 			if arguments.length > getter_args_length_
 				console.log 'set property val'
-				@callSetter setter, [ @, prop_value ], arguments
+				setter.apply @, set, arguments
 			else
 				console.log 'get property val'
-				@callGetter getter, [ @, prop_value ], arguments
+				getter.apply @, get, arguments
 
 	setObjectValue: (prop_value) -> (v) -> @[ prop_value ] = v
 	getObjectValue: (prop_value) -> @[ prop_value ]
@@ -52,13 +52,6 @@ class exports.Property
 class exports.AsyncProperty extends exports.Property
 	getter_args_length_: 1,
 	@new: -> new exports.AsyncProperty arguments[0], arguments[1], arguments[1]
-
-	constructor: (prop, @obj, funcs) ->
-		super
-
-	callSetter: (setter, ctx, args) ->
-		# TODO cache setter
-		setter = exports.Property::getSetter.call ctx[1], arguments
 
 	getSetter: (prop_value) ->
 		throw new Error 'setter needed for AsyncProperty'
