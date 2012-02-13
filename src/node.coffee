@@ -15,11 +15,11 @@ class Node extends EventEmitter2Async
 	server: null
 	# @type Object
 	scope: null
-	# @type Array<Client>
+	# @type Array.<Client>
 	clients: null
-	# @type Array<Service>
+	# @type Array.<Service>
 	requires: null
-	# @type Array<Service>
+	# @type Array.<Service>
 	provides: null
 	# @type Client
 	planner_node: null
@@ -32,11 +32,11 @@ class Node extends EventEmitter2Async
 		@addRequire requires for requires in services?.requires?
 		@addProvide provides for provides in services?.provides?
 
+		@initSignals()
 		@prepareScope()
 				
 		# creates @server
 		@connectToGraph() if @address
-		@initializeSignals()
 		
 		@once 'start', -> next
 				
@@ -48,15 +48,15 @@ class Node extends EventEmitter2Async
 		@scope
 		
 	#async
-	close: (next) ->
+	@signal 'close', on: (next, ret) ->
 		$ = @
 		flow.exec(
 			->
-				$.server.close @MULTI()
+				$.server.close @MULTI 'server'
 				if $.connections?
-					for conn in $.connections 
-						conn.close @MULTI()
-			-> $.emit 'stop', @
+					for conn in $.connections
+						conn.close @MULTI 'clients'
+			# return from MULTI
 			next
 		)
 
@@ -99,40 +99,29 @@ class Node extends EventEmitter2Async
 				graph_connections = args[1]
 				for addr in graph_connections
 					$.connectToNode addr.host, addr.port, @MULTI()
-			->
-				$.emit 'start', @
+			-> $.start @
 			next
 		)
-				
-	getRestRoutes: -> []
 
-	initializeSignals: ->
-		# signals
-		@onNewClient = (listener) => @on 'newClient', listener # TODO
-		@onClientClose = (listener) => @on 'newClient', listener # TODO
-						    
-		@onaBeforeTransaction = (listener) => @on 'transaction', listener
-		@onaTransaction = (listener) => @on 'transaction', listener
-		@onaAfterTransaction = (listener) => @on 'transaction', listener
-						    
-		@onaGetProvidedServices = (listener) => @on 'transaction', listener
-		@onaGetRequiredServices = (listener) => @on 'transaction', listener
-						    
-		@onServerStarted = (listener) => @server.on 'ready', listener
-		@onDisconnect = (listener) => @server.on 'close', listener
+	# just bind a listener, not override the signal
+	@signal 'getRestRoutes', on: ->
+		[]
 
-	connectToNode: (host, port, next) ->
-		@clients.push new Client host, port, next
-		@clients[-1]
-				
-	getProvidedServices: (include_connections, next) ->
+	@signal 'start'
+
+	@signal 'newClient', (get, next) -> # TODO
+
+	@signal 'clientClose', (get, next) -> # TODO
+
+	@signal 'transaction'
+	@signal 'getProvidedServices', on: (include_connections, next) ->
 		include_connections ?= no
 		if include_connections
 			# TODO
 		else
 			next @provides
-						    
-	getRequiredServices: (include_connections, next) ->
+
+	@signal 'getRequiredServices', on: (include_connections, next) ->
 		include_connections ?= no
 		if include_connections
 			clients = @clients
@@ -148,6 +137,16 @@ class Node extends EventEmitter2Async
 		else
 			next @requires
 
+	@signal 'serverStart', (set) ->
+		@server.on 'ready', @emit.bind 'serverStart'
+
+	@signal 'serverClose', (set) ->
+		@server.on 'close', @emit.bind 'serverClose'
+
+	connectToNode: (host, port, next) ->
+		@clients.push new Client host, port, next
+		@clients[-1]
+
 	# getters / setters
 	addRequire: (req) -> @requires.push req
 	deleteRequire: (req) -> @requires = _.without @requires, req
@@ -155,25 +154,5 @@ class Node extends EventEmitter2Async
 	addProvide: (name, args...) ->
 		@provides.push 
 	deleteProvide: (provide) -> # TODO
-
-	# events
-	onConnection: (listener) ->
-	onTransaction: (listener) ->
-						    
-	onNewClient: null
-	oClientClose: null
-						    
-	## SYMBOLS  ##
-	##----------##
-			  
-	onaBeforeTransaction: null
-	onaTransaction: null
-	onaAfterTransaction: null
-			  
-	onaGetProvidedServices: null
-	onaGetRequiredServices: null
-			  
-	onServerStarted: null
-	onDisconnect: null
 				
 module.exports = Node
