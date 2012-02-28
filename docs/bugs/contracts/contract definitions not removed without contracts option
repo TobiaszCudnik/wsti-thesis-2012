@@ -1,0 +1,4 @@
+
+  TRestRoutes = (function(x) {
+    return true;
+  }).toContract();

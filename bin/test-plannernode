@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+ROOT=`dirname $0`
+
+$ROOT/../node_modules/.bin/mocha-debug \
+	$ROOT/../test/plannernode.coffee \
+	-r should \
+	-R spec
+	
+# TODO add asyncemitter tests
+
+#$ROOT/../node_modules/.bin/mocha $ROOT/../test/graph.coffee -r should -R spec -w

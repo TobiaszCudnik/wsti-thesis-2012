@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+ROOT=`dirname $0`/..
+
+cd $ROOT/build
+
+#node \
+#	--debug-brk \
+#/home/bob/Download/node-v0.5.10/out/Release/node \
+/home/bob/Sources/arch/nodejs/src/nodejs/out/Release/node \
+	--harmony_proxies \
+	--harmony-collections \
+	debug $ROOT/../node_modules/.bin/mocha  ./test/node.js
+#	$ROOT/../node_modules/.bin/mocha  ./test/node.js

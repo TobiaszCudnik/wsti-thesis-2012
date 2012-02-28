@@ -1,3 +1,8 @@
 #!/usr/bin/env sh
-ROOT=`dirname $0`
-coffee -o $ROOT/../build -cw $ROOT/../src
+ROOT=`dirname $0`/..
+$ROOT/node_modules/contracts.coffee/bin/coffee \
+	--contracts \
+	-o $ROOT/build \
+	-cw $ROOT/build/_sources \
+		$ROOT/node_modules/jsprops/properties.coffee \
+		$ROOT/node_modules/jsprops/properties_test.coffee

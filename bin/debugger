@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+#buzz /home/bob/Sources/arch/nodejs/src/nodejs/out/Release/node \
+buzz node-inspector
+#buzz node
+#	/home/bob/Sources/js/node-inspector-fork1/node-inspector/bin/inspector.js

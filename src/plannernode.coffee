@@ -1,5 +1,8 @@
 Node = require '../src/node'
-_ = require 'underscore'
+require 'sugar'
+jsprops = require 'jsprops'
+property = jsprops.property
+signal = jsprops.signal
 require '../src/utils'
 
 class PlannerNode extends Node
@@ -11,21 +14,20 @@ class PlannerNode extends Node
 		@onGetConnections @getConnections_
 		@onGetGraphMap @getGraphMap_
 
+	# TODO docme
 	getRoutes: ->
-		_.merge([
-				'getGraph', @rest 'get', @getGraph_
-				'getConnections', @rest 'get', @getConnections_
-			]
-			super
-		)
+		super().union [
+			[ 'getGraph', @rest 'get', @getGraph_ ]
+			[ 'getConnections', @rest 'get', @getConnections_ ]
+		]
 
-	@signal 'getConnections', (next, ret, node_addr) ->
+	getConnections: signal('getConnections', on: (next, ret, node_addr) ->
 		debugger
 		connections = $ [
-			":root >"
-			" :has( .host:val('#{node_addr.host}') )"
-			":has( .port:val('#{node_addr.port}') )"
-			" .connections"
+				":root >"
+				" :has( .host:val('#{node_addr.host}') )"
+				":has( .port:val('#{node_addr.port}') )"
+				" .connections"
 			].join(''), @graph
 #		matching_nodes = _.filter @graph, (v) ->
 #			v.host is node_addr.host and
@@ -38,9 +40,12 @@ class PlannerNode extends Node
 			nodes_to_connect.push @graph[ i ] for i in c
 
 		ret ?= []
-		next _.union ret, nodes_to_connect
+		next (ret or []).union nodes_to_connect
+	)
 
-	@signal 'getGraphMap', (next, ret, node_addr) ->
-		next @graph
+	getGraphMap: signal('getGraphMap', on: (next, ret, node_addr) ->
+		# TODO
+		next (ret or []).union @graph
+	)
 		
 module.exports = PlannerNode

@@ -6,8 +6,49 @@ connect = require 'connect'
 
 config = require '../config'
 Logger = require './logger'
+debugger
+# Contract.
+TCallback = ? -> Any
 
-module.exports.Server = class Server
+# Contract, depends on dnode.
+TDnode = ?! (x) -> x.constructor is dnode
+
+# Contract.
+TDnodeClient = ? {
+	remote: TDnode
+	# TODO typeme
+	connection: Any
+}
+
+# TODO
+#TEventEmitter = ?
+
+# Contract.
+TServer = ? (Str, Num, Any, TCallback?) ==> {
+	close: (TCallback) -> Null
+	# TODO
+	server: { on: (Str, -> Any), emit: (-> Any) }
+	clients: [...TDnodeClient]?
+	host: Str
+	port: Num
+	dnode: TDnode?
+	newClient: (TDnode, Any) -> None
+}
+
+# Contract.
+TRestRoutes = ?! (x) -> yes
+# TODO
+#	for route in x
+#		return no if x isnt Function
+
+# Contract.
+TRestServer = ? (Str, Num, [...Str] or Null, Num, TRestRoutes?, TCallback?) ==>
+	{
+		close: (TCallback) -> Null
+	}
+
+Server :: TServer
+Server = class Server
 	dnode: null
 	host: null
 	port: null
@@ -20,17 +61,11 @@ module.exports.Server = class Server
 		@clients = []
 
 		# Socket listener
+		# TODO move to method
 		params =
 			host: 'localhost'
 			port: @port
-			block: (remote, connection) =>
-				@clients.push remote: remote, connection: connection
-				connection.on 'end', =>
-					# remove the dead client, then remove empty array elements
-					@clients = _.compact _.map @clients, (client) ->
-						client if client.connection isnt connection
-
-				@log "Client #{connection.id} connected."
+			block: @newClient.bind @
 
 		@dnode.listen params
 		@server = @dnode.server
@@ -41,6 +76,14 @@ module.exports.Server = class Server
 #		@dnode.listen @server
 #		@log "Binding to port #{@port}"
 #		@server.listen @port, next
+	newClient: (remote, connection) =>
+		@clients.push remote: remote, connection: connection
+		connection.on 'end', =>
+			# remove the dead client, then remove empty array elements
+			@clients = _.compact _.map @clients, (client) ->
+				client if client.connection isnt connection
+
+		@log "Client #{connection.id} connected."
 
 	close: (next) ->
 		@server.once 'close', next
@@ -54,7 +97,8 @@ module.exports.Server = class Server
 #	send: (next) ->
 #	listen: (next) ->
 
-module.exports.RestServer = class RestServer extends Server
+RestServer :: TRestServer
+RestServer = class extends Server
 	rest: null
 	rest_port: null
 
@@ -86,3 +130,8 @@ module.exports.RestServer = class RestServer extends Server
 				super_.call this_, @MULTI()
 			next
 		)
+
+module.exports = {
+	Server
+	RestServer
+}

@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+ROOT=`dirname $0`/..
+
+cd $ROOT/build
+
+~/node_modules/.bin/runjs \
+	--harmony_proxies \
+	--harmony-collections \
+	$ROOT/../node_modules/.bin/mocha \
+	$ROOT/../node_modules/jsprops/properties_test.js \
+	-r should \
+	-R spec

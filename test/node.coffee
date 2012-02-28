@@ -5,7 +5,7 @@ PlannerNode = require '../src/plannernode'
 Service = require '../src/service'
 flow = require 'flow'
 _ = require 'underscore'
-require '../src/utils.coffee'
+require '../src/utils'
 require 'should'
 
 # debug
@@ -19,17 +19,17 @@ describe 'Node', ->
 		
 		it 'should construct with a callback', (next) ->
 			addr = host: 'localhost', port: 1234
-			node = new Node addr, null, (on_start_finish) ->
-				node.address.host.should.equal addr.host
-				node.address.port.should.equal addr.port
+			node = new Node addr, null, (on_start_next) ->
+				node.address().host.should.equal addr.host
+				node.address().port.should.equal addr.port
 				node.close next
-				on_start_finish()
+				on_start_next()
 				
 		it 'should close with a callback', (next) ->
 			node = new Node { host: 'localhost', port: 1234 }, null, (args...) ->
 				node.close ->
-					yes.should.be.ok
-					# jump out of stack trace
+					yes.should.be.ok()
+					# jump out of the stack trace (why?)
 					process.nextTick next
 				
 		it 'should create dnode server', (next) ->
@@ -52,7 +52,7 @@ describe 'Node', ->
 			throw new Error 'not implemented'
 				
 		# FIXME
-		it 'should convert methods to events', (next) ->
+		it 'should provide signals', (next) ->
 			addr = host: 'localhost', port: 1234
 			client = null
 			flow.exec(
@@ -64,7 +64,7 @@ describe 'Node', ->
 					# FIXME connect to full addr object
 					client = new Client addr.port, null, @
 				->
-					client.remote.emit 'test', @
+					client.remote.getConnection
 				(ret) ->
 					ret.should.equal 'foo'
 					client.close node.close.bind node, next
