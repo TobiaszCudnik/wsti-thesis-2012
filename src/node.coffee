@@ -20,20 +20,35 @@ TNodeAddr = ? {
 	host: Str
 }
 TCallback = ? -> Any
-#TSignal = ? -> -|
-#      pre: (o) -> o.a > 10
-#      post: (o) -> o.a > 20 {
-#	on: (TCallback) -> Any
-#	once: (TCallback) -> Any
-#	before: (TCallback) -> Any
-#	after: (TCallback) -> Any
-#}
-TSignal = ?! (x) -> x.constructor is jsprops.Signal
-TProperty = ?! (x) -> x.constructor is jsprops.Property
-TService = ?! (x) -> x.constructor is Service
+TSignalRet = ? ->
+	on: (TCallback) -> Any
+	once: (TCallback) -> Any
+	before: (TCallback) -> Any
+	after: (TCallback) -> Any
+}
+TRoutes = ? Any
+
+TSignalCallback = ? (Any) ->
+
+TSignalCheck = ?! (ret, p1, p2) ->
+	if p1 is undefined and p2 is undefined
+		ret_ :: TSignalRet
+		ret_ = ret
+	# TODO loop thou all arguments to cactch not undefined
+	else if p1 isnt undefined and p2 isnt undefined
+		yes
+	else
+		no
+
+# Types signal
+# (TFoo?, TSignalCallback?) -> !(ret) -> TSignalCheck(ret, $1, $2)
+# Non types signal
+TSignal = ?! (x) -> x instanceof jsprops.Signal
+TProperty = ?! (x) -> x instanceof jsprops.Property
+TService = ?! (x) -> x instanceof Service
 TServer = ?! (x) -> x instanceof Server
-TClient = ?! (x) -> x.constructor is Client
-TPlannerNode = ?! (x) -> x.constructor is PlannerNode
+TClient = ?! (x) -> x instanceof Client
+TPlannerNode = ?! (x) -> x instanceof PlannerNode
 TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
 #	address: NodeAddr
 	address: (TNodeAddr?) -> TNodeAddr?
@@ -47,11 +62,11 @@ TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
 
 	exposeSignals: -> [ ... ( -> Any ) ]
 	connectToGraph: (TCallback) -> Any
-	restRoutes: -> (TSignal or Null)
+	restRoutes: -> (TSignalCallback?, TRoutes?) -> !(ret) -> TSignalCheck(ret, $1, $2)
 	start: -> (TSignal or Null)
 
-	getRequiredServices: TSignal
-	getProvidedServices: TSignal
+	getRequiredServices: (Any?, TSignalCallback?) -> !(ret) -> TSignalCheck(ret, $1, $2)
+	getProvidedServices: (Any?, TSignalCallback?) -> !(ret) -> TSignalCheck(ret, $1, $2)
 }
 
 # FIXME scope setter, maybe in contructor
@@ -67,10 +82,10 @@ Node = class Node extends EventEmitter2Async
 	server: property 'server'
 	# @name scope
 	# @returns Object
-	scope: property('scope', {})
+	scope: property('scope', null, {})
 	# @name clients
 	# @returns Array.<Client>
-	clients: property('clients', [])
+	clients: property('clients', null, [])
 	# @name requires
 	# @returns Array.<Service>
 	requires: property 'requires'

@@ -27,7 +27,9 @@ TDnodeClient = ? {
 TServer = ? (Str, Num, Any, TCallback?) ==> {
 	close: (TCallback) -> Null
 	# TODO
-	server: { on: (Str, -> Any), emit: (-> Any) }
+	server:
+		on: (Str, TCallback) -> Any
+		emit: -> Any
 	clients: [...TDnodeClient]?
 	host: Str
 	port: Num
@@ -47,7 +49,7 @@ TRestServer = ? (Str, Num, [...Str] or Null, Num, TRestRoutes?, TCallback?) ==>
 		close: (TCallback) -> Null
 	}
 
-Server :: TServer
+#Server :: TServer
 Server = class Server
 	dnode: null
 	host: null

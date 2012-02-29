@@ -19,11 +19,10 @@ describe 'Node', ->
 		
 		it 'should construct with a callback', (next) ->
 			addr = host: 'localhost', port: 1234
-			node = new Node addr, null, (on_start_next) ->
+			node = new Node addr, null, ->
 				node.address().host.should.equal addr.host
 				node.address().port.should.equal addr.port
 				node.close next
-				on_start_next()
 				
 		it 'should close with a callback', (next) ->
 			node = new Node { host: 'localhost', port: 1234 }, null, (args...) ->
