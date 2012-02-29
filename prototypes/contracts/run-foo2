@@ -1,0 +1,1 @@
+../../node_modules/contracts.coffee/bin/coffee --contracts foo2.coffee
