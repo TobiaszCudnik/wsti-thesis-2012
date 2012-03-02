@@ -1,0 +1,41 @@
+Error: Contract violation: expected <{address : (opt({port : Num, host : Str})) -> opt({port : Num, host : Str}) , server : (opt(<user defined: function (x) {
+    return x instanceof Server;
+  }>)) -> opt(<user defined: function (x) {
+    return x instanceof Server;
+  }>) , scope : (any) -> Null , clients : (opt([...<user defined: function (x) {
+    return x instanceof Client;
+  }>])) -> [...<user defined: function (x) {
+    return x instanceof Client;
+  }>] , requires : (opt([...<user defined: function (x) {
+    return x instanceof Service;
+  }>])) -> [...<user defined: function (x) {
+    return x instanceof Service;
+  }>] , provides : (opt([...<user defined: function (x) {
+    return x instanceof Service;
+  }>])) -> [...<user defined: function (x) {
+    return x instanceof Service;
+  }>] , planner_node : (opt([...<user defined: function (x) {
+    return x instanceof PlannerNode;
+  }>])) -> <user defined: function (x) {
+    return x instanceof PlannerNode;
+  }> , exposeSignals : () -> [...() -> any ] , connectToGraph : (() -> any ) -> any , restRoutes : () -> (opt(any),opt((any) -> any )) -> undefined  , start : () -> <user defined: function (x) {
+    return x instanceof jsprops.Signal;
+  }> or Null , getRequiredServices : (opt((any) -> any )) -> undefined , setProvidedServices : (opt([...Str]),opt((any) -> any )) -> undefined }>, actual: "[missing property: setProvidedServices]"
+
+
+Error: Contract violation: expected <{
+	address : (opt({port : Num, host : Str})) -> opt({port : Num, host : Str}) ,
+	server : (opt(<user defined: function (x) {
+	    return x instanceof Server;
+	  }>)) -> opt(<user defined: function (x) {
+      return x instanceof Server;
+    }>) ,
+  scope : (any) -> Null ,
+  clients : (opt([...<user defined: function (x) {
+      return x instanceof Client;
+    }>])) -> [...<user defined: function (x) {
+	    return x instanceof Client;
+	  }>] ,
+  requires : (opt([...<user defined: function (x) {
+      return x instanceof Service;
+    ...

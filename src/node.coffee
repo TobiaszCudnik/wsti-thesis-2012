@@ -15,6 +15,7 @@ property = jsprops.property
 signal = jsprops.signal
 mixin = (tar, src) -> Object.merge tar.prototype, src.prototype
 
+### SIGNALS ###
 TNodeAddr = ? {
 	port: Num
 	host: Str
@@ -25,22 +26,28 @@ TSignalRet = ? ->
 	once: (TCallback) -> Any
 	before: (TCallback) -> Any
 	after: (TCallback) -> Any
-}
+
 TRoutes = ? Any
 
-TSignalCallback = ? (Any) ->
+TSignalCallback = ? (Any) -> Any
 
-TSignalCheck = ?! (ret, p1, p2) ->
-	if p1 is undefined and p2 is undefined
+TSignalCheck = ?! (ret, args...) ->
+	# no params
+	if args.reduce( (a, b) -> a is undefined and b is undefined )
 		ret_ :: TSignalRet
 		ret_ = ret
-	# TODO loop thou all arguments to cactch not undefined
-	else if p1 isnt undefined and p2 isnt undefined
+	# all params present
+	else if args.reduce( (a, b) -> a isnt undefined and b isnt undefined )
 		yes
-	else
-		no
+	else no
 
-# Types signal
+TSignalMap = ?! (x) ->
+	for name, fn of x
+		# Fake instanceof by checking the constructor
+		return no if fn.constructor isnt jsprops.Signal
+	yes
+
+# Type signals, set custom type and number of params
 # (TFoo?, TSignalCallback?) -> !(ret) -> TSignalCheck(ret, $1, $2)
 # Non types signal
 TSignal = ?! (x) -> x instanceof jsprops.Signal
@@ -50,11 +57,10 @@ TServer = ?! (x) -> x instanceof Server
 TClient = ?! (x) -> x instanceof Client
 TPlannerNode = ?! (x) -> x instanceof PlannerNode
 TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
-#	address: NodeAddr
 	address: (TNodeAddr?) -> TNodeAddr?
 	# TODO dnode
 	server: (TServer?) -> TServer?
-	scope: (Any) -> Null
+	scope: (TSignalMap?) -> TSignalMap?
 	clients: ([...TClient]?) -> [...TClient]
 	requires: ([...TService]?) -> [...TService]
 	provides: ([...TService]?) -> [...TService]
@@ -62,42 +68,34 @@ TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
 
 	exposeSignals: -> [ ... ( -> Any ) ]
 	connectToGraph: (TCallback) -> Any
-	restRoutes: -> (TSignalCallback?, TRoutes?) -> !(ret) -> TSignalCheck(ret, $1, $2)
+	restRoutes: -> (TRoutes?, TSignalCallback?) -> !(ret) ->
+		TSignalCheck(ret, $1, $2)
 	start: -> (TSignal or Null)
 
-	getRequiredServices: (Any?, TSignalCallback?) -> !(ret) -> TSignalCheck(ret, $1, $2)
-	getProvidedServices: (Any?, TSignalCallback?) -> !(ret) -> TSignalCheck(ret, $1, $2)
+	getRequiredServices: (TSignalCallback?) -> !(ret) ->
+		TSignalCheck(ret, $2)
+	getRequiredServices: ([...Str]?, TSignalCallback?) -> !(ret) ->
+		TSignalCheck(ret, $1, $2)
 }
+### SIGNALS END ###
 
 # FIXME scope setter, maybe in contructor
 Node :: TNode
 Node = class Node extends EventEmitter2Async
 	mixin Node, jsprops.SignalsMixin
 
-	# @name address
-	# @returns Object<host, port, rest_port>
 	address: property 'address'
-#	@name server
-	# @returns Server
 	server: property 'server'
-	# @name scope
-	# @returns Object
 	scope: property('scope', null, {})
-	# @name clients
-	# @returns Array.<Client>
 	clients: property('clients', null, [])
-	# @name requires
-	# @returns Array.<Service>
 	requires: property 'requires'
-	# @name provides
-	# @returns Array.<Service>
 	provides: property 'provides'
-	# @name planner_node
-	# @returns Client
 	planner_node: property 'planner_node'
 
 	constructor: (address, services, next) ->
+		# mixed in method from Signals
 		@initSignals()
+
 		@requires = []
 		@provides = []
 		@address address
@@ -105,22 +103,23 @@ Node = class Node extends EventEmitter2Async
 		@addRequire requires for requires in services?.requires?
 		@addProvide provides for provides in services?.provides?
 
-		@prepareScope()
+		@initScope()
 
 		# creates @server
-		@connectToGraph() if @address()
+		@connectToGraph()
 
 		@start().once next
 
 	exposeSignals: -> @[ name ].bind @ for name in @getSignals()
 
 	# TODO expose signals
-	prepareScope: -> @exposeSignals()
-#		@scope []
-#		for fn in @
-#			if fn.constructor is Function
-#				@scope()[ fn ] = fn.bind @
-#		@scope()
+	initScope: ->
+		signals = {}
+		for name in @getSignals()
+			signals[ name ] = @[ name ].bind @
+			# preserve constructor to allow type checking
+			signals[ name ].constructor = jsprops.Signal
+		@scope signals
 		
 	#async
 	close: signal( 'close', on: flow.define(

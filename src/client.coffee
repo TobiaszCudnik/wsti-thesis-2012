@@ -3,42 +3,43 @@ dnode = require 'dnode'
 config = require '../config'
 Logger = require './logger'
 
-# Contract.
+### Contracts ###
 TCallback = ? -> Any
+# Depends on dnode.
+TDnode = ?! (x) -> console.log(x); x instanceof dnode
+TDnodeCallback = (TDnode, Any) -> Any
+TConnectionInfo = ? {
+	port: Num
+	reconnect: Bool?
+	proto: Str?
+	host: Str
+}
+TDnodeConnect = ? (TConnectionInfo, TDnodeCallback) -> Any
+TObj = ?! (x) -> typeof x in ['object', 'undefined', 'null']
 
-# Contract, depends on dnode.
-TDnode = ?! (x) -> x.constructor is dnode
-
-# Contract.
-dnode.connect :: ({
-		port: Num, reconnect: Bool?, proto: Str?, host: Str?
-	}, ( (TDnode, Any) -> Any ) ) -> Any
-dnode.connect = dnode.connect
-
-# Contract.
-module.exports :: (Num, Any, TCallback) -> {
-	remote: TDnode
+TClient = ? (TConnectionInfo, TObj, TCallback) ==> {
+	remote: Any
 	connection: Any # TODO
 	scope: Any # TODO
 	close: (TCallback) -> Any
 }
 
-module.exports = class Client
+dnode.connect :: TDnodeConnect
+dnode.connect = dnode.connect
+### END Contracts ###
+
+Client :: TClient
+Client = class
 	remote: null
 	connection: null
 	scope: null
 		
 	# FIXME support host
-	constructor: (@port, @scope, next) ->
-		@log "Connecting to localhost:#{@port}"
-		opts =
-#			proto: 'http'
-#			host: 'localhost'
-			port: @port
-			reconnect: yes
+	constructor: (@connection_info, @scope, next) ->
+		@log "Connecting to ", connection_info
 
 		@dnode = dnode @scope
-		@dnode.connect opts, (remote, connection) =>
+		@dnode.connect connection_info, (remote, connection) =>
 			@log 'CONNECTED!'
 			@remote = remote
 			@connection = connection
@@ -53,3 +54,5 @@ module.exports = class Client
 	log: (msg) ->
 		return if not Logger.log.apply @, arguments
 		console.log "[CLIENT:#{@port}] #{msg}"
+
+module.exports = Client

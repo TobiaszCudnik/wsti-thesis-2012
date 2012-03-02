@@ -1,4 +1,4 @@
 class config 
-	debug: no
+	debug: yes
 	log: []
 		

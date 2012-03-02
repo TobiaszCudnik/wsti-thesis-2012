@@ -7,6 +7,8 @@ flow = require 'flow'
 _ = require 'underscore'
 require '../src/utils'
 require 'should'
+sinon = require 'sinon'
+jsprops = require 'jsprops'
 
 # debug
 config.debug = no
@@ -20,22 +22,21 @@ describe 'Node', ->
 		it 'should construct with a callback', (next) ->
 			addr = host: 'localhost', port: 1234
 			node = new Node addr, null, ->
+				# requires async to get node value
 				node.address().host.should.equal addr.host
 				node.address().port.should.equal addr.port
 				node.close next
-				
+
 		it 'should close with a callback', (next) ->
-			node = new Node { host: 'localhost', port: 1234 }, null, (args...) ->
+			addr = host: 'localhost', port: 1234
+			node = new Node addr, null, ->
 				node.close ->
-					yes.should.be.ok()
-					# jump out of the stack trace (why?)
 					process.nextTick next
-				
+
 		it 'should create dnode server', (next) ->
 			addr = host: 'localhost', port: 1234
-			node = new Node addr, null, (on_start_finish) ->
-				# FIXME connect to full addr object
-				client = new Client addr.port, null, ->
+			node = new Node addr, null, ->
+				client = new Client addr, null, ->
 					client.close node.close.bind node, next
 				
 #		it 'should create REST server', (next) ->
@@ -46,32 +47,55 @@ describe 'Node', ->
 #					# TODO check
 #					err.should.be.false()
 #					next()
-		
-		it 'should provide an async event emitter', (next) ->
-			throw new Error 'not implemented'
-				
-		# FIXME
-		it 'should provide signals', (next) ->
+
+		it 'should expose signals', (next) ->
 			addr = host: 'localhost', port: 1234
-			client = null
-			flow.exec(
-				->
-					@node = new Node addr, null, @
-				(on_start_finish) ->
-					@node.on 'test', (next, ret) ->
-						next 'foo'
-					# FIXME connect to full addr object
-					client = new Client addr.port, null, @
-				->
-					client.remote.getConnection
-				(ret) ->
-					ret.should.equal 'foo'
-					client.close node.close.bind node, next
-			)
-			
-		# FIXME
-		it 'should have signals defined', (next) ->
-			# TODO signals definitions
+			node = new Node addr, null, ->
+				for sig of node.scope()
+					( sig.constructor jsprops.Signal ).should.be.ok
+				node.close next
+
+		it 'should have an async event emitter', (next) ->
+			addr = host: 'localhost', port: 1234
+			# mock Node class
+			stub = sinon.stub Node.prototype
+			# unmock the constructor
+			Node.prototype.start.returns once: ->
+			# unmock event emitter
+			emiter_proto = Object.getPrototypeOf Node.prototype
+			for name, fn of emiter_proto
+				continue if not emiter_proto.hasOwnProperty name
+				Node.prototype[ name ].restore?()
+			@node = new Node addr, null, ->
+			@node.on 'foo', (next, ret) ->
+				# TODO test out the ret value
+				setTimeout next, 0
+			@node.emit 'foo', ->
+				# unstub Node class
+				for name, fn of Node.prototype
+					Node.prototype[ name ].restore?()
+				next()
+
+	describe 'integration', ->
+		spy = client = node =  scope = null
+
+		beforeEach (next) ->
+			scope = {}
+			scope.addr = addr = host: 'localhost', port: 1234
+			node = new Node addr, null, ->
+				client = new Client addr, null, next
+
+		it 'should allow client to connect', (next) ->
+			client.remote.should.be.ok
+			client.close node.close.bind node, next
+
+		it 'should provide signals', (next) ->
+			fired = no
+			client.remote.close().once (next, ret) ->
+			client.close node.close.bind node, ->
+				fired.should.be.ok
+				next()
+
 			throw new Error 'not implemented'
 		
 		# TODO? maybe each signals TC
