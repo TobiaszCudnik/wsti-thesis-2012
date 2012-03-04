@@ -24,6 +24,10 @@ TProperty = ?! (x) -> x instanceof jsprops.Property
 TService = ?! (x) -> x instanceof Service
 TPlannerNode = ?! (x) -> x instanceof PlannerNode
 
+###*
+TODO check for all signal initialized (on post constructor
+	invatiant)
+###
 TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
 	address: (TNodeAddr?) -> TNodeAddr?
 	# TODO dnode

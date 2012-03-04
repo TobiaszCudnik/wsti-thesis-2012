@@ -1,5 +1,8 @@
 # IMPORTS
 Dnode = require 'dnode'
+jsprops = require 'jsprops'
+Property = jsprops.Property
+Signal = jsprops.Signal
 # Signal contracts.
 contracts_signals = require './signals'
 TSignalCallback = contracts_signals.TSignalCallback
@@ -14,23 +17,41 @@ TDnode = ?! (x) -> x instanceof Dnode
 TCallback = ? -> Any
 
 TDnodeCallback = (TDnode, Any) -> Any
-TConnectionInfo = ? {
+TAddress = ? {
 	port: Num
 	reconnect: Bool?
 	proto: Str?
 	host: Str
 }
-TDnodeConnect = ? (TConnectionInfo, TDnodeCallback) -> Any
+TDnodeConnect = ? (TAddress, TDnodeCallback) -> Any
+
+# TODO move to common and signals
 TObj = ?! (x) -> typeof x in ['object', 'undefined', 'null']
+TProperty = ?! (x) -> x.constructor is Property
+TSignal = ?! (x) -> x.constructor is Signal
+TAnyProperty = ? (Any) -> Any?
+# FIXME
+TConnectionProperty = ? (Any?) -> Any?
+TDnodeProperty = ? (TDnode?) -> TDnode?
+TSignalCallback = ? (TSignalCallback?) -> !(ret) ->
+		TSignalCheck(ret, $1)
+TAddressProperty = ? (TAddress?) -> TAddress?
+TCloseSignal = ? (TSignalCallback?) -> !(ret) ->
+	check :: TSignalCheck
+	check = [ ret, $1 ]
 
 TClient = {
-	remote: Any
-	connection: Any # TODO
-	scope: Any # TODO
-	close: (TCallback) -> Any
+	remote: TAnyProperty and TProperty
+	connection: TConnectionProperty and TProperty
+	scope: TAnyProperty and TProperty
+	dnode: TDnodeProperty and TProperty
+	address: TAddressProperty and TProperty
+
+	close: TCloseSignal and TSignal
 }
 
-TClientClass = ? (TConnectionInfo, TObj, TCallback) ==> TClient
+# TODO describe Client callback
+TClientClass = ? (TAddress, TObj, TCallback) ==> TClient
 
 module.exports = {
 	TDnodeConnect

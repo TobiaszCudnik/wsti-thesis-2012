@@ -91,9 +91,9 @@ class Server extends EventEmitter2Async
 		@dnode().close()
 	)
 
-	log: signal('log', on: (next, ret, msg) ->
-		return next ret if not Logger.log.apply @, arguments
-		console.log "[SERVER:#{@address()}] #{msg}"
+	log: signal('log', on: (next, ret, args...) ->
+		return next ret if not Logger.log.apply @, args
+		console.log "[SERVER:#{@address()}] #{args}"
 		next ret
 	)
 
@@ -126,7 +126,7 @@ class RestServer extends Server
 
 		super address, scope, next
 
-	close: signal('close', (next) ->
+	close: signal('close', on: (next, ret) ->
 		this_ = @
 		# WATCH OUT! Hardcoded class and method names!
 		super_ = RestServer.__super__.close
@@ -135,7 +135,7 @@ class RestServer extends Server
 				this_.rest().once 'close', @MULTI()
 				this_.rest().close()
 				super_.call this_, @MULTI()
-			next
+			next.bind null, ret
 		)
 	)
 
