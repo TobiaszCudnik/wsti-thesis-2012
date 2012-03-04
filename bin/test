@@ -11,10 +11,12 @@ cd $ROOT/build/$BUILD
 	--harmony-collections \
 	$ROOT/node_modules/.bin/mocha \
 	$ROOT/test/node_modules/semaphores/test/semaphore.js \
+	$ROOT/../../node_modules/jsprops/properties_test.js \
+	$ROOT/test/server.js \
+	$ROOT/test/client.js \
 	$ROOT/test/node.js \
 	$ROOT/test/prototypes/dnode-signals.js \
 	$ROOT/test/prototypes/rpc-image-exchange.js \
-	$ROOT/../../node_modules/jsprops/properties_test.js \
 	-r should \
 	-R spec
 	

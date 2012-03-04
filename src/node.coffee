@@ -13,7 +13,7 @@ jsprops = require('jsprops')
 # shorthands
 property = jsprops.property
 signal = jsprops.signal
-mixin = (tar, src) -> Object.merge tar.prototype, src.prototype
+mixin = require('./utils').mixin
 
 ### CONTRACTS ###
 if config.contracts

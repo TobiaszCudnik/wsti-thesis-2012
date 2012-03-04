@@ -15,7 +15,7 @@ l = (ms...) -> console.log i m for m in ms
 
 describe 'Server', ->
 	port = 8756
-	server = null
+	server = addr = null
 	scope = (client, connection) ->
 		emitter = new events.EventEmitter
 		# string property
@@ -43,7 +43,8 @@ describe 'Server', ->
 
 	# TODO reduce overflow
 	beforeEach (next) ->
-		server = new Server 'localhost', port, scope, next
+		addr = host: 'localhost', port: port
+		server = new Server addr, scope, next
 
 	afterEach (next) ->
 		server.close next
@@ -59,23 +60,23 @@ describe 'Server', ->
 			'connection can be established'.should.be.ok
 
 	it 'should allow a client to connect', (next) ->
-		client = new Client port, {}, ->
-			server.clients.length.should.equal 1
+		client = new Client addr: 'localhost', port: port, {}, ->
+			server.clients().length.should.equal 1
 			client.close next
 
 	it 'should dispose the client when disconnected', (next) ->
-		client = new Client port, {}, ->
+		client = new Client addr, {}, ->
 			client.close ->
-				server.clients.length.should.equal 0
+				server.clients().length.should.equal 0
 				next()
 	
 	it 'should access the client\'s scope', (next) ->
-		client = new Client port, client_foo: 'bar', ->
-			server.clients[0].remote.client_foo.should.equal 'bar'
+		client = new Client addr, client_foo: 'bar', ->
+			server.clients()[0].remote.client_foo.should.equal 'bar'
 			client.close next
 
 describe 'REST Server', ->
-	server = null
+	server = addr = null
 	port = 8756
 	rest_port = 8757
 	routes = [
@@ -85,12 +86,16 @@ describe 'REST Server', ->
 	scope = foo: 'bar'
 
 	beforeEach (next) ->
-		server = new RestServer 'localhost', rest_port, routes, port, scope, next
+		addr =
+			host: 'localhost'
+			port: port
+			rest_port: rest_port
+		server = new RestServer addr, routes, scope, next
 
 	afterEach (next) ->
 		server.close next
 
 	it 'should be accessible thou HTTP by a REST API', (next) ->
-		request "http://localhost:#{rest_port}", (err, res, body) ->
+		request "http://#{addr.host}:#{rest_port}", (err, res, body) ->
 			body.should.equal 'GET /'
 			next()

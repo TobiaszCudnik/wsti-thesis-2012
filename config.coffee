@@ -1,4 +1,6 @@
 module.exports =
-	debug: no
+#	debug: no
+	debug: yes
 	contracts: yes
+#	contracts: no
 	log: []

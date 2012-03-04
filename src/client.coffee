@@ -2,6 +2,14 @@ dnode = require 'dnode'
 config = require '../config'
 Logger = require './logger'
 
+jsprops = require 'jsprops'
+property = jsprops.property
+signal = jsprops.signal
+SignalsMixin = jsprops.SignalsMixin
+EventEmitter2Async = require('eventemitter2async').EventEmitter2
+
+mixin = require('./utils').mixin
+
 
 ### CONTRACTS ###
 if config.contracts
@@ -12,23 +20,26 @@ if config.contracts
 	dnode.connect = dnode.connect
 ### CONTRACTS END ###
 
-Client = class
-	# FIXME signals
-	remote: null
-	connection: null
-	scope: null
+class Client extends EventEmitter2Async
+	mixin Client, SignalsMixin
 
-	constructor: (@connection_info, @scope, next) ->
+	remote: property 'remote'
+	connection: property 'connection'
+	scope: property 'scope'
+
+	constructor: (connection_info, scope, next) ->
 		@log "Connecting to ", connection_info
+		@initSignals()
 
-		@dnode = dnode @scope
-		@dnode.connect connection_info, (remote, connection) =>
+		@scope scope
+		@dnode dnode @scope()
+		@dnode().connect connection_info, (remote, connection) =>
 			@log 'CONNECTED!'
-			@remote = remote
-			@connection = connection
-			@connection.on 'error', (e) =>
+			@remote remote
+			@connection connection
+			@connection().on 'error', (e) =>
 				@log "[ClientError] #{e}"
-			@connection.on 'end', (e) =>
+			@connection().on 'end', =>
 				@log "[ClientEnd] #{@port}"
 			next remote, connection
 #			@connection.on 'read', ->

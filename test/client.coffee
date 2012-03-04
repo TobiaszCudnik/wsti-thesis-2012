@@ -16,6 +16,7 @@ l = (ms...) -> console.log i m for m in ms
 describe 'Client', ->
 	port = 8756
 	server = null
+	addr = null
 	scope = (client, connection) ->
 		emitter = new events.EventEmitter
 		# string property
@@ -43,17 +44,18 @@ describe 'Client', ->
 
 	# TODO reduce overflow
 	beforeEach (next) ->
-		server = new Server 'localhost', port, scope, next
+		addr = host: 'localhost', port: port
+		server = new Server addr, scope, next
 
 	afterEach (next) ->
 		server.close next
 
 	it 'should connect to a port', (done) ->
-		client = new Client port, {}, ->
+		client = new Client addr, {}, ->
 			client.close done
 
 	it 'should access scope on the server', (done) ->
-		client = new Client port, {}, ->
+		client = new Client addr, {}, ->
 			client.remote.foo.should.equal 'bar'
 			client.close done
 
@@ -63,7 +65,7 @@ describe 'Client', ->
 				client_scope =
 					callback: @MULTI('callback')
 					bar: 'foo'
-				@client = new Client port, client_scope, @MULTI('dnode')
+				@client = new Client addr, client_scope, @MULTI('dnode')
 			(params) ->
 				# TODO named results should be available
 				params[1][0].should.equal 'foo'
@@ -73,7 +75,7 @@ describe 'Client', ->
 	it 'should subscribe to a sync event from the server', (done) ->
 		flow.exec(
 			->
-				@client = new Client port, {}, @
+				@client = new Client addr, {}, @
 			(remote, conn) ->
 				# TODO check if this is sync-safe
 				remote.on 'foo', @
@@ -86,7 +88,7 @@ describe 'Client', ->
 	it 'should subscribe to an ASYNC event from the server', (done) ->
 		flow.exec(
 			->
-				@client = new Client port, {}, @
+				@client = new Client addr, {}, @
 			(remote, conn) ->
 				remote.on 'foo', @
 				remote.emitAsync 'foo', 'bar'

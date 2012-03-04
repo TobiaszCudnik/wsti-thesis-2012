@@ -1,6 +1,11 @@
 $ = require('JSONSelect').match
+require 'sugar'
 
 String.prototype.$ = (sel) -> $ sel, this
+
+e = module.exports
+
+e.mixin = (tar, src) -> Object.merge tar.prototype, src.prototype
 
 `if (!Number.prototype.times) {
   Object.defineProperty(Number.prototype, 'times', {

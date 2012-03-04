@@ -36,37 +36,59 @@ TAddress = ? {
 	host: Str
 }
 
-TServer = ? {
-	close: (TSignalCallback?) -> !(ret) ->
-		check :: TSignalCheck
-		check = [ ret, $1 ]
-	server: (TServerComposed?, TSignalCallback?) -> !(ret) ->
-		check :: TSignalCheck
-		check = [ ret, $1, $2 ]
-	clients: ([...TDnodeClient]?, TSignalCallback?) -> !(ret) ->
-		check :: TSignalCheck
-		check = [ ret, $1, $2 ]
+TClientsProperty = ? ([...TDnodeClient]) -> [...TDnodeClient]?
+TServerProperty = ? (TServerComposed?) -> TServerComposed?
+TAddressProperty = ? (TAddress?) -> TAddress?
+TDnodeProperty = ? (TDnode?) -> TDnode?
 
-	host: Str
-	port: Num
-	dnode: TDnode?
-	newClient: (TDnode, Any) -> None
+TNewClietSignal = ? (TDnode?, TSignalCallback?) -> !(ret) ->
+	check :: TSignalCheck
+	check = [ ret, $1, $2 ]
+
+TCloseSignal = ? (TSignalCallback?) -> !(ret) ->
+	check :: TSignalCheck
+	check = [ ret, $1 ]
+
+###*
+TServer instance object.
+TODO Mixin SignalsMixin.
+###
+TServer = ? {
+	server: TServerProperty
+	clients: TClientsProperty
+	address: TAddressProperty
+	dnode: TDnodeProperty
+
+	close: TCloseSignal
+	newClient: TNewClietSignal
+
+	on: -> Any
+	emit: -> Any
 }
 
-# Contract.
+###*
+TServer class constructor.
+###
 TServerClass = ? (TAddress, Any, TCallback?) ==> TServer
 
-# Contract.
 TRestRoutes = ?! (x) -> yes
 # TODO
 #	for route in x
 #		return no if x isnt Function
 
-TRestServer = ? {
-	close: (TCallback) -> Null
+TRestAddress = ? {
+	port: Num
+	rest_port: Num
+	host: Str
 }
+
+# TODO inherit from TServerClass
+TRestServer = ? {
+	address: TRestAddress
+}
+
 # TODO add super contract check
-TRestServerClass = ? (TAddress, [...Str] or Null, Num, TRestRoutes?, TCallback?) ==> TRestServer
+TRestServerClass = ? (TRestAddress, [...Str] or Null, Num, TRestRoutes?, TCallback?) ==> TRestServer
 
 # EXPORTS
 module.exports = {

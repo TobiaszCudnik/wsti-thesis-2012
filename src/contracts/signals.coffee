@@ -41,6 +41,8 @@ TSignalRet = ? {
 	after: (TCallback) -> Any
 }
 
+# TODO Signal constructor checker
+
 module.exports =
 	TSignalCallback: TSignalCallback
 	TSignalRet: TSignalRet

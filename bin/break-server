@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+ROOT=`dirname $0`/..
+
+build='contracts'
+BUILD=${1:-$build}   # Defaults to /tmp dir.
+
+#cd $ROOT/build/$BUILD
+
+#node \
+#/home/bob/Download/node-v0.5.10/out/Release/node \
+#	~/node_modules/.bin/runjs \
+buzz /home/bob/Sources/arch/nodejs/src/nodejs/out/Release/node \
+	--debug-brk \
+	--harmony_proxies \
+	--harmony-collections \
+	$ROOT/node_modules/.bin/mocha  \
+	--timeout 600000 \
+	$ROOT/build/$BUILD/test/server.js
+
+
+#	$ROOT/../node_modules/.bin/mocha  ./test/node.js
+/home/bob/Sources/js/node-inspector-fork1/node-inspector/bin
