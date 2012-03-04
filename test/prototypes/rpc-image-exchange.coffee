@@ -5,7 +5,7 @@ flow = require 'flow'
 net = require 'net'
 events = require 'events'
 _ = require 'underscore'
-sugar = require 'sugar'
+require 'sugar'
 EventEmitter = require('events').EventEmitter
 assert = require('assert').ok
 
@@ -138,7 +138,7 @@ describe 'prototype2', ->
 			-> # start
 				l 'started'
 				Object.keys(test.schema).forEach (server) =>
-					port = "800#{server}"
+					port = parseInt "800#{server}", 10
 					scope = test.schema[ server ].data[-1..-1][0]
 					# bind methods to a scope
 					for name, fn of scope
@@ -158,9 +158,9 @@ describe 'prototype2', ->
 					# create connections
 					# closed loop scope to preserve connection refs
 					clients.data[0...-1].forEach (client) =>
-						port ="800#{server}"
+						port = parseInt "800#{server}", 10
 						# TODO no scope for the client
-						node = new Client port, {}, @MULTI()
+						node = new Client host: 'localhost', port: port, {}, @MULTI()
 						test.connections[ server ][ client ] = node
 						client_name = test.schema[ client ].name
 						# index by client name

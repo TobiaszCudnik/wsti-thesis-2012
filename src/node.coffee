@@ -15,72 +15,13 @@ property = jsprops.property
 signal = jsprops.signal
 mixin = (tar, src) -> Object.merge tar.prototype, src.prototype
 
-### SIGNALS ###
-TNodeAddr = ? {
-	port: Num
-	host: Str
-}
-TCallback = ? -> Any
-TSignalRet = ? ->
-	on: (TCallback) -> Any
-	once: (TCallback) -> Any
-	before: (TCallback) -> Any
-	after: (TCallback) -> Any
-
-TRoutes = ? Any
-
-TSignalCallback = ? (Any) -> Any
-
-TSignalCheck = ?! (ret, args...) ->
-	# no params
-	if args.reduce( (a, b) -> a is undefined and b is undefined )
-		ret_ :: TSignalRet
-		ret_ = ret
-	# all params present
-	else if args.reduce( (a, b) -> a isnt undefined and b isnt undefined )
-		yes
-	else no
-
-TSignalMap = ?! (x) ->
-	for name, fn of x
-		# Fake instanceof by checking the constructor
-		return no if fn.constructor isnt jsprops.Signal
-	yes
-
-# Type signals, set custom type and number of params
-# (TFoo?, TSignalCallback?) -> !(ret) -> TSignalCheck(ret, $1, $2)
-# Non types signal
-TSignal = ?! (x) -> x instanceof jsprops.Signal
-TProperty = ?! (x) -> x instanceof jsprops.Property
-TService = ?! (x) -> x instanceof Service
-TServer = ?! (x) -> x instanceof Server
-TClient = ?! (x) -> x instanceof Client
-TPlannerNode = ?! (x) -> x instanceof PlannerNode
-TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
-	address: (TNodeAddr?) -> TNodeAddr?
-	# TODO dnode
-	server: (TServer?) -> TServer?
-	scope: (TSignalMap?) -> TSignalMap?
-	clients: ([...TClient]?) -> [...TClient]
-	requires: ([...TService]?) -> [...TService]
-	provides: ([...TService]?) -> [...TService]
-	planner_node: ([...TPlannerNode]?) -> TPlannerNode
-
-	exposeSignals: -> [ ... ( -> Any ) ]
-	connectToGraph: (TCallback) -> Any
-	restRoutes: -> (TRoutes?, TSignalCallback?) -> !(ret) ->
-		TSignalCheck(ret, $1, $2)
-	start: -> (TSignal or Null)
-
-	getRequiredServices: (TSignalCallback?) -> !(ret) ->
-		TSignalCheck(ret, $2)
-	getRequiredServices: ([...Str]?, TSignalCallback?) -> !(ret) ->
-		TSignalCheck(ret, $1, $2)
-}
-### SIGNALS END ###
+### CONTRACTS ###
+if config.contracts
+	contracts = require './contracts/node'
+	TNode = contracts.TNode
+### CONTRACTS END ###
 
 # FIXME scope setter, maybe in contructor
-Node :: TNode
 Node = class Node extends EventEmitter2Async
 	mixin Node, jsprops.SignalsMixin
 
@@ -96,8 +37,8 @@ Node = class Node extends EventEmitter2Async
 		# mixed in method from Signals
 		@initSignals()
 
-		@requires = []
-		@provides = []
+		@requires []
+		@provides []
 		@address address
 
 		@addRequire requires for requires in services?.requires?
@@ -110,59 +51,74 @@ Node = class Node extends EventEmitter2Async
 
 		@start().once next
 
-	exposeSignals: -> @[ name ].bind @ for name in @getSignals()
-
 	# TODO expose signals
 	initScope: ->
 		signals = {}
-		for name in @getSignals()
+		@getSignals().forEach (name) =>
+			# bind signal to this context, so it can be detached
 			signals[ name ] = @[ name ].bind @
+			# bind getter methods, so we'll be async safe
+			# TODO find a better way to do this (support exports on a function)
+			for getter, fn of @[ name ]()
+				signals[ "#{name}_" ] ?= {}
+				signals[ "#{name}_" ][ getter ] = fn.bind @
 			# preserve constructor to allow type checking
-			signals[ name ].constructor = jsprops.Signal
+			# TODO needed?
+#			signals[ name ].constructor = jsprops.Signal
 		@scope signals
-		
-	#async
-	close: signal( 'close', on: flow.define(
-		(@next, ret) ->
+
+	###*
+	This signal is special, as it can't be fully async via network.
+	Closing a connection prevents us from sending the callback back over the
+	network, thus you shouldn't bind to an after event.
+	###
+	close: signal( 'close', after: flow.define(
+		(@next, @ret) ->
 			# TODO support no server scenario
 			@this.server().close @MULTI 'server'
 			if @this.clients()?
 				for conn in @this.clients()
 					conn.close @MULTI 'clients'
-		# return from MULTI
-		-> @next @ret
+		->
+			@next @ret
 	))
+
+	initializeServer: ->
+		addr = @this.address()
+		if addr.rest_port
+			@this.server new RestServer(
+				addr, addr.rest_port, @this.getRestRoutes(), @this.scope(),
+					@MULTI 'server'
+			)
+		# Init socket-only server if applicable.
+		else
+			@this.server new Server(
+				addr, @this.scope(), @MULTI()
+			)
+
+	connectToPlannerNode: flow.define(
+		->
+			@this.planner_node = @this.connectToNode(
+				config.planner_node.host, config.planner_node.port, @
+			)
+		->
+			@this.planner_node.remote.emit 'getConnections', address, @
+		-> @MULTI 'connections'
+	)
 
 	# Asyncly initialize all connections/servers 
 	# Emits 'start' signal
 	connectToGraph: flow.define(
 		(@next) ->
 			# Init REST server if applicable.
-			addr = @this.address()
-			if addr.rest_port
-				@this.server new RestServer(
-					addr.host, @this.address().rest_port, @this.getRestRoutes(),
-					addr.port, @this.scope(), @MULTI()
-				)
-			# Init socket-only server if applicable.
-			else
-				@this.server new Server(
-					addr.host, addr.port, @this.scope(), @MULTI()
-				)
+			@this.initializeServer.call @
 			# Connect to the planner node.
 			# Only if node planner configured.
 			# TODO define plannernode skip for this logic
 			# override? setting flag?
 			return if not config.planner_node? or @graph
 			# Planner flow
-			flow.exec.call( @this
-				->
-					@this.planner_node = @this.connectToNode(
-						config.planner_node.host, config.planner_node.port, @
-					)
-				-> @this.planner_node.remote.emit 'getConnections', address, @
-				@MULTI 'connections'
-			)
+			@this.connectToPlannerNode.call @
 		(args) ->
 			# connect only if node planner configured
 			# TODO define plannernode skip for this logic (override?)
@@ -192,8 +148,7 @@ Node = class Node extends EventEmitter2Async
 
 	transaction: signal('transaction')
 	getProvidedServices: signal( 'getProvidedServices',
-		on: (next, ret, include_connections) ->
-			include_connections ?= no
+		on: (next, ret, include_connections = no) ->
 			if include_connections
 				# TODO
 			else
@@ -215,6 +170,9 @@ Node = class Node extends EventEmitter2Async
 			@next @ret.union services
 	))
 
+	###*
+	Bind to server start event.
+	###
 	serverStart: signal( 'serverStart', (emit) ->
 		@start().once (next, ret) =>
 			@server().server.on 'ready', emit
@@ -240,5 +198,9 @@ Node = class Node extends EventEmitter2Async
 	addProvide: (name, args...) ->
 		@provides.push 
 	deleteProvide: (provide) -> # TODO
-				
+
 module.exports = Node
+
+if config.contracts
+	module.exports :: TNode
+	module.exports = module.exports

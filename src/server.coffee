@@ -6,67 +6,32 @@ connect = require 'connect'
 
 config = require '../config'
 Logger = require './logger'
-debugger
-# Contract.
-TCallback = ? -> Any
 
-# Contract, depends on dnode.
-TDnode = ?! (x) -> x.constructor is dnode
+### CONTRACTS ###
+if config.contracts
+	contracts = require './contracts/server'
 
-# Contract.
-TDnodeClient = ? {
-	remote: TDnode
-	# TODO typeme
-	connection: Any
-}
+	TServerClass = contracts.TServerClass
+	TRestServerClass = contracts.TRestServerClass
+### CONTRACTS END ###
 
-# TODO
-#TEventEmitter = ?
-
-# Contract.
-TServer = ? (Str, Num, Any, TCallback?) ==> {
-	close: (TCallback) -> Null
-	# TODO
-	server:
-		on: (Str, TCallback) -> Any
-		emit: -> Any
-	clients: [...TDnodeClient]?
-	host: Str
-	port: Num
-	dnode: TDnode?
-	newClient: (TDnode, Any) -> None
-}
-
-# Contract.
-TRestRoutes = ?! (x) -> yes
-# TODO
-#	for route in x
-#		return no if x isnt Function
-
-# Contract.
-TRestServer = ? (Str, Num, [...Str] or Null, Num, TRestRoutes?, TCallback?) ==>
-	{
-		close: (TCallback) -> Null
-	}
-
-#Server :: TServer
-Server = class Server
+class Server
 	dnode: null
 	host: null
 	port: null
 	server: null
 	clients: null
 
-	constructor: (@host, @port, scope, next) ->
-		@log "Starting server on #{@host}:#{port}"
+	constructor: (@address, scope, next) ->
+		@log "Starting server on #{address.host}:#{address.port}"
 		@dnode = dnode scope
 		@clients = []
 
 		# Socket listener
 		# TODO move to method
 		params =
-			host: 'localhost'
-			port: @port
+			host: address.host
+			port: address.port
 			block: @newClient.bind @
 
 		@dnode.listen params
@@ -99,7 +64,7 @@ Server = class Server
 #	send: (next) ->
 #	listen: (next) ->
 
-RestServer :: TRestServer
+# TODO Turn me on
 RestServer = class extends Server
 	rest: null
 	rest_port: null
@@ -133,7 +98,12 @@ RestServer = class extends Server
 			next
 		)
 
-module.exports = {
+e = module.exports = {
 	Server
 	RestServer
 }
+if config.contracts
+	e.RestServer :: TRestServerClass
+	e.RestServer = e.RestServer
+	e.Server :: TServerClass
+	e.Server = e.Server

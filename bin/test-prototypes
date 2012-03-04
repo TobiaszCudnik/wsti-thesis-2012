@@ -1,15 +1,17 @@
 #!/usr/bin/env sh
 ROOT=`dirname $0`/..
 
+cd $ROOT/build
+
 build='contracts'
 BUILD=${1:-$build}   # Defaults to /tmp dir.
-
-cd $ROOT/build/$BUILD
 
 ~/node_modules/.bin/runjs \
 	--harmony_proxies \
 	--harmony-collections \
 	$ROOT/../node_modules/.bin/mocha \
-	$ROOT/../build/$BUILD/test/node.js \
+	$ROOT/$BUILD/test//prototypes/dnode-signals.js \
 	-r should \
 	-R spec
+
+#	$ROOT/test/prototypes/rpc-image-exchange.js \

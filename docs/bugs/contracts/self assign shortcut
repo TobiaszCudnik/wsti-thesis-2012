@@ -1,0 +1,6 @@
+Instead of:
+foo :: Type
+foo = foo
+
+This:
+foo := Type

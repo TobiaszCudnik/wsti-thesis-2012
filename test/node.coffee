@@ -16,9 +16,9 @@ i = require('util').inspect
 l = (ms...) -> console.log i m for m in ms
 
 describe 'Node', ->
-				
+
 	describe 'object', ->
-		
+
 		it 'should construct with a callback', (next) ->
 			addr = host: 'localhost', port: 1234
 			node = new Node addr, null, ->
@@ -38,7 +38,7 @@ describe 'Node', ->
 			node = new Node addr, null, ->
 				client = new Client addr, null, ->
 					client.close node.close.bind node, next
-				
+
 #		it 'should create REST server', (next) ->
 #			addr = host: 'localhost', port: 1234
 #			node = new Node addr, null, (on_start_finish) ->
@@ -51,8 +51,7 @@ describe 'Node', ->
 		it 'should expose signals', (next) ->
 			addr = host: 'localhost', port: 1234
 			node = new Node addr, null, ->
-				for sig of node.scope()
-					( sig.constructor jsprops.Signal ).should.be.ok
+				node.scope().length > 0
 				node.close next
 
 		it 'should have an async event emitter', (next) ->
@@ -89,16 +88,18 @@ describe 'Node', ->
 			client.remote.should.be.ok
 			client.close node.close.bind node, next
 
-		it 'should provide signals', (next) ->
+		it 'should provide signals', (test_done) ->
 			fired = no
-			client.remote.close().once (next, ret) ->
-			client.close node.close.bind node, ->
+			# bind to signal
+			client.remote.getProvidedServices_.on (next, ret) ->
+				fired = yes
+				next ret
+			# emit signal
+			client.remote.getProvidedServices ->
+				debugger
 				fired.should.be.ok
-				next()
-
-			throw new Error 'not implemented'
-		
-		# TODO? maybe each signals TC
+				client.close ->
+					node.close test_done
 		
 ###
 	describe 'services', ->

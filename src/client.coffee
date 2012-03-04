@@ -1,40 +1,23 @@
 dnode = require 'dnode'
-#dnode = require 'dnode/browser/index'
 config = require '../config'
 Logger = require './logger'
 
-### Contracts ###
-TCallback = ? -> Any
-# Depends on dnode.
-TDnode = ?! (x) -> console.log(x); x instanceof dnode
-TDnodeCallback = (TDnode, Any) -> Any
-TConnectionInfo = ? {
-	port: Num
-	reconnect: Bool?
-	proto: Str?
-	host: Str
-}
-TDnodeConnect = ? (TConnectionInfo, TDnodeCallback) -> Any
-TObj = ?! (x) -> typeof x in ['object', 'undefined', 'null']
 
-TClient = ? (TConnectionInfo, TObj, TCallback) ==> {
-	remote: Any
-	connection: Any # TODO
-	scope: Any # TODO
-	close: (TCallback) -> Any
-}
+### CONTRACTS ###
+if config.contracts
+	contracts = require './contracts/client'
+	TClientClass = contracts.TClientClass
+	TDnodeConnect = contracts.TDnodeConnect
+	dnode.connect :: TDnodeConnect
+	dnode.connect = dnode.connect
+### CONTRACTS END ###
 
-dnode.connect :: TDnodeConnect
-dnode.connect = dnode.connect
-### END Contracts ###
-
-Client :: TClient
 Client = class
+	# FIXME signals
 	remote: null
 	connection: null
 	scope: null
-		
-	# FIXME support host
+
 	constructor: (@connection_info, @scope, next) ->
 		@log "Connecting to ", connection_info
 
@@ -43,6 +26,10 @@ Client = class
 			@log 'CONNECTED!'
 			@remote = remote
 			@connection = connection
+			@connection.on 'error', (e) =>
+				@log "[ClientError] #{e}"
+			@connection.on 'end', (e) =>
+				@log "[ClientEnd] #{@port}"
 			next remote, connection
 #			@connection.on 'read', ->
 #				next remote, connection
@@ -56,3 +43,7 @@ Client = class
 		console.log "[CLIENT:#{@port}] #{msg}"
 
 module.exports = Client
+
+if config.contracts
+	module.exports :: TClientClass
+	module.exports = module.exports

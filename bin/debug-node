@@ -1,7 +1,10 @@
 #!/usr/bin/env sh
 ROOT=`dirname $0`/..
 
-cd $ROOT/build
+build='contracts'
+BUILD=${1:-$build}   # Defaults to /tmp dir.
+
+cd $ROOT/build/$BUILD
 
 #node \
 #	--debug-brk \

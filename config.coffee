@@ -1,4 +1,4 @@
-class config 
-	debug: yes
+module.exports =
+	debug: no
+	contracts: yes
 	log: []
-		
