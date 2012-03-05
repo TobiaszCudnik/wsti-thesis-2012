@@ -9,7 +9,7 @@ TSignal = contracts_signals.TSignal
 TAsyncSignalMap = contracts_signals.TAsyncSignalMap
 TSignalRet = contracts_signals.TSignalRet
 
-TCallback = ? -> Any
+TCallback = ? (Any?, Any?, Any?, Any?, Any?) -> Any
 
 # Depends on dnode.
 TDnode = ?! (x) -> x instanceof Dnode

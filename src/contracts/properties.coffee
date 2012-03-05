@@ -1,50 +1,76 @@
-#### IMPORTS.
-$ = require './properties_'
-TPropertyData = $.TPropertyData
-TPropertyMethod = $.TPropertyMethod
-TSignalData = $.TSignalData
-TSignalMethod = $.TSignalMethod
-TCallback = $.TCallback
+#### Properties Contract.
+# @link https://github.com/TobiaszCudnik/jsprops
 
-#### PROPERTIES.
+#### IMPORTS
 
+# Internal properties contracts.
+{
+	TCallback
+	TEventEmitterAsync
+	TPropertyData
+	TPropertyMethodFunc
+	TPropertyMethodObj
+	TPropertyMethod
+	TSignalCallback
+	TSignalData
+	TSignalGetter
+	TSignalMethodFunc
+	TSignalMethod
+	TSignalCheck
+	TSignalInstanceof
+	TAsyncSignalMap
+	TSignalRet
+} = require './properties_'
+
+#### PROPERTIES
+
+TPropertyGetter = ? (-> Any) -> Any
+# Property Factory class object.
 TProperty = ? {
 	property: -> TPropertyMethod
-	parseData: -> Any
-	initialize: -> Any
-	setObjectValue: -> Any
-	getObjectValue: -> Any
-	preparePassedFunction: -> Any
-	setName: -> Any
-	getName: -> Any
-	getGetter: -> Any
-	getSetter: -> Any
-	getInit: -> Any
+	parseData: Any
+	initialize: Any
+	setObjectValue: Any
+	getObjectValue: Any
+	preparePassedFunction: Any
+	setName: Any
+	getName: Any
+	getGetter: -> TPropertyGetter
+	getSetter: Any
+	getInit: Any
 }
 
+# **Property Factory** class constructor.
+# Use it only to extend when building new classes.
 TPropertyClass = ? (Str, TPropertyData?, Any?) ==> TProperty
 
-#### SIGNALS.
+#### SIGNALS
 
+TSignalGetter = () -> TSignalRet
+# Signal Factory class object.
+#
 # @augments TProperty
 TSignal = ? {
-	initialize: -> Any
-	parseData: -> Any
-	getGetter: -> Any
-	getInit: -> Any
-	getSetter: -> Any
-	setObjectValue: -> Any
-	getObjectValue: -> Any
+	initialize: Any
+	parseData: Any
+	getGetter: -> TPropertyGetter
+	getInit: Any
+	getSetter: Any
+	setObjectValue: Any
+	getObjectValue: Any
 }
 
+# **Signal Factory** class constructor.
+# Use it only to extend when building new classes.
+#
 # @augments TPropertyClass
 TSignalClass = ? (Str, TSignalData?, Any?) ==> TSignal
-# TODO TSignalClass.create, TSignalClass.property
 
 #### EXPORTS
 
 module.exports = {
-	instrumentProperties: (scope) ->
+	# Puts contracts on an export scope.
+	applyContracts: (scope) ->
 		e = scope
 
 		e.Property :: TPropertyClass
@@ -53,26 +79,31 @@ module.exports = {
 		e.Signal :: TSignalClass
 		e.Signal = e.Signal
 
-		e.signal :: -> TSignalMethod
+		e.signal :: (Any?, Any?, Any?, Any?, Any?) -> TSignalMethod
 		e.signal = e.signal
 
-		e.property :: -> TPropertyMethod
+		e.property :: (Any?, Any?, Any?, Any?, Any?) -> TPropertyMethod
 		e.property = e.property
 
-	# Properties
-	TPropertyMethodFunc: $.TPropertyMethodFunc
-	TPropertyMethodObj: $.TPropertyMethodObj
-	TPropertyMethod: $.TPropertyMethod
-	TPropertyData: $.TPropertyData
-	TProperty: TProperty
-	TPropertyClass: TPropertyClass
+	# Properties exports.
+	TCallback
+	TEventEmitterAsync
+	TPropertyData
+	TPropertyMethodFunc
+	TPropertyMethodObj
+	TPropertyMethod
+	TProperty
 
-	# Signals
-	TSignalMethodFunc: $.TSignalMethodFunc
-	# @TODO
-#	TSignalMethodObj: $.TSignalMethodObj
-	TSignalMethod: $.TSignalMethod
-	TSignalData: $.TSignalData
-	TSignal: TSignal
-	TSignalClass: TSignalClass
+	# Signals exports.
+	TSignalCallback
+	TSignalData
+	TSignalGetter
+	TSignalMethodFunc
+	TSignalMethod
+	TSignalCheck
+	TSignalInstanceof
+	TAsyncSignalMap
+	TSignalRet
+	TSignal
+	TSignalClass
 }

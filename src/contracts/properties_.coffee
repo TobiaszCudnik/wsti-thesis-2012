@@ -1,61 +1,76 @@
-#### COMMON.
+#### Properties internal contracts.
+# @link https://github.com/TobiaszCudnik/jsprops
 
-TCallback = ? -> Any
+#### COMMON
+
+TCallback = ? Any
 
 # TODO
 TEventEmitterAsync = {
-	on: -> Any
-	emit: -> Any
+	on: Any
+	emit: Any
 }
 
-#### PROPERTIES.
+#### PROPERTIES
 
 TPropertyData = ? {
-	set: (Any?) -> Any?
-	get: -> Any?
+	set: Any
+	get: Any
 }
 
 #TPropertyMethod = ? TPropertyMethodFunc
-TPropertyMethodFunc = ? (Any?) -> Any?
+TPropertyMethodFunc = Any
+# ```
 #TPropertyMethodObj = ? {
-#	init: -> Any
-#	set: -> Any
-#	get: -> Any
-#	constructor: -> Any
+#	init: Any
+#	set: Any
+#	get: Any
+#	constructor: Any
 #}
+# ```
 
 TPropertyMethodObj = ?! (x) ->
-	# TODO chec kProperties instanceof for the constructor
-	console.log x
 	x.init and
+# ```
 #		x.get and
+# ```
 		x.set and
 		x.constructor
 
 TPropertyMethod = ? TPropertyMethodFunc and TPropertyMethodObj
 
-#### SIGNALS.
 
-TSignalCallback = ? (Any) -> Any
+#### SIGNALS
 
+TSignalCallback = Any
+
+# Signal input data.
+# All is optional.
 TSignalData = ? {
-	on: -> Any
-	after: -> Any
-	before: -> Any
-	once: -> Any
-	init: -> Any
+	on: Any
+	after: Any
+	before: Any
+	once: Any
+	init: Any
 }
 
+# Signal getter is used internally in getters defined by the developer.
 TSignalGetter = -> TSignalData
 
-TSignalMethodFunc = ? -> Any
-#TSignalMethodObj = ? {
+# Functional aspect of TSignalMethod.
+TSignalMethodFunc = ? Any
+# This isn't needed for for now.
+# ```
+# TSignalMethodObj = ? {
 #
-#}
+# }
+# ```
 
+# Signal method supposed to be attached to the prototype.
 #TSignalMethod = ? TSignalMethodFunc and TSignalMethodOb
 TSignalMethod = ? TSignalMethodFunc and TPropertyMethodObj
 
+# Conatract used in signal return to validate the call pattern.
 TSignalCheck = ?! (data) ->
 	ret = data[0]
 	args = data[1..]
@@ -69,16 +84,19 @@ TSignalCheck = ?! (data) ->
 		yes
 	else no
 
+#### Custom signals
+# Custom signals can be done using following snippet.
 # Type signals, set custom type and number of params
+# ```
 # (TFoo?, TSignalCallback?) -> !(ret) -> TSignalCheck(ret, $1, $2)
-# Non types signal
+# ```
+
+# Instance of like signal contract.
 TSignalInstanceof = ?! (x) ->
 	x instanceof jsprops.Signal or x.constructor is jsprops.Signal
-#TSignalMap = ?! (x) ->
-#	for name, fn of x
-#		fn :: TSignal
-#		fn = fn
-#	yes
+
+# Collection of async signals with names.
+# Used eg in DNode remote scope.
 TAsyncSignalMap = ?! (map) ->
 	methods = ['on', 'once', 'before', 'after']
 	for name, fn of map
@@ -87,11 +105,12 @@ TAsyncSignalMap = ?! (map) ->
 			method = fn[ m ]
 	yes
 
+# Signal getter value, allows to bind to the signal.
 TSignalRet = ? {
-	on: (TCallback) -> Any
-	once: (TCallback) -> Any
-	before: (TCallback) -> Any
-	after: (TCallback) -> Any
+	on: (TCallback, Any?, Any?, Any?, Any?, Any?) -> Any
+	once: (TCallback, Any?, Any?, Any?, Any?, Any?) -> Any
+	before: (TCallback, Any?, Any?, Any?, Any?, Any?) -> Any
+	after: (TCallback, Any?, Any?, Any?, Any?, Any?) -> Any
 }
 
 #### EXPORTS.

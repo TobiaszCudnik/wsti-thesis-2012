@@ -1,4 +1,4 @@
-TCallback = ? -> Any
+TCallback = ? (Any?, Any?, Any?, Any?, Any?) -> Any
 
 TSignalCallback = ? (Any) -> Any
 

@@ -23,12 +23,15 @@ TNodeAddr = ? {
 	port: Num
 	host: Str
 }
-TCallback = ? -> Any
+TCallback = ? (Any?, Any?, Any?, Any?, Any?) -> Any
 TRoutes = ? Any
 TProperty = ?! (x) -> x instanceof jsprops.Property
 TService = ?! (x) -> x instanceof Service
 TPlannerNode = ?! (x) -> x instanceof PlannerNode
 
+TFlow = ? {
+	MULTI: (Str?) -> Any
+}
 #### TNode
 # @TODO check for all signal initialized (on post constructor
 # invatiant?)
@@ -56,8 +59,8 @@ TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
 		check :: TSignalCheck
 		check = [ ret, $1, $2 ]
 
-	initializeServer: ({ MULTI: (-> Any) }) -> Any
-	connectToPlannerNode: ({ MULTI: (-> Any) }) -> Any
+	initializeServer: (Any?, Any?, Any?, Any?, Any?, { MULTI: TFlow }) -> Any
+	connectToPlannerNode: (Any?, Any?, Any?, Any?, { MULTI: TFlow }) -> Any
 
 #	```
 # close: (TSignalCallback?) -> !(ret) ->

@@ -14,7 +14,7 @@ TSignalRet = contracts_signals.TSignalRet
 # Contract, depends on dnode.
 TDnode = ?! (x) -> x instanceof Dnode
 
-TCallback = ? -> Any
+TCallback = ? (Any?, Any?, Any?, Any?, Any?) -> Any
 
 TDnodeCallback = (TDnode, Any) -> Any
 TAddress = ? {
