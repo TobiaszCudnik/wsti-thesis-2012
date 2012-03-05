@@ -10,16 +10,6 @@ EventEmitter2Async = require('eventemitter2async').EventEmitter2
 
 mixin = require('./utils').mixin
 
-
-### CONTRACTS ###
-if config.contracts
-	contracts = require './contracts/client'
-	TClientClass = contracts.TClientClass
-	TDnodeConnect = contracts.TDnodeConnect
-	dnode.connect :: TDnodeConnect
-	dnode.connect = dnode.connect
-### CONTRACTS END ###
-
 # TODO mixin, inherit from common object
 class Client extends EventEmitter2Async
 	mixin Client, SignalsMixin
@@ -66,5 +56,13 @@ class Client extends EventEmitter2Async
 module.exports = Client
 
 if config.contracts
+	contracts = require './contracts/client'
+
+	TClientClass = contracts.TClientClass
+	TDnodeConnect = contracts.TDnodeConnect
+
 	module.exports :: TClientClass
 	module.exports = module.exports
+
+	dnode.connect :: TDnodeConnect
+	dnode.connect = dnode.connect

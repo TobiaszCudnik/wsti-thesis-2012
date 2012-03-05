@@ -143,6 +143,7 @@ e = module.exports = {
 	Server
 	RestServer
 }
+
 if config.contracts
 	e.RestServer :: TRestServerClass
 	e.RestServer = e.RestServer

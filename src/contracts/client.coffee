@@ -4,7 +4,7 @@ jsprops = require 'jsprops'
 Property = jsprops.Property
 Signal = jsprops.Signal
 # Signal contracts.
-contracts_signals = require './signals'
+contracts_signals = require './properties'
 TSignalCallback = contracts_signals.TSignalCallback
 TSignalCheck = contracts_signals.TSignalCheck
 TSignal = contracts_signals.TSignal
@@ -34,7 +34,7 @@ TAnyProperty = ? (Any) -> Any?
 TConnectionProperty = ? (Any?) -> Any?
 TDnodeProperty = ? (TDnode?) -> TDnode?
 TSignalCallback = ? (TSignalCallback?) -> !(ret) ->
-		TSignalCheck(ret, $1)
+	TSignalCheck(ret, $1)
 TAddressProperty = ? (TAddress?) -> TAddress?
 TCloseSignal = ? (TSignalCallback?) -> !(ret) ->
 	check :: TSignalCheck

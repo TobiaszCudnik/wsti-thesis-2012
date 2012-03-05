@@ -1,6 +1,6 @@
 {
 	"name": "wsti-2012-et",
-	"version": "0.0.1",
+	"version": "0.3.0",
 	"description": "Engineering Thesis by Tobiasz Cudnik",
 	"dependencies": {
 		"mocha": "0.3.6",

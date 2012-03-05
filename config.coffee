@@ -4,3 +4,5 @@ module.exports =
 	contracts: yes
 #	contracts: no
 	log: []
+
+global.contracts = module.exports.contracts

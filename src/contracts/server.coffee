@@ -2,7 +2,7 @@
 Dnode = require 'dnode'
 Server = require('http').Server
 # Signal contracts.
-contracts_signals = require './signals'
+contracts_signals = require './properties'
 TSignalCallback = contracts_signals.TSignalCallback
 TSignalCheck = contracts_signals.TSignalCheck
 TSignal = contracts_signals.TSignal
@@ -11,10 +11,9 @@ TSignalRet = contracts_signals.TSignalRet
 
 TCallback = ? -> Any
 
-# Contract, depends on dnode.
+# Depends on dnode.
 TDnode = ?! (x) -> x instanceof Dnode
 
-# Contract.
 TDnodeClient = ? {
 	remote: TDnode
 	# TODO typeme

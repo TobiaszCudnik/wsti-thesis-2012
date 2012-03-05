@@ -1,18 +1,23 @@
-# IMPORTS
+#### IMPORTS
 Server = require('../server').Server
+Dnode = require 'dnode'
+signals = require './properties'
+server = require './server'
+client = require './client'
+
+#### LEGEND
 # Signals contracts.
-signals = require './signals'
 TSignalCallback = signals.TSignalCallback
 TSignalCheck = signals.TSignalCheck
 TSignal = signals.TSignal
 TAsyncSignalMap = signals.TAsyncSignalMap
 TSignalRet = signals.TSignalRet
-
-server = require './server'
+# Server and client.
 TServer = server.TServer
-
-client = require './client'
 TClient = client.TClient
+
+# Depends on dnode.
+TDnode = ?! (x) -> x instanceof Dnode
 
 TNodeAddr = ? {
 	port: Num
@@ -24,15 +29,14 @@ TProperty = ?! (x) -> x instanceof jsprops.Property
 TService = ?! (x) -> x instanceof Service
 TPlannerNode = ?! (x) -> x instanceof PlannerNode
 
-###*
-TODO check for all signal initialized (on post constructor
-	invatiant)
-###
+#### TNode
+# @TODO check for all signal initialized (on post constructor
+# invatiant?)
 TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
 	address: (TNodeAddr?) -> TNodeAddr?
-	# TODO dnode
+	dnode: (TDnode?) -> TDnode?
 	server: (TServer?) -> TServer?
-#	scope: (TAsyncSignalMap?) -> TAsyncSignalMap?
+	scope: (TAsyncSignalMap?) -> TAsyncSignalMap?
 	clients: ([...TClient]?) -> [...TClient]
 	requires: ([...TService]?) -> [...TService]
 	provides: ([...TService]?) -> [...TService]
@@ -43,8 +47,8 @@ TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
 		TSignalCheck(ret, $1, $2)
 	start: -> (TSignal or Null)
 
-	# TODO Define listener contracts
-	# TODO optional params???
+	# @**TODO** Define listener contracts
+	# @**TODO** optional params???
 	getProvidedServices: (TSignalCallback?) -> !(ret) ->
 		check :: TSignalCheck
 		check = [ ret, $1, $2 ]
@@ -55,12 +59,14 @@ TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
 	initializeServer: ({ MULTI: (-> Any) }) -> Any
 	connectToPlannerNode: ({ MULTI: (-> Any) }) -> Any
 
-#	close: (TSignalCallback?) -> !(ret) ->
+#	```
+# close: (TSignalCallback?) -> !(ret) ->
 #		check :: TSignalCheck
 #		check = [ ret, $1 ]
+# ```
 }
 
-# EXPORTS
+#### EXPORTS
 module.exports = {
 	TNode
 	TNodeAddr
