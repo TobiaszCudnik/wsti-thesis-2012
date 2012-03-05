@@ -24,10 +24,10 @@
 
 #### PROPERTIES
 
-TPropertyGetter = ? (-> Any) -> Any
+TPropertyGetter = ? ( (Any?, Any?, Any?, Any?, Any?) -> Any) -> Any
 # Property Factory class object.
 TProperty = ? {
-	property: -> TPropertyMethod
+	property: (Any?, Any?, Any?, Any?, Any?) -> TPropertyMethod
 	parseData: Any
 	initialize: Any
 	setObjectValue: Any
@@ -35,7 +35,7 @@ TProperty = ? {
 	preparePassedFunction: Any
 	setName: Any
 	getName: Any
-	getGetter: -> TPropertyGetter
+	getGetter: (Any?, Any?, Any?, Any?, Any?) -> TPropertyGetter
 	getSetter: Any
 	getInit: Any
 }
@@ -46,14 +46,14 @@ TPropertyClass = ? (Str, TPropertyData?, Any?) ==> TProperty
 
 #### SIGNALS
 
-TSignalGetter = () -> TSignalRet
+TSignalGetter = (Any?) -> TSignalRet
 # Signal Factory class object.
 #
 # @augments TProperty
 TSignal = ? {
 	initialize: Any
 	parseData: Any
-	getGetter: -> TPropertyGetter
+	getGetter: (Any?, Any?, Any?, Any?, Any?) -> TSignalGetter
 	getInit: Any
 	getSetter: Any
 	setObjectValue: Any

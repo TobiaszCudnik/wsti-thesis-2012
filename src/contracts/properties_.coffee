@@ -1,17 +1,19 @@
 #### Properties internal contracts.
 # @link https://github.com/TobiaszCudnik/jsprops
 
-#### COMMON
+#### IMPORTS
+common = require './common'
 
-TCallback = ? Any
-
-# TODO
-TEventEmitterAsync = {
-	on: Any
-	emit: Any
-}
+{
+    TCallback
+    TEventEmitterAsync
+} = common
 
 #### PROPERTIES
+
+# Instance of like signal contract.
+TPropertyInstanceof = ?! (x) ->
+    x instanceof jsprops.Property or x.constructor is jsprops.Property
 
 TPropertyData = ? {
 	set: Any
@@ -19,7 +21,7 @@ TPropertyData = ? {
 }
 
 #TPropertyMethod = ? TPropertyMethodFunc
-TPropertyMethodFunc = Any
+TPropertyMethodFunc = ? Any
 # ```
 #TPropertyMethodObj = ? {
 #	init: Any
@@ -55,7 +57,7 @@ TSignalData = ? {
 }
 
 # Signal getter is used internally in getters defined by the developer.
-TSignalGetter = -> TSignalData
+TSignalGetter = ? (Any?, Any?, Any?, Any?, Any?) -> TSignalData
 
 # Functional aspect of TSignalMethod.
 TSignalMethodFunc = ? Any
@@ -116,12 +118,17 @@ TSignalRet = ? {
 #### EXPORTS.
 	
 module.exports = {
+    # TODO move to common
 	TCallback
+    # TODO move to common
 	TEventEmitterAsync
+    # Properties
+    TPropertyInstanceof
 	TPropertyData
 	TPropertyMethodFunc
 	TPropertyMethodObj
 	TPropertyMethod
+    # Signals
 	TSignalCallback
 	TSignalData
 	TSignalGetter

@@ -1,41 +1,22 @@
 #### IMPORTS
-Server = require('../server').Server
-Dnode = require 'dnode'
-signals = require './properties'
-server = require './server'
-client = require './client'
+node_ = require('../server').Server
 
-#### LEGEND
-# Signals contracts.
-TSignalCallback = signals.TSignalCallback
-TSignalCheck = signals.TSignalCheck
-TSignal = signals.TSignal
-TAsyncSignalMap = signals.TAsyncSignalMap
-TSignalRet = signals.TSignalRet
-# Server and client.
-TServer = server.TServer
-TClient = client.TClient
+# Node's internal contracts.
+{
+    TNodeAddr
+    TRoutes
+    TServicesSignal
+    TServicesSignalListener
+    TRoutesSignal
+    TRoutesSignalListener
+} = node_
 
-# Depends on dnode.
-TDnode = ?! (x) -> x instanceof Dnode
-
-TNodeAddr = ? {
-	port: Num
-	host: Str
-}
-TCallback = ? (Any?, Any?, Any?, Any?, Any?) -> Any
-TRoutes = ? Any
-TProperty = ?! (x) -> x instanceof jsprops.Property
-TService = ?! (x) -> x instanceof Service
-TPlannerNode = ?! (x) -> x instanceof PlannerNode
-
-TFlow = ? {
-	MULTI: (Str?) -> Any
-}
 #### TNode
 # @TODO check for all signal initialized (on post constructor
 # invatiant?)
 TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
+    
+    #### Properties
 	address: (TNodeAddr?) -> TNodeAddr?
 	dnode: (TDnode?) -> TDnode?
 	server: (TServer?) -> TServer?
@@ -45,32 +26,36 @@ TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
 	provides: ([...TService]?) -> [...TService]
 	planner_node: ([...TPlannerNode]?) -> TPlannerNode
 
+    #### Methods (local)
+    initializeServer: (Any?, Any?, Any?, Any?, Any?) -> Any
+	connectToPlannerNode: (Any?, Any?, Any?, Any?, Any?) -> Any
 	connectToGraph: (TCallback) -> Any
-	restRoutes: -> (TRoutes?, TSignalCallback?) -> !(ret) ->
-		TSignalCheck(ret, $1, $2)
-	start: -> (TSignal or Null)
+	start: (Any?, Any?, Any?, Any?, Any?) -> (TSignal or Null)
 
-	# @**TODO** Define listener contracts
-	# @**TODO** optional params???
-	getProvidedServices: (TSignalCallback?) -> !(ret) ->
-		check :: TSignalCheck
-		check = [ ret, $1, $2 ]
-	getRequiredServices: (TSignalCallback?) -> !(ret) ->
-		check :: TSignalCheck
-		check = [ ret, $1, $2 ]
-
-	initializeServer: (Any?, Any?, Any?, Any?, Any?, { MULTI: TFlow }) -> Any
-	connectToPlannerNode: (Any?, Any?, Any?, Any?, { MULTI: TFlow }) -> Any
-
-#	```
-# close: (TSignalCallback?) -> !(ret) ->
-#		check :: TSignalCheck
-#		check = [ ret, $1 ]
-# ```
+    #### Signals (local & remote)
+    restRoutes: TRoutesSignal
+	getProvidedServices: TServicesSignal
+	getRequiredServices: TServicesSignal
+    close: (TSignalCallback?) -> !(ret) ->
+	    check :: TSignalCheck
+		check = [ ret, $1 ]
 }
 
 #### EXPORTS
+
 module.exports = {
+    # Applies contracts on an exports scope.
+    applyContracts: (scope) ->
+        e = scope
+        
+        e.Node :: TNode
+        e.Node = e.Node
+        
+    TNodeAddr
+    TRoutes
+    TServicesSignal
+    TServicesSignalListener
+    TRoutesSignal
+    TRoutesSignalListener
 	TNode
-	TNodeAddr
 }
