@@ -7,43 +7,43 @@ properties = require './properties'
 
 # Properties contracts.
 {
-    TSignalCallback
-    TSignalCheck
-    TSignal
-    TAsyncSignalMap
-    TSignalRet
+		TSignalCallback
+		TSignalCheck
+		TSignal
+		TAsyncSignalMap
+		TSignalRet
 } = properties
 
 # Common contracts.
 {
-    TDnode
-    TCallback
+		TDnode
+		TCallback
 } = common
 
 # Server and client contracts.
 TServer = server.TServer
 TClient = client.TClient
 
-#### PRIVATE CONTRACTS
+#### CONTRACTS
 
-# TODO import from service contracts
-TService = ?! (x) -> x instanceof Service
 # TODO import from planner node contracts
 TPlannerNode = ?! (x) -> x instanceof PlannerNode
 
-#### CONTRACTS
+# TODO import from service contracts
+TService = ?! (x) -> x instanceof Service
 
 TNodeAddr = ? {
-    port: Num
+	port: Num
 	host: Str
 }
+
 TRoutes = ? Any
 
 TSignalCheckListener = ?! (data) ->
-    ret = data[0]
+	ret = data[0]
 	args = data[1...]
-    # TODO make dynamic by type, merge with TSignalCheck
-    type = data[-1]
+	# TODO make dynamic by type, merge with TSignalCheck
+	type = data[-1]
 	# no params
 	args_undefined = args.filter (x) -> x is undefined
 	if args_undefined.length is args.length
@@ -55,30 +55,32 @@ TSignalCheckListener = ?! (data) ->
 	else no
 
 # Services-like signals contract.
-TServicesSignalListener = (TSignalCallback, Any, [...TService]) -> Any
+TServicesSignalListener = ? (TSignalCallback, Any, [...TService]) -> Any
 TServicesRet = ? TSignalRet and {
-    on: (TServicesSignalListener) -> Any
+	on: (TServicesSignalListener) -> Any
 }
-TServicesSignal = (include_connections?, TSignalCallback?) -> !(ret) ->
+TServicesSignal = ? (Bool?, TSignalCallback?) -> !(ret) ->
 	check :: TSignalCheckListener
 	check = [ ret, $1, $2, TServicesRet ]
 
 # REST Routes signal contract.
 TRoutesSignalListener = (TSignalCallback, Any, TRoutes) -> Any
 TRoutesRet = ? TSignalRet and {
-    on: (TRoutesSignalListener) -> Any
+	on: (TRoutesSignalListener) -> Any
 }
-TRoutesSignal = (include_connections?, TSignalCallback?) -> !(ret) ->
-    check :: TSignalCheckListener
+TRoutesSignal = ? (Bool?, TSignalCallback?) -> !(ret) ->
+	check :: TSignalCheckListener
 	check = [ ret, $1, $2, TRoutesRet ]
 
 #### EXPORTS
 
 module.exports = {
-    TNodeAddr
-    TRoutes
-    TServicesSignal
-    TServicesSignalListener
-    TRoutesSignal
-    TRoutesSignalListener
+	TService
+	TNodeAddr
+	TRoutes
+	TServicesSignal
+	TServicesSignalListener
+	TRoutesSignal
+	TRoutesSignalListener
+	TPlannerNode
 }

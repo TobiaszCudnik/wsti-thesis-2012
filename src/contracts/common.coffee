@@ -6,26 +6,26 @@ Dnode = require 'dnode'
 
 #### CONTRACTS
 TCallback = ? (Any?, Any?, Any?, Any?, Any?) -> Any
-TFlowObj = ? {
-    MULTI: (Str?) -> Any
-}
-TFlow = ? ( () -> Any ) and TFlowObj
+#TFlowObj = ? {
+#    MULTI: (Str?) -> Any
+#}
+#TFlow = ? ( () -> Any ) and TFlowObj
 TDnode = ?! (x) -> x instanceof Dnode
 TEventEmitterAsync = ? {
-    on: Any
+	on: Any
 	emit: Any
 }
 TEventEmitter = ? {
-    on: Any
+	on: Any
 	emit: Any
 }
 
 #### EXPORTS
 module.exports = {
-    TCallback
-    TDnode
-    TFlowObj
-    TFlow
-    TEventEmitter
-    TEventEmitterAsync
+		TCallback
+		TDnode
+#    TFlowObj
+#    TFlow
+		TEventEmitter
+		TEventEmitterAsync
 }

@@ -1,6 +1,6 @@
 # IMPORTS.
 Dnode = require 'dnode'
-HttpServer = require('http').Server
+SocketServer = require('net').Server
 Server = require('../server').Server
 common = require './common'
 
@@ -14,10 +14,10 @@ TSignalRet = contracts_signals.TSignalRet
 
 # Commons contracts.
 {
-    TDnode
-} = commoin
+		TDnode
+} = common
 
-TCallback = ? (Any?, Any?, Any?, Any?, Any?) -> Any
+TCallback = ? -> Any
 
 TDnodeClient = ? {
 	remote: TDnode
@@ -29,7 +29,7 @@ TDnodeClient = ? {
 ServerInstanceof = (x) -> x instanceof Server
 
 # Contract for composed internal server (TCP or HTTP)
-TServerComposed = ?! (x) -> x instanceof HttpServer
+TServerComposed = ?! (x) -> x instanceof SocketServer
 
 #TRestServerComposed = ? {
 #	on: (Str, TCallback) -> Any
@@ -68,8 +68,8 @@ TServer = ? {
 	close: TCloseSignal
 	newClient: TNewClietSignal
 
-	on: (Any?, Any?, Any?, Any?, Any?) -> Any
-	emit: (Any?, Any?, Any?, Any?, Any?) -> Any
+	on: -> Any
+	emit: -> Any
 }
 
 ###*
@@ -98,11 +98,21 @@ TRestServerClass = ? (TRestAddress, [...Str] or Null, Num, TRestRoutes?, TCallba
 
 # EXPORTS
 module.exports = {
+	# Puts contracts on an export scope.
+	applyContracts: (scope) ->
+		e = scope
+
+		e.Server :: TServerClass
+		e.Server = e.Server
+
+		e.RestServer :: TRestServerClass
+		e.RestServer = e.RestServer
+
 	TAddress
 	TServer
 	TServerClass
 	TRestServer
 	TRestServerClass
 	TDnodeClient
-    ServerInstanceof
+	ServerInstanceof
 }

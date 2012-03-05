@@ -18,6 +18,7 @@ TCallback = ? (Any?, Any?, Any?, Any?, Any?) -> Any
 
 TDnodeCallback = (TDnode, Any) -> Any
 TAddress = ? {
+#	dnode: (TDnode?) -> TDnode?
 	port: Num
 	reconnect: Bool?
 	proto: Str?

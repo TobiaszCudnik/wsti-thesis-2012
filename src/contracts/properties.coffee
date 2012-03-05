@@ -46,7 +46,7 @@ TPropertyClass = ? (Str, TPropertyData?, Any?) ==> TProperty
 
 #### SIGNALS
 
-TSignalGetter = (Any?) -> TSignalRet
+TSignalGetter = ? (Any?) -> TSignalRet
 # Signal Factory class object.
 #
 # @augments TProperty
@@ -73,17 +73,17 @@ module.exports = {
 	applyContracts: (scope) ->
 		e = scope
 
-		e.Property :: TPropertyClass
-		e.Property = e.Property
-
-		e.Signal :: TSignalClass
-		e.Signal = e.Signal
-
-		e.signal :: (Any?, Any?, Any?, Any?, Any?) -> TSignalMethod
-		e.signal = e.signal
-
-		e.property :: (Any?, Any?, Any?, Any?, Any?) -> TPropertyMethod
-		e.property = e.property
+#		e.Property :: TPropertyClass
+#		e.Property = e.Property
+#
+#		e.Signal :: TSignalClass
+#		e.Signal = e.Signal
+#
+#		e.signal :: (Any?, Any?, Any?, Any?, Any?) -> TSignalMethod
+#		e.signal = e.signal
+#
+#		e.property :: (Any?, Any?, Any?, Any?, Any?) -> TPropertyMethod
+#		e.property = e.property
 
 	# Properties exports.
 	TCallback

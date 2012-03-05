@@ -57,7 +57,7 @@ TSignalData = ? {
 }
 
 # Signal getter is used internally in getters defined by the developer.
-TSignalGetter = ? (Any?, Any?, Any?, Any?, Any?) -> TSignalData
+TSignalGetter = ? -> TSignalData
 
 # Functional aspect of TSignalMethod.
 TSignalMethodFunc = ? Any
@@ -109,10 +109,10 @@ TAsyncSignalMap = ?! (map) ->
 
 # Signal getter value, allows to bind to the signal.
 TSignalRet = ? {
-	on: (TCallback, Any?, Any?, Any?, Any?, Any?) -> Any
-	once: (TCallback, Any?, Any?, Any?, Any?, Any?) -> Any
-	before: (TCallback, Any?, Any?, Any?, Any?, Any?) -> Any
-	after: (TCallback, Any?, Any?, Any?, Any?, Any?) -> Any
+	on: (TCallback) -> Any
+	once: (TCallback) -> Any
+	before: (TCallback) -> Any
+	after: (TCallback) -> Any
 }
 
 #### EXPORTS.

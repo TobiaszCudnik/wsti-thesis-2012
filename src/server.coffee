@@ -1,5 +1,4 @@
 dnode = require 'dnode'
-http = require 'http'
 # TODO loose
 _ = require 'underscore'
 flow = require 'flow'
@@ -16,16 +15,6 @@ Logger = require './logger'
 
 mixin = require('./utils').mixin
 
-### CONTRACTS ###
-if config.contracts
-	contracts = require './contracts/server'
-
-	TServerClass = contracts.TServerClass
-	TServer = contracts.TServer
-	TRestServerClass = contracts.TRestServerClass
-	TRestServer = contracts.TRestServer
-### CONTRACTS END ###
-
 # TODO mixin
 class Server extends EventEmitter2Async
 #	TODO mixin @, SignalsMixin
@@ -37,9 +26,9 @@ class Server extends EventEmitter2Async
 	clients: property 'clients'
 
 	constructor: (address, scope, next) ->
-		if config.contracts
-			TThis :: TServer
-			TThis = @
+#		if config.contracts
+#			TThis :: TServer
+#			TThis = @
 		@initSignals()
 		@address address
 #		@log "Starting server on #{address.host}:#{address.port}"
@@ -57,11 +46,6 @@ class Server extends EventEmitter2Async
 		@server @dnode().server
 		@dnode().on 'ready', next
 
-		# HTTP listener
-#		@server = new http.Server
-#		@dnode.listen @server
-#		@log "Binding to port #{@port}"
-#		@server.listen @port, next
 	newClient: signal('newClient', on:
 		(next, ret, remote, connection) ->
 			# Add a new client.
@@ -85,7 +69,7 @@ class Server extends EventEmitter2Async
 				client if client.connection isnt connection
 	)
 
-	close: signal( 'close', on: (next, ret) ->
+	close: signal( 'close', after: (next, ret) ->
 		@server().once 'close', next.bind null, ret
 		@dnode().end()
 		@dnode().close()
@@ -109,7 +93,7 @@ class RestServer extends Server
 	###
 	constructor: (address, routes, scope, next) ->
 		if config.contracts
-			TThis :: TRestServer
+#			TThis :: TRestServer
 			TThis = @
 		@initSignals()
 
@@ -145,7 +129,5 @@ e = module.exports = {
 }
 
 if config.contracts
-	e.RestServer :: TRestServerClass
-	e.RestServer = e.RestServer
-	e.Server :: TServerClass
-	e.Server = e.Server
+	contracts = require './contracts/server'
+	contracts.applyContracts e
