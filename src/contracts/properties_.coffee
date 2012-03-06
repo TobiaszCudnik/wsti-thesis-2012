@@ -5,15 +5,15 @@
 common = require './common'
 
 {
-    TCallback
-    TEventEmitterAsync
+  TCallback
+  TEventEmitterAsync
 } = common
 
 #### PROPERTIES
 
 # Instance of like signal contract.
 TPropertyInstanceof = ?! (x) ->
-    x instanceof jsprops.Property or x.constructor is jsprops.Property
+  x instanceof jsprops.Property or x.constructor is jsprops.Property
 
 TPropertyData = ? {
 	set: Any
@@ -21,7 +21,7 @@ TPropertyData = ? {
 }
 
 #TPropertyMethod = ? TPropertyMethodFunc
-TPropertyMethodFunc = ? Any
+TPropertyMethodFunc = ? -> Any
 # ```
 #TPropertyMethodObj = ? {
 #	init: Any
@@ -33,14 +33,10 @@ TPropertyMethodFunc = ? Any
 
 TPropertyMethodObj = ?! (x) ->
 	x.init and
-# ```
-#		x.get and
-# ```
 		x.set and
 		x.constructor
 
 TPropertyMethod = ? TPropertyMethodFunc and TPropertyMethodObj
-
 
 #### SIGNALS
 
@@ -96,6 +92,7 @@ TSignalCheck = ?! (data) ->
 # Instance of like signal contract.
 TSignalInstanceof = ?! (x) ->
 	x instanceof jsprops.Signal or x.constructor is jsprops.Signal
+#	x.init and x.set
 
 # Collection of async signals with names.
 # Used eg in DNode remote scope.

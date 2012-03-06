@@ -60,7 +60,7 @@ describe 'Server', ->
 			'connection can be established'.should.be.ok
 
 	it 'should allow a client to connect', (next) ->
-		client = new Client addr: 'localhost', port: port, {}, ->
+		client = new Client addr, {}, ->
 			server.clients().length.should.equal 1
 			client.close next
 
@@ -93,7 +93,9 @@ describe 'REST Server', ->
 		server = new RestServer addr, routes, scope, next
 
 	afterEach (next) ->
-		server.close next
+		server.close ->
+			console.log 'eeeeeeeeeeeeeee'
+			next
 
 	it 'should be accessible thou HTTP by a REST API', (next) ->
 		request "http://#{addr.host}:#{rest_port}", (err, res, body) ->

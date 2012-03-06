@@ -24,10 +24,10 @@
 
 #### PROPERTIES
 
-TPropertyGetter = ? ( (Any?, Any?, Any?, Any?, Any?) -> Any) -> Any
+TPropertyGetter = ? ( -> Any) -> Any
 # Property Factory class object.
 TProperty = ? {
-	property: (Any?, Any?, Any?, Any?, Any?) -> TPropertyMethod
+	property: -> TPropertyMethod
 	parseData: Any
 	initialize: Any
 	setObjectValue: Any
@@ -35,7 +35,7 @@ TProperty = ? {
 	preparePassedFunction: Any
 	setName: Any
 	getName: Any
-	getGetter: (Any?, Any?, Any?, Any?, Any?) -> TPropertyGetter
+	getGetter: -> TPropertyGetter
 	getSetter: Any
 	getInit: Any
 }
@@ -53,7 +53,7 @@ TSignalGetter = ? (Any?) -> TSignalRet
 TSignal = ? {
 	initialize: Any
 	parseData: Any
-	getGetter: (Any?, Any?, Any?, Any?, Any?) -> TSignalGetter
+	getGetter: -> TSignalGetter
 	getInit: Any
 	getSetter: Any
 	setObjectValue: Any
@@ -73,17 +73,17 @@ module.exports = {
 	applyContracts: (scope) ->
 		e = scope
 
-#		e.Property :: TPropertyClass
-#		e.Property = e.Property
-#
-#		e.Signal :: TSignalClass
-#		e.Signal = e.Signal
-#
-#		e.signal :: (Any?, Any?, Any?, Any?, Any?) -> TSignalMethod
-#		e.signal = e.signal
-#
-#		e.property :: (Any?, Any?, Any?, Any?, Any?) -> TPropertyMethod
-#		e.property = e.property
+		e.Property :: TPropertyClass
+		e.Property = e.Property
+
+		e.Signal :: TSignalClass
+		e.Signal = e.Signal
+
+		e.signal :: -> TSignalMethod
+		e.signal = e.signal
+
+		e.property :: -> TPropertyMethod
+		e.property = e.property
 
 	# Properties exports.
 	TCallback

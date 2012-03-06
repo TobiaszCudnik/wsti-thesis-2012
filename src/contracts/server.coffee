@@ -1,35 +1,41 @@
 # IMPORTS.
 Dnode = require 'dnode'
 SocketServer = require('net').Server
+HTTPServer = require('connect').HTTPServer
 Server = require('../server').Server
 common = require './common'
+properties = require './properties'
 
-# Signal contracts.
-contracts_signals = require './properties'
-TSignalCallback = contracts_signals.TSignalCallback
-TSignalCheck = contracts_signals.TSignalCheck
-TSignal = contracts_signals.TSignal
-TAsyncSignalMap = contracts_signals.TAsyncSignalMap
-TSignalRet = contracts_signals.TSignalRet
+# Properties contracts.
+{
+	TAsyncSignalMap
+	TSignal
+	TSignalCallback
+	TProperty
+	TCallback
+	TSignalCheck
+} = properties
 
 # Commons contracts.
 {
-		TDnode
+	TDnode
+	TObj
 } = common
 
-TCallback = ? -> Any
+#### CONTRACTS.
 
 TDnodeClient = ? {
-	remote: TDnode
+	remote: Any
 	# TODO typeme
-	connection: Any
+	connection: TDnode
 }
 
 # Contract to check for instanceof the Server class.
-ServerInstanceof = (x) -> x instanceof Server
+TServerInstanceof = (x) -> x instanceof Server
 
 # Contract for composed internal server (TCP or HTTP)
 TServerComposed = ?! (x) -> x instanceof SocketServer
+TRestServerComposed = ?! (x) -> x instanceof HTTPServer
 
 #TRestServerComposed = ? {
 #	on: (Str, TCallback) -> Any
@@ -77,7 +83,13 @@ TServer class constructor.
 ###
 TServerClass = ? (TAddress, Any, TCallback?) ==> TServer
 
-TRestRoutes = ?! (x) -> yes
+TRestRouteRequest = ?! (x) ->
+	x.toLowerCase() in ['get', 'post', 'head', 'put', 'info']
+TRestRoutes = ? [ ...{
+	0: TRestRouteRequest
+	1: Str
+	2: -> Any
+}]
 # TODO
 #	for route in x
 #		return no if x isnt Function
@@ -90,11 +102,14 @@ TRestAddress = ? {
 
 # TODO inherit from TServerClass
 TRestServer = ? {
+	rest: (TRestServerComposed?) -> TRestServerComposed
 	address: TRestAddress
+	initServers_: (Self, TAddress, TCallback, { MULTI: -> Any }) -> Any
+	close: TCloseSignal
 }
 
 # TODO add super contract check
-TRestServerClass = ? (TRestAddress, [...Str] or Null, Num, TRestRoutes?, TCallback?) ==> TRestServer
+TRestServerClass = ? (TRestAddress, TRestRoutes, TObj, TCallback) ==> TRestServer
 
 # EXPORTS
 module.exports = {
@@ -114,5 +129,6 @@ module.exports = {
 	TRestServer
 	TRestServerClass
 	TDnodeClient
-	ServerInstanceof
+	TServerInstanceof
+	TServerComposed
 }

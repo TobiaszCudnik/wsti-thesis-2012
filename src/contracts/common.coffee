@@ -11,14 +11,18 @@ TCallback = ? (Any?, Any?, Any?, Any?, Any?) -> Any
 #}
 #TFlow = ? ( () -> Any ) and TFlowObj
 TDnode = ?! (x) -> x instanceof Dnode
+
 TEventEmitterAsync = ? {
 	on: Any
 	emit: Any
 }
+
 TEventEmitter = ? {
 	on: Any
 	emit: Any
 }
+
+TObj = ?! (x) -> typeof x is 'object'
 
 #### EXPORTS
 module.exports = {
@@ -28,4 +32,5 @@ module.exports = {
 #    TFlow
 		TEventEmitter
 		TEventEmitterAsync
+		TObj
 }

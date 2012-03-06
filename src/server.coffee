@@ -26,9 +26,7 @@ class Server extends EventEmitter2Async
 	clients: property 'clients'
 
 	constructor: (address, scope, next) ->
-#		if config.contracts
-#			TThis :: TServer
-#			TThis = @
+#		@initSignals Server
 		@initSignals()
 		@address address
 #		@log "Starting server on #{address.host}:#{address.port}"
@@ -86,16 +84,12 @@ class Server extends EventEmitter2Async
 
 # TODO Turn me on
 class RestServer extends Server
+
 	rest: property 'rest'
 
-	###
-	@param routes Array.<[method, path, callback]>
-	###
 	constructor: (address, routes, scope, next) ->
-		if config.contracts
-#			TThis :: TRestServer
-			TThis = @
-		@initSignals()
+#		@initSignals RestServer
+#		@initSignals()
 
 		handler = connect connect.router (app) ->
 			app[ r[0] ] r[1], r[2] for r in routes
@@ -106,21 +100,29 @@ class RestServer extends Server
 				res.statusCode = 404
 				res.end()
 
-		@rest().listen address.rest_port
-
-		super address, scope, next
-
-	close: signal('close', on: (next, ret) ->
-		this_ = @
-		# WATCH OUT! Hardcoded class and method names!
-		super_ = RestServer.__super__.close
+		# Initialize servers in the same time.
+		_this = @
 		flow.exec(
-			->
-				this_.rest().once 'close', @MULTI()
-				this_.rest().close()
-				super_.call this_, @MULTI()
-			next.bind null, ret
+			-> _this.initServers_.call @, _this, address, scope
+			next
 		)
+
+	# TODO Address is passed, as signals aren't ready yet!
+	# Inside a flow.
+	initServers_: (_this, address, scope) ->
+		# Init REST HTTP server.
+		_this.rest().listen address.rest_port, address.host, @MULTI 'rest'
+		# Init SocketServer from the super constructor.
+		RestServer.__super__.constructor.call(
+			_this, address, scope, @MULTI 'super'
+		)
+
+	close: signal('close', after: (next, ret) ->
+		console.log "\n\nREST\n\n"
+		@rest().once 'close',
+			next.bind null,
+				(ret or {})['rest'] = 'yes'
+		@rest().close()
 	)
 
 e = module.exports = {

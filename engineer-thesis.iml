@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/node_modules/mocha/node_modules/commander/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules" />
       <excludeFolder url="file://$MODULE_DIR$/node_modules/contracts.coffee.npm" />
       <excludeFolder url="file://$MODULE_DIR$/prototypes/graph-connections" />
       <excludeFolder url="file://$MODULE_DIR$/prototypes/graph-connections-node2node" />

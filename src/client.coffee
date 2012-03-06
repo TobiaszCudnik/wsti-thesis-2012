@@ -50,19 +50,10 @@ class Client extends EventEmitter2Async
 
 	log: signal('log', on: (next, ret, args...) ->
 		return next ret if not Logger.log.apply @, args
-		console.log "[CLIENT:#{@address()}] #{msg}"
+		console.log "[CLIENT:#{@address()}] #{args?.join ', '}"
 	)
 
-module.exports = Client
+e = module.exports = Client
 
 if config.contracts
-	contracts = require './contracts/client'
-
-	TClientClass = contracts.TClientClass
-	TDnodeConnect = contracts.TDnodeConnect
-
-	module.exports :: TClientClass
-	module.exports = module.exports
-
-	dnode.connect :: TDnodeConnect
-	dnode.connect = dnode.connect
+	require('./contracts/client').applyContracts e, dnode

@@ -1,0 +1,1 @@
+var last_param = arguments[ arguments.length-1 ]

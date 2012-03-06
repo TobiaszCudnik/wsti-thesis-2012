@@ -48,10 +48,10 @@ TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
 	planner_node: ([...TPlannerNode]?) -> TPlannerNode
 
 	#### Methods (local)
-	initializeServer: (Any?, Any?, Any?, Any?, Any?) -> Any
-	connectToPlannerNode: (Any?, Any?, Any?, Any?, Any?) -> Any
+	initializeServer: -> Any
+	connectToPlannerNode: -> Any
 	connectToGraph: (TCallback) -> Any
-	start: (Any?, Any?, Any?, Any?, Any?) -> (TSignal or Null)
+	start: -> (TSignal or Null)
 
 	#### Signals (local & remote)
 	restRoutes: TRoutesSignal
