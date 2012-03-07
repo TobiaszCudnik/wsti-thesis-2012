@@ -15,10 +15,16 @@ Logger = require './logger'
 
 mixin = require('./utils').mixin
 
+{
+	TServerClass
+	TRestServerClass
+} = require './contracts/server'
+
 # TODO mixin
-class Server extends EventEmitter2Async
+Server :: TServerClass
+Server = class extends EventEmitter2Async
 #	TODO mixin @, SignalsMixin
-	mixin Server, SignalsMixin
+	mixin @, SignalsMixin
 
 	dnode: property 'dnode'
 	address: property 'address'
@@ -79,11 +85,18 @@ class Server extends EventEmitter2Async
 		next ret
 	)
 
+for prop, Tcontr of TServerClass.oc
+	continue if not TServerClass::[prop] or
+		prop is 'constructor'
+	TServerClass.prototype :: Tcontr
+	TServerClass::[prop] = TServerClass::[prop]
+
 #	send: (next) ->
 #	listen: (next) ->
 
 # TODO Turn me on
-class RestServer extends Server
+RestServer :: TRestServerClass
+RestServer = class extends Server
 
 	rest: property 'rest'
 
@@ -125,11 +138,13 @@ class RestServer extends Server
 		@rest().close()
 	)
 
+for prop, Tcontr of TRestServerClass.oc
+	continue if not RestServer::[prop] or
+		prop is 'constructor'
+	RestServer.prototype :: Tcontr
+	RestServer::[prop] = RestServer::[prop]
+
 e = module.exports = {
 	Server
 	RestServer
 }
-
-if config.contracts
-	contracts = require './contracts/server'
-	contracts.applyContracts e
