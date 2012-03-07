@@ -3,6 +3,4 @@ ROOT=`dirname $0`/..
 $ROOT/node_modules/contracts.coffee/bin/coffee \
 	--contracts \
 	-o $ROOT/build/contracts \
-	-cw $ROOT/build/_sources \
-		$ROOT/node_modules/jsprops/properties.coffee \
-		$ROOT/node_modules/jsprops/properties_test.coffee
+	-cw $ROOT/build/contracts-sources/

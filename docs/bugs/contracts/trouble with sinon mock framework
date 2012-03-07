@@ -1,0 +1,13 @@
+obj = new Klass;
+sinon.stub(obj);
+  0) Signals basics "before each" hook:
+     TypeError: Trap 'enumerate' returned repeated property name 'constructor'
+      at mirrorProperties (/node_modules/sinon/lib/sinon.js:41:26)
+      at Object.wrapMethod (/node_modules/sinon/lib/sinon.js:89:13)
+      at stub (/node_modules/sinon/lib/sinon/stub.js:55:22)
+      at Object.stub (/node_modules/sinon/lib/sinon/stub.js:48:21)
+      at Hook.fn (/build/contracts/node_modules/jsprops/properties_test.js:220:15)
+      at Hook.run (/node_modules/mocha/lib/runnable.js:126:29)
+      at next (/node_modules/mocha/lib/runner.js:165:10)
+      at Array.0 (/node_modules/mocha/lib/runner.js:174:5)
+      at EventEmitter._tickCallback (node.js:188:41)

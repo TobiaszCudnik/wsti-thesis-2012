@@ -20,15 +20,15 @@ NodeAddr = ? {
 }
 #Node :: (NodeAddr, Any, Any) -> Any
 Callback = ? -> Any
-Node :: (NodeAddr, [...Any], Callback) ==> {
+
+TNodeObj = ? {
 #	addr: NodeAddr
 #	address: (NodeAddr) -> Any
-	exposeSignals: ([ ...Str ]) -> Any
+#	exposeSignals: ([ ...Str ]) -> Any
+	exposeSignals: (None) -> Any
 }
-
-#Node :: (NodeAddr, Any, Any) ==> {
-#	address: (NodeAddr?) -> Any
-#}
+TNode = ? (NodeAddr, [...Any], Callback) ==> TNodeObj
+Node :: TNode
 Node = class
 	constructor: (address, services, next) ->
 
@@ -41,10 +41,16 @@ Node = class
 
 	exposeSignals: ->
 
+#Node :: (NodeAddr, Any, Any) ==> {
+#	address: (NodeAddr?) -> Any
+#}
+
 def_addr = {
 	port: 1
 	host: 'foo'
 }
+foo = new Node def_addr, [], ->
+foo.exposeSignals 123
 
 #Func1 = ? (Num) -> Str
 #Func2 = ? () -> Any
@@ -56,12 +62,10 @@ def_addr = {
 #exposeSignals :: (Str) -> Any
 #exposeSignals = (a) -> a.push 2
 
-exposeSignals :: ([...Str]) -> Any
-exposeSignals = (a) -> a.push 2
-exposeSignals 123
+#exposeSignals :: ([...Str]) -> Any
+#exposeSignals = (a) -> a.push 2
+#exposeSignals 123
 #
-#foo = new Node def_addr, [], ->
-#foo.exposeSignals 123
 #exposeSignals 123
 
 

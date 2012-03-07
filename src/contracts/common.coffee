@@ -5,7 +5,7 @@
 Dnode = require 'dnode'
 
 #### CONTRACTS
-TCallback = ? (Any?, Any?, Any?, Any?, Any?) -> Any
+TCallback = ? -> Any
 #TFlowObj = ? {
 #    MULTI: (Str?) -> Any
 #}

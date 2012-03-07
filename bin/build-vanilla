@@ -3,4 +3,4 @@ ROOT=`dirname $0`/..
 
 $ROOT/node_modules/contracts.coffee/bin/coffee \
 	-o $ROOT/build/vanilla \
-	-cw $ROOT/build/_sources
+	-cw $ROOT/build/vanilla-sources

@@ -1,0 +1,6 @@
+not possible to place contracts on constructor
+
+for prop, Tcontr of TProperty.oc
+	continue if not Signal::[prop]
+	Property.prototype :: Tcontr
+	Property::[prop] = Property::[prop]

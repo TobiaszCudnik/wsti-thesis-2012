@@ -51,7 +51,7 @@ TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
 	initializeServer: -> Any
 	connectToPlannerNode: -> Any
 	connectToGraph: (TCallback) -> Any
-	start: -> (TSignal or Null)
+	start: -> TSignal?
 
 	#### Signals (local & remote)
 	restRoutes: TRoutesSignal
