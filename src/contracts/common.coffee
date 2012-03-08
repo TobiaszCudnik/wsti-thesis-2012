@@ -2,7 +2,7 @@
 # This file contains common contracts used by the main app contracts.
 
 #### IMPORTS
-Dnode = require 'dnode'
+#Dnode = require 'dnode'
 
 #### CONTRACTS
 TCallback = ? -> Any

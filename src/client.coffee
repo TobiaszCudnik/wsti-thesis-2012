@@ -8,10 +8,17 @@ signal = jsprops.signal
 SignalsMixin = jsprops.SignalsMixin
 EventEmitter2Async = require('eventemitter2async').EventEmitter2
 
+{
+	TDnodeConnect
+	TClientClass
+	TClient
+} = require('./contracts/client')
+
 mixin = require('./utils').mixin
 
 # TODO mixin, inherit from common object
-class Client extends EventEmitter2Async
+Client :: TClientClass
+Client = class Client extends EventEmitter2Async
 	mixin Client, SignalsMixin
 
 	remote: property 'remote'
@@ -53,7 +60,14 @@ class Client extends EventEmitter2Async
 		console.log "[CLIENT:#{@address()}] #{args?.join ', '}"
 	)
 
-e = module.exports = Client
+for prop, Tcontr of TClient.oc
+	continue if not Client::[prop] or
+		prop is 'constructor'
+	Client.prototype :: Tcontr
+	Client::[prop] = Client::[prop]
+
+module.exports = Client
 
 if config.contracts
-	require('./contracts/client').applyContracts e, dnode
+	dnode.connect :: TDnodeConnect
+	dnode.connect = dnode.connect

@@ -58,7 +58,7 @@ describe 'Server', ->
 			next()
 		socket.on 'error', ->
 			socket.destroy()
-			'connection can\'t be established'.should.be.ok
+			'connection can\'t be established'.should.not.be.ok
 
 	it 'should allow a client to connect', (next) ->
 		client = new Client addr, {}, ->
@@ -94,8 +94,7 @@ describe 'REST Server', ->
 		server = new RestServer addr, routes, scope, next
 
 	afterEach (next) ->
-		server.close ->
-			next
+		server.close next
 
 	it 'should be accessible thou HTTP by a REST API', (next) ->
 		request "http://#{addr.host}:#{rest_port}", (err, res, body) ->

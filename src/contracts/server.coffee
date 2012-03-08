@@ -1,5 +1,5 @@
 #### IMPORTS
-server = require './server'
+server = require './server_'
 common = require './common'
 properties = require './properties'
 
@@ -21,6 +21,7 @@ properties = require './properties'
 	TRestServerComposed
 	TRestRouteRequest
 	TRestRoutes
+	TDnodeServer
 } = server
 
 # Commons contracts.
@@ -66,7 +67,7 @@ TRestServer = ? {
 }
 
 # TRestServer class constructor.
-TRestServerClass = ? (TRestAddress, TRestRoutes, TObj, TCallback) ==> TRestServer
+TRestServerClass = ? (TRestAddress, [...TRestRoutes], TObj, TCallback) ==> TRestServer
 
 # EXPORTS
 module.exports = {

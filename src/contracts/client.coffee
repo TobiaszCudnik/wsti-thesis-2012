@@ -2,10 +2,13 @@
 
 common = require './common'
 properties = require './properties'
-client = require './client'
+client = require './client_'
 
 # Common contracts.
-{ TCallback } = common
+{
+	TCallback
+	TObj
+} = common
 
 # Properties contracts.
 {
@@ -15,52 +18,39 @@ client = require './client'
 	TProperty
 } = properties
 
+# Client internal contracts.
+{
+	TDnodeClient
+	TDnodeConnect
+	TDnodeCallback
+	TCloseSignal
+	TAddress
+} = client
+
 #### CONTRACTS
 
-# Contract, depends on dnode.
-TDnode = ?!(x) -> x.remoteStore isnt undefined
-
-TCallback = ? -> Any
-
-TDnodeCallback = (TDnode, Any) -> Any
-TAddress = ? {
-#	dnode: (TDnode?) -> TDnode?
-	port: Num
-	reconnect: Bool?
-	proto: Str?
-	host: Str
-}
-TDnodeConnect = ? (TAddress, TDnodeCallback) -> Any
-TDnodeProperty = ? (TDnode?) -> TDnode?
+TDnodeProperty = ? (TDnodeClient?) -> TDnodeClient?
 TAddressProperty = ? (TAddress?) -> TAddress?
-TCloseSignal = ? (TSignalCallback?) -> !(ret) ->
-	check :: TSignalCheck
-	check = [ ret, $1 ]
 
 TClient = ? {
-	remote: TProperty
-	connection: TProperty
-	scope: TProperty
-	dnode: TProperty
-	address: TAddressProperty and TProperty
+	remote: (TObj?) -> TObj
+	connection: (TDnodeClient?) -> TDnodeClient?
+	scope: (TObj?) -> TObj
+	dnode: TDnodeProperty
+	address: TAddressProperty
 
-	close: TCloseSignal and TSignal
+	close: TCloseSignal
 }
 
 # TODO describe Client callback
 TClientClass = ? (TAddress, Any, TCallback) ==> TClient
 
+#### EXPORTS
+
 module.exports = {
-	# Puts contracts on an export scope.
-	applyContracts: (scope, dnode) ->
-		scope :: TClientClass
-		scope = scope
-
-		if dnode
-			dnode.connect :: TDnodeConnect
-			dnode.connect = dnode.connect
-
 	TDnodeConnect
+	TDnodeProperty
+	TAddressProperty
 	TDnodeCallback
 	TClientClass
 	TClient

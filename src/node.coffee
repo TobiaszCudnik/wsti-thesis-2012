@@ -76,11 +76,9 @@ Node = class Node extends EventEmitter2Async
 		(@next, @ret) ->
 			# TODO support no server scenario
 			@this.server().close @MULTI 'server'
-			if @this.clients()?
-				for conn in @this.clients()
-					conn.close @MULTI 'clients'
-		->
-			@next @ret
+			for conn in @this.clients() or []
+				conn.close @MULTI 'clients'
+		-> @next @ret
 	))
 
 	initializeServer: ->
@@ -91,10 +89,9 @@ Node = class Node extends EventEmitter2Async
 					@MULTI 'server'
 			)
 		# Init socket-only server if applicable.
-		else
-			@this.server new Server(
-				addr, @this.scope(), @MULTI()
-			)
+		else @this.server new Server(
+			addr, @this.scope(), @MULTI 'server'
+		)
 
 	connectToPlannerNode: flow.define(
 		->

@@ -164,7 +164,7 @@ RestServer = class extends Server
 #	RestServer.prototype :: Tcontr
 #	RestServer::[prop] = RestServer::[prop]
 
-e = module.exports = {
+module.exports = {
 	Server
 	RestServer
 }
