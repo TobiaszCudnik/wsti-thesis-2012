@@ -16,7 +16,9 @@ Logger = require './logger'
 mixin = require('./utils').mixin
 
 {
+	TServer
 	TServerClass
+	TRestServer
 	TRestServerClass
 } = require './contracts/server'
 
@@ -31,8 +33,11 @@ Server = class extends EventEmitter2Async
 	server: property 'server'
 	clients: property 'clients'
 
+	emit: (name) ->
+		@log "emit #{name}" if config.debug
+		super
+
 	constructor: (address, scope, next) ->
-#		@initSignals Server
 		@initSignals()
 		@address address
 #		@log "Starting server on #{address.host}:#{address.port}"
@@ -47,22 +52,25 @@ Server = class extends EventEmitter2Async
 			block: @newClient.bind @
 
 		@dnode().listen params
+#		@dnode().use (client, remote) =>
+#			@newClient client, remote
 		@server @dnode().server
 		@dnode().on 'ready', next
+		@dnode().on 'error', @error
 
-	newClient: signal('newClient', on:
-		(next, ret, remote, connection) ->
-			# Add a new client.
-			@clients().push
-				remote: remote
-				connection: connection
+	newClient: signal('newClient', on: (next, ret, remote, connection) ->
+		@log 'newClient'
+		# Add a new client.
+		@clients().push
+			remote: remote
+			connection: connection
 
-			# Bind signal to the connection.
-			connection.on 'end', @clientDisconnect.bind @, connection
+		# Bind signal to the connection.
+		connection.on 'end', @clientDisconnect.bind @, connection
 
-			@log "Client #{connection.id} connected."
-			(ret ?= []).push connection.id
-			next ret
+		@log "Client #{connection.id} connected."
+		(ret ?= []).push connection.id
+		next ret
 	)
 
 	clientDisconnect: signal('clientDisconnect', on:
@@ -74,22 +82,33 @@ Server = class extends EventEmitter2Async
 	)
 
 	close: signal( 'close', after: (next, ret) ->
-		@server().once 'close', next.bind null, ret
+		@server().once 'close', =>
+			next ret
+#			next.bind null, ret
 		@dnode().end()
 		@dnode().close()
 	)
 
+	start: signal('start')
+
 	log: signal('log', on: (next, ret, args...) ->
-		return next ret if not Logger.log.apply @, args
-		console.log "[SERVER:#{@address()}] #{args}"
+#		return next ret if not Logger.log.apply @, args
+		return if not config.debug
+		{ host, port } = @address()
+		console.log "[SERVER:#{host}:#{port}] #{args}"
 		next ret
 	)
 
-for prop, Tcontr of TServerClass.oc
-	continue if not TServerClass::[prop] or
+	error: signal('error', on: (next, ret, msg) ->
+		@log "[ERROR] #{msg}"
+		next ret
+	)
+
+for prop, Tcontr of TServer.oc
+	continue if not Server::[prop] or
 		prop is 'constructor'
-	TServerClass.prototype :: Tcontr
-	TServerClass::[prop] = TServerClass::[prop]
+	Server.prototype :: Tcontr
+	Server::[prop] = Server::[prop]
 
 #	send: (next) ->
 #	listen: (next) ->
@@ -97,12 +116,14 @@ for prop, Tcontr of TServerClass.oc
 # TODO Turn me on
 RestServer :: TRestServerClass
 RestServer = class extends Server
+#	mixin @, SignalsMixin
+	@signal = SignalsMixin.signal
 
 	rest: property 'rest'
 
 	constructor: (address, routes, scope, next) ->
 #		@initSignals RestServer
-#		@initSignals()
+		@initSignals()
 
 		handler = connect connect.router (app) ->
 			app[ r[0] ] r[1], r[2] for r in routes
@@ -130,19 +151,18 @@ RestServer = class extends Server
 			_this, address, scope, @MULTI 'super'
 		)
 
-	close: signal('close', after: (next, ret) ->
-		console.log "\n\nREST\n\n"
+	close: @signal('close', after: (next, ret) ->
 		@rest().once 'close',
 			next.bind null,
 				(ret or {})['rest'] = 'yes'
 		@rest().close()
 	)
 
-for prop, Tcontr of TRestServerClass.oc
-	continue if not RestServer::[prop] or
-		prop is 'constructor'
-	RestServer.prototype :: Tcontr
-	RestServer::[prop] = RestServer::[prop]
+#for prop, Tcontr of TRestServer.oc
+#	continue if not RestServer::[prop] or
+#		prop is 'constructor'
+#	RestServer.prototype :: Tcontr
+#	RestServer::[prop] = RestServer::[prop]
 
 e = module.exports = {
 	Server

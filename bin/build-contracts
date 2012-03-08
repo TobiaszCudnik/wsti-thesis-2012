@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 ROOT=`dirname $0`/..
+
 $ROOT/node_modules/contracts.coffee/bin/coffee \
 	--contracts \
 	-o $ROOT/build/contracts \

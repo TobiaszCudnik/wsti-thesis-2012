@@ -18,7 +18,7 @@ client = require './client'
 #### CONTRACTS
 
 # Contract, depends on dnode.
-TDnode = ?! (x) -> x instanceof Dnode
+TDnode = ?!(x) -> x.remoteStore isnt undefined
 
 TCallback = ? -> Any
 

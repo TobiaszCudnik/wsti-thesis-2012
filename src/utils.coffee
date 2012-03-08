@@ -5,7 +5,10 @@ String.prototype.$ = (sel) -> $ sel, this
 
 e = module.exports
 
-e.mixin = (tar, src) -> Object.merge tar.prototype, src.prototype
+e.mixin = (tar, src) ->
+	Object.merge tar.prototype, src.prototype
+	# TODO doesnt work
+#	Object.merge tar, src
 
 `if (!Number.prototype.times) {
   Object.defineProperty(Number.prototype, 'times', {

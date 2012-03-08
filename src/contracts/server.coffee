@@ -18,17 +18,21 @@ properties = require './properties'
 
 # Commons contracts.
 {
-	TDnode
 	TObj
 } = common
 
 #### CONTRACTS.
+TDnodeClient = ?! (x) -> x.remoteStore isnt undefined
 
-TDnodeClient = ? {
+TServerClient = ? {
 	remote: Any
 	# TODO typeme
-	connection: TDnode
+	connection: TDnodeClient
 }
+
+TDnodeServer = ?! (x) ->
+	x.proto isnt undefined and
+		x.streams isnt undefined
 
 # Contract to check for instanceof the Server class.
 TServerInstanceof = (x) -> x instanceof Server
@@ -47,12 +51,12 @@ TAddress = ? {
 	host: Str
 }
 
-TClientsProperty = ? ([...TDnodeClient]) -> [...TDnodeClient]?
+TClientsProperty = ? ([...TServerClient]) -> [...TServerClient]?
 TServerProperty = ? (TServerComposed?) -> TServerComposed?
 TAddressProperty = ? (TAddress?) -> TAddress?
-TDnodeProperty = ? (TDnode?) -> TDnode?
+TDnodeProperty = ? (TDnodeServer?) -> TDnodeServer?
 
-TNewClietSignal = ? (TDnode?, TSignalCallback?) -> !(ret) ->
+TNewClietSignal = ? (Any?, TDnodeClient?, TSignalCallback?) -> !(ret) ->
 	check :: TSignalCheck
 	check = [ ret, $1, $2 ]
 

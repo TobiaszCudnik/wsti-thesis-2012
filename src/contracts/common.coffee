@@ -10,7 +10,6 @@ TCallback = ? -> Any
 #    MULTI: (Str?) -> Any
 #}
 #TFlow = ? ( () -> Any ) and TFlowObj
-TDnode = ?! (x) -> x instanceof Dnode
 
 TEventEmitterAsync = ? {
 	on: Any
@@ -27,7 +26,6 @@ TObj = ?! (x) -> typeof x is 'object'
 #### EXPORTS
 module.exports = {
 		TCallback
-		TDnode
 #    TFlowObj
 #    TFlow
 		TEventEmitter

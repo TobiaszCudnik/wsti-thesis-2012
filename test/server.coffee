@@ -47,7 +47,8 @@ describe 'Server', ->
 		server = new Server addr, scope, next
 
 	afterEach (next) ->
-		server.close next
+		server.close ->
+			do next
 
 	it 'should listen on a port', (next) ->
 		# check port by a socket connection
@@ -57,7 +58,7 @@ describe 'Server', ->
 			next()
 		socket.on 'error', ->
 			socket.destroy()
-			'connection can be established'.should.be.ok
+			'connection can\'t be established'.should.be.ok
 
 	it 'should allow a client to connect', (next) ->
 		client = new Client addr, {}, ->
@@ -69,7 +70,7 @@ describe 'Server', ->
 			client.close ->
 				server.clients().length.should.equal 0
 				next()
-	
+
 	it 'should access the client\'s scope', (next) ->
 		client = new Client addr, client_foo: 'bar', ->
 			server.clients()[0].remote.client_foo.should.equal 'bar'
@@ -94,7 +95,6 @@ describe 'REST Server', ->
 
 	afterEach (next) ->
 		server.close ->
-			console.log 'eeeeeeeeeeeeeee'
 			next
 
 	it 'should be accessible thou HTTP by a REST API', (next) ->
