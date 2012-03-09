@@ -4,7 +4,10 @@ common = require './common'
 properties = require './properties'
 
 # Common contracts.
-{ TCallback } = common
+{
+	TCallback
+	TObj
+} = common
 
 # Properties contracts.
 {
@@ -18,9 +21,19 @@ properties = require './properties'
 #### CONTRACTS
 
 # Contract, depends on dnode.
-TDnodeClient = ?! (x) -> x.remoteStore isnt undefined
+TDnodeClient = ?! (x) ->
+	console.log 'TDnodeClient', x
+	x.remoteStore isnt undefined
 
-TDnodeCallback = (TDnode, Any) -> Any
+TDnodeConnection = ? {
+	id: Str
+	remote: TObj
+	localStore: TObj
+	remoteStore: TObj
+	stream: TObj
+}
+
+TDnodeCallback = (TObj, TCallback) -> Any
 TAddress = ? {
 #	dnode: (TDnode?) -> TDnode?
 	port: Num
@@ -42,4 +55,5 @@ module.exports = {
 	TDnodeConnect
 	TCloseSignal
 	TAddress
+	TDnodeConnection
 }

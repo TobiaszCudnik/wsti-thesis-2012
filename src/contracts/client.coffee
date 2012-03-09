@@ -25,6 +25,7 @@ client = require './client_'
 	TDnodeCallback
 	TCloseSignal
 	TAddress
+	TDnodeConnection
 } = client
 
 #### CONTRACTS
@@ -34,9 +35,9 @@ TAddressProperty = ? (TAddress?) -> TAddress?
 
 TClient = ? {
 	remote: (TObj?) -> TObj
-	connection: (TDnodeClient?) -> TDnodeClient?
+	connection: (TDnodeConnection?) -> TDnodeConnection?
 	scope: (TObj?) -> TObj
-	dnode: TDnodeProperty
+#	dnode: TDnodeProperty
 	address: TAddressProperty
 
 	close: TCloseSignal
@@ -54,4 +55,5 @@ module.exports = {
 	TDnodeCallback
 	TClientClass
 	TClient
+	TDnodeConnection
 }

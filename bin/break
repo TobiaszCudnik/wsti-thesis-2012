@@ -6,11 +6,17 @@ cd $ROOT/build
 build='contracts'
 BUILD=${1:-$build}
 
-node debug $ROOT/../node_modules/.bin/mocha \
+#buzz /home/bob/Sources/arch/nodejs/src/nodejs/out/Release/node \
+node \
+	--debug-brk
+	--harmony_proxies \
+	--harmony-collections \
 	$ROOT/../node_modules/.bin/mocha \
 	$ROOT/$BUILD/node_modules/semaphores/semaphore.js \
 	$ROOT/$BUILD/node_modules/jsprops/properties_test.js \
 	$ROOT/$BUILD/test/server.js \
 	$ROOT/$BUILD/test/client.js \
-	-r should \
-	-R spec
+
+
+#	$ROOT/../node_modules/.bin/mocha  ./test/node.js
+#/home/bob/Sources/js/node-inspector-fork1/node-inspector/bin

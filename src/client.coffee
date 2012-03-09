@@ -33,9 +33,11 @@ Client = class Client extends EventEmitter2Async
 
 		@scope scope
 		@dnode dnode @scope()
+		console.log @dnode()
 		@dnode().connect connection_info, (remote, connection) =>
 			@log 'CONNECTED!'
 			@remote remote
+			console.log 'cccccccccccccccccccconnection', connection
 			@connection connection
 			@connection().on 'error', (e) =>
 				@log "[ClientError] #{e}"

@@ -15,6 +15,7 @@ client = require './client'
 	TRoutesSignalListener
 	TService
 	TPlannerNode
+	TSignalCheck
 } = node_
 
 # Common contracts.
