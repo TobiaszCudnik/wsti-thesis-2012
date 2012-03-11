@@ -1,0 +1,11 @@
+TFunc = ? (Any?) -> Any?
+
+TSignalData = ? TFunc or {
+	foo: Any
+	bar: Any
+}
+
+a :: (TSignalData) -> Any
+a = (b) ->
+a ->
+a foo: 1, bar: 2

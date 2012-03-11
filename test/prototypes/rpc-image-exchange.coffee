@@ -144,7 +144,8 @@ describe 'prototype2', ->
 					for name, fn of scope
 						if fn.constructor is Function
 							scope[ name ] = fn.bind scope
-					test.nodes[ server ] = new Server 'localhost', port, scope, @MULTI()
+					addr = host: 'localhost', port: port
+					test.nodes[ server ] = new Server addr, scope, @MULTI()
 
 				l 'all servers initialized'
 
@@ -170,13 +171,13 @@ describe 'prototype2', ->
 			## get user images names
 			->
 				l 'all clients listening'
-				w2u = test.connections['users-db']['website'].remote
+				w2u = test.connections['users-db']['website'].remote()
 				w2u.getUserImageNames {}, @
 
 			## get sized images
 			(images) ->
 				l 'after getUserImageNames'
-				w2i = test.connections['images']['website'].remote
+				w2i = test.connections['images']['website'].remote()
 				# TODO get size from website service (layout actually)
 				specs = ( { name: img, size: { width: 100, height: 100 } } for img in images )
 				w2i.getImagesPromise specs, @
@@ -185,7 +186,7 @@ describe 'prototype2', ->
 			(promises) ->
 				l 'getImagesPromise'
 				assert promises.length > 0
-				w2r = test.connections['image-resize']['images'].remote
+				w2r = test.connections['image-resize']['images'].remote()
 				promises.forEach (promise) =>
 					spec = promise.specs
 					w2r.resizeImage spec, @MULTI()

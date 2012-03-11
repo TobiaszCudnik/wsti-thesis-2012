@@ -22,8 +22,8 @@ describe 'dnode and signals prototype', ->
 
 		server = new Server addr, scope, ->
 			client = new Client addr, {}, ->
-				client.remote.test2()
-				client.remote.test1 ->
+				client.remote().test2()
+				client.remote().test1 ->
 					client.close ->
 						server.close test_done
 
@@ -41,8 +41,8 @@ describe 'dnode and signals prototype', ->
 
 		server = new Server addr, scope, ->
 			client = new Client addr, {}, ->
-				client.remote.test2()
-				client.remote.test1 ->
+				client.remote().test2()
+				client.remote().test1 ->
 					client.close ->
 						server.close test_done
 
@@ -64,8 +64,8 @@ describe 'dnode and signals prototype', ->
 
 		server = new Server addr, scope, ->
 			client = new Client addr, {}, ->
-				client.remote.test2()
-				client.remote.test1 ->
+				client.remote().test2()
+				client.remote().test1 ->
 					client.close ->
 						listener_called.should.be.ok
 						server.close test_done
@@ -91,8 +91,8 @@ describe 'dnode and signals prototype', ->
 
 		server = new Server addr, scope, ->
 			client = new Client addr, {}, ->
-				client.remote.test2()
-				client.remote.test1 ->
+				client.remote().test2()
+				client.remote().test1 ->
 					client.close ->
 						listener_called.should.be.ok
 						server.close test_done
@@ -112,10 +112,10 @@ describe 'dnode and signals prototype', ->
 
 		server = new Server addr, scope, ->
 			client = new Client addr, {}, ->
-				client.remote.test1_.on (next, ret) ->
+				client.remote().test1_.on (next, ret) ->
 					listener_called = yes
 					next ret
-				client.remote.test1 ->
+				client.remote().test1 ->
 					client.close ->
 						listener_called.should.be.ok
 						server.close test_done

@@ -1,1 +1,3 @@
+One can't use linebreak when defining a function contract.
 TRestServerClass = ? (TAddress, [...Str] or Null, Num, TRestRoutes?, TCallback?) ==> TRestServer
+

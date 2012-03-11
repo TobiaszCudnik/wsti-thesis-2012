@@ -1,7 +1,7 @@
 module.exports =
-	debug: no
+	debug: yes
 #	debug: yes
-	contracts: yes
+	contracts: no
 #	contracts: no
 	log: []
 

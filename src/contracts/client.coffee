@@ -37,7 +37,7 @@ TClient = ? {
 	remote: (TObj?) -> TObj
 	connection: (TDnodeConnection?) -> TDnodeConnection?
 	scope: (TObj?) -> TObj
-#	dnode: TDnodeProperty
+	dnode: TDnodeProperty
 	address: TAddressProperty
 
 	close: TCloseSignal

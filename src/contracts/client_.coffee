@@ -33,7 +33,7 @@ TDnodeConnection = ? {
 	stream: TObj
 }
 
-TDnodeCallback = (TObj, TCallback) -> Any
+TDnodeCallback = ? (TObj, TCallback) -> Any
 TAddress = ? {
 #	dnode: (TDnode?) -> TDnode?
 	port: Num

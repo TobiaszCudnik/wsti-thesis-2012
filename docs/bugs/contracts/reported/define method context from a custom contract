@@ -1,0 +1,3 @@
+TCustomContract = ? { a: Num }
+foo :: (@{ TCustomContract }) -> Any
+foo = ->

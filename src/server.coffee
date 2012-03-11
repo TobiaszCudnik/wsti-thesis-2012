@@ -15,17 +15,16 @@ Logger = require './logger'
 
 mixin = require('./utils').mixin
 
-{
-	TServer
-	TServerClass
-	TRestServer
-	TRestServerClass
-} = require './contracts/server'
+if config.contracts
+	{
+		TServer
+		TServerClass
+		TRestServer
+		TRestServerClass
+	} = require './contracts/server'
 
-# TODO mixin
 Server :: TServerClass
 Server = class extends EventEmitter2Async
-#	TODO mixin @, SignalsMixin
 	mixin @, SignalsMixin
 
 	dnode: property 'dnode'
@@ -35,6 +34,10 @@ Server = class extends EventEmitter2Async
 
 	emit: (name) ->
 		@log "emit #{name}" if config.debug
+		super
+
+	on: (name) ->
+		@log "bind to #{name}" if config.debug
 		super
 
 	constructor: (address, scope, next) ->
@@ -82,9 +85,8 @@ Server = class extends EventEmitter2Async
 	)
 
 	close: signal( 'close', after: (next, ret) ->
-		@server().once 'close', =>
+		@server().once 'close', ->
 			next ret
-#			next.bind null, ret
 		@dnode().end()
 		@dnode().close()
 	)
@@ -104,16 +106,16 @@ Server = class extends EventEmitter2Async
 		next ret
 	)
 
-for prop, Tcontr of TServer.oc
-	continue if not Server::[prop] or
-		prop is 'constructor'
-	Server.prototype :: Tcontr
-	Server::[prop] = Server::[prop]
+if config.contracts
+	for prop, Tcontr of TServer.oc
+		continue if not Server::[prop] or
+			prop is 'constructor'
+		Server.prototype :: Tcontr
+		Server::[prop] = Server::[prop]
 
 #	send: (next) ->
 #	listen: (next) ->
 
-# TODO Turn me on
 RestServer :: TRestServerClass
 RestServer = class extends Server
 #	mixin @, SignalsMixin
@@ -158,11 +160,12 @@ RestServer = class extends Server
 		@rest().close()
 	)
 
-#for prop, Tcontr of TRestServer.oc
-#	continue if not RestServer::[prop] or
-#		prop is 'constructor'
-#	RestServer.prototype :: Tcontr
-#	RestServer::[prop] = RestServer::[prop]
+if config.contracts
+	for prop, Tcontr of TRestServer.oc
+		continue if not RestServer::[prop] or
+			prop is 'constructor'
+		RestServer.prototype :: Tcontr
+		RestServer::[prop] = RestServer::[prop]
 
 module.exports = {
 	Server

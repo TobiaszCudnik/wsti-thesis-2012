@@ -1,8 +1,10 @@
 #Foo :: (Num, Any) ==> { attr1: Any, attr2: Any, x: Any }
-a :: ({a: Str, b: Str}?) -> Any
-a = (b) ->
-	console.log b
-a null
+TCustomContract = ? { a: Num }
+foo :: ({ TCustomContract }) -> Any
+foo = ->
+
+foo.call a: 2
+
 #signal_val2 = new Bar 1
 #
 ##console.log '--------------'

@@ -8,11 +8,12 @@ signal = jsprops.signal
 SignalsMixin = jsprops.SignalsMixin
 EventEmitter2Async = require('eventemitter2async').EventEmitter2
 
-{
-	TDnodeConnect
-	TClientClass
-	TClient
-} = require('./contracts/client')
+if config.contracts
+	{
+		TDnodeConnect
+		TClientClass
+		TClient
+	} = require('./contracts/client')
 
 mixin = require('./utils').mixin
 
@@ -33,11 +34,9 @@ Client = class Client extends EventEmitter2Async
 
 		@scope scope
 		@dnode dnode @scope()
-		console.log @dnode()
 		@dnode().connect connection_info, (remote, connection) =>
 			@log 'CONNECTED!'
 			@remote remote
-			console.log 'cccccccccccccccccccconnection', connection
 			@connection connection
 			@connection().on 'error', (e) =>
 				@log "[ClientError] #{e}"
@@ -58,18 +57,19 @@ Client = class Client extends EventEmitter2Async
 #		@connection.end()
 
 	log: signal('log', on: (next, ret, args...) ->
-		return next ret if not Logger.log.apply @, args
+#		return next ret if not Logger.log.apply @, args
+		return if not config.debug
 		console.log "[CLIENT:#{@address()}] #{args?.join ', '}"
 	)
 
-for prop, Tcontr of TClient.oc
-	continue if not Client::[prop] or
-		prop is 'constructor'
-	Client.prototype :: Tcontr
-	Client::[prop] = Client::[prop]
-
-module.exports = Client
-
 if config.contracts
+	for prop, Tcontr of TClient.oc
+		continue if not Client::[prop] or
+			prop is 'constructor'
+		Client.prototype :: Tcontr
+		Client::[prop] = Client::[prop]
+
 	dnode.connect :: TDnodeConnect
 	dnode.connect = dnode.connect
+
+module.exports = Client

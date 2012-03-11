@@ -47,8 +47,7 @@ describe 'Server', ->
 		server = new Server addr, scope, next
 
 	afterEach (next) ->
-		server.close ->
-			do next
+		server.close next
 
 	it 'should listen on a port', (next) ->
 		# check port by a socket connection

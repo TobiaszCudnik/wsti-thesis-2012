@@ -1,0 +1,4 @@
+a :: ({a: Str, b: Str}?) -> Any
+a = (b) ->
+	console.log b
+a null

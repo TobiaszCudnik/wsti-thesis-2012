@@ -15,13 +15,13 @@ property = jsprops.property
 signal = jsprops.signal
 mixin = require('./utils').mixin
 
-### CONTRACTS ###
 if config.contracts
-	contracts = require './contracts/node'
-	TNode = contracts.TNode
-### CONTRACTS END ###
+	{
+		TNode
+		TNodeClass
+	} = require './contracts/node'
 
-# FIXME scope setter, maybe in contructor
+Node :: TNodeClass
 Node = class Node extends EventEmitter2Async
 	mixin Node, jsprops.SignalsMixin
 
@@ -196,8 +196,11 @@ Node = class Node extends EventEmitter2Async
 		@provides.push 
 	deleteProvide: (provide) -> # TODO
 
-module.exports = Node
-
 if config.contracts
-	module.exports :: TNode
-	module.exports = module.exports
+	for prop, Tcontr of TNode.oc
+		continue if not Node::[prop] or
+			prop is 'constructor'
+		Node.prototype :: Tcontr
+		Node::[prop] = Node::[prop]
+
+module.exports = Node

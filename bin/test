@@ -14,6 +14,8 @@ BUILD=${1:-$build}
 	$ROOT/$BUILD/node_modules/jsprops/properties_test.js \
 	$ROOT/$BUILD/test/server.js \
 	$ROOT/$BUILD/test/client.js \
+	$ROOT/$BUILD/test/prototypes/dnode-signals.js \
+	$ROOT/$BUILD/test/prototypes/rpc-image-exchange.js \
 	-r should \
 	-R spec
 
