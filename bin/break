@@ -1,21 +1,23 @@
 #!/usr/bin/env sh
 ROOT=`dirname $0`/..
 
-cd $ROOT/build
-
 build='contracts'
-BUILD=${1:-$build}
+BUILD=${1:-$build}   # Defaults to /tmp dir.
 
 #buzz /home/bob/Sources/arch/nodejs/src/nodejs/out/Release/node \
-node \
-	--debug-brk
+~/node_modules/.bin/runjs \
+	--debug-brk \
 	--harmony_proxies \
 	--harmony-collections \
-	$ROOT/../node_modules/.bin/mocha \
-	$ROOT/$BUILD/node_modules/semaphores/semaphore.js \
-	$ROOT/$BUILD/node_modules/jsprops/properties_test.js \
-	$ROOT/$BUILD/test/server.js \
-	$ROOT/$BUILD/test/client.js \
+	$ROOT/node_modules/.bin/mocha \
+	--timeout 600000 \
+	$ROOT/build/$BUILD/node_modules/semaphores/test/semaphore.js \
+	$ROOT/build/$BUILD/node_modules/jsprops/properties_test.js \
+	$ROOT/build/$BUILD/test/server.js \
+	$ROOT/build/$BUILD/test/client.js \
+	$ROOT/build/$BUILD/test/node.js \
+	$ROOT/build/$BUILD/test/prototypes/dnode-signals.js \
+	$ROOT/build/$BUILD/test/prototypes/rpc-image-exchange.js \
 
 
 #	$ROOT/../node_modules/.bin/mocha  ./test/node.js

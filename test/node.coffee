@@ -36,8 +36,8 @@ describe 'Node', ->
 		it 'should create dnode server', (next) ->
 			addr = host: 'localhost', port: 1234
 			node = new Node addr, null, ->
-				client = new Client addr, null, ->
-					client.close node.close.bind node, next
+				node.server().dnode().server.connections.should.equal 0
+				node.close next
 
 #		it 'should create REST server', (next) ->
 #			addr = host: 'localhost', port: 1234
@@ -85,18 +85,17 @@ describe 'Node', ->
 				client = new Client addr, null, next
 
 		it 'should allow client to connect', (next) ->
-			client.remote.should.be.ok
-			client.close node.close.bind node, next
+			client.remote().should.be.ok
+			client.close -> node.close next
 
 		it 'should provide signals', (test_done) ->
 			fired = no
 			# bind to signal
-			client.remote.getProvidedServices_.on (next, ret) ->
+			client.remote().getProvidedServices_.on (next, ret) ->
 				fired = yes
 				next ret
 			# emit signal
-			client.remote.getProvidedServices ->
-				debugger
+			client.remote().getProvidedServices ->
 				fired.should.be.ok
 				client.close ->
 					node.close test_done

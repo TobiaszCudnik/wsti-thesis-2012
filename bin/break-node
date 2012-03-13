@@ -9,7 +9,7 @@ BUILD=${1:-$build}   # Defaults to /tmp dir.
 #node \
 #/home/bob/Download/node-v0.5.10/out/Release/node \
 #	~/node_modules/.bin/runjs \
-buzz /home/bob/Sources/arch/nodejs/src/nodejs/out/Release/node \
+buzz node-harmony \
 	--debug-brk \
 	--harmony_proxies \
 	--harmony-collections \

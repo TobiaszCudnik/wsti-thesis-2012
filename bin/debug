@@ -1,3 +1,19 @@
 #!/usr/bin/env sh
-ROOT=dirname $0
-node debug $ROOT/../build/main
+ROOT=`dirname $0`/..
+
+build='contracts'
+BUILD=${1:-$build}   # Defaults to /tmp dir.
+
+cd $ROOT/build/$BUILD
+
+~/node_modules/.bin/runjs debug \
+	--harmony_proxies \
+	--harmony-collections \
+	$ROOT/../node_modules/.bin/mocha \
+	$ROOT/$BUILD/node_modules/semaphores/test/semaphore.js \
+	$ROOT/$BUILD/node_modules/jsprops/properties_test.js \
+	$ROOT/$BUILD/test/server.js \
+	$ROOT/$BUILD/test/client.js \
+	$ROOT/$BUILD/test/node.js \
+	$ROOT/$BUILD/test/prototypes/dnode-signals.js \
+	$ROOT/$BUILD/test/prototypes/rpc-image-exchange.js

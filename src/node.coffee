@@ -24,6 +24,7 @@ if config.contracts
 Node :: TNodeClass
 Node = class Node extends EventEmitter2Async
 	mixin Node, jsprops.SignalsMixin
+	# TODO EventEmitter2Async, inherit from general object
 
 	address: property 'address'
 	server: property 'server'
@@ -32,6 +33,14 @@ Node = class Node extends EventEmitter2Async
 	requires: property 'requires'
 	provides: property 'provides'
 	planner_node: property 'planner_node'
+
+	emit: (name) ->
+		@log "emit #{name}" if config.debug
+		super
+
+	on: (name) ->
+		@log "bind to #{name}" if config.debug
+		super
 
 	constructor: (address, services, next) ->
 		# mixed in method from Signals
@@ -51,10 +60,9 @@ Node = class Node extends EventEmitter2Async
 
 		@start().once next
 
-	# TODO expose signals
 	initScope: ->
 		signals = {}
-		@getSignals().forEach (name) =>
+		for name in @getSignals()
 			# bind signal to this context, so it can be detached
 			signals[ name ] = @[ name ].bind @
 			# bind getter methods, so we'll be async safe
@@ -172,15 +180,13 @@ Node = class Node extends EventEmitter2Async
 	###
 	serverStart: signal( 'serverStart', (emit) ->
 		@start().once (next, ret) =>
-			@server().server.on 'ready', emit
-#			console.log typeof @server().server.on
-#			@server().server.on 'ready', new Function "console.log('aaa');"
+			@server().on 'ready', emit
 			next ret
 	)
 
 	serverClose: signal( 'serverClose', (emit) ->
 		@start().once (next, ret) =>
-			@server().server.on 'close', emit
+			@server().on 'close', emit
 			next ret
 	)
 

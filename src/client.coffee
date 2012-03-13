@@ -22,8 +22,10 @@ Client :: TClientClass
 Client = class Client extends EventEmitter2Async
 	mixin Client, SignalsMixin
 
+	# scope of the server client is connected to
 	remote: property 'remote'
 	connection: property 'connection'
+	# scope of this client, exposed to the server
 	scope: property 'scope'
 	dnode: property 'dnode'
 	address: property 'address'

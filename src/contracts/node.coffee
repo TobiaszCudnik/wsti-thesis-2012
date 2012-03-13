@@ -34,10 +34,8 @@ client = require './client'
 # Client contracts.
 { TClient } = client
 
-#### TNode
-# @TODO check for all signal initialized (on post constructor
-# invatiant?)
-TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
+#### TNode class object.
+TNodeClass = ? {
 
 	#### Properties
 	address: (TNodeAddr?) -> TNodeAddr?
@@ -63,16 +61,12 @@ TNode = ? (TNodeAddr, [...Any], TCallback) ==> {
 		check = [ ret, $1 ]
 }
 
+#### TNode class contructor
+TNodeConstructor = ? (TNodeAddr, [...Any], TCallback) ==> TNodeClass
+
 #### EXPORTS
 
 module.exports = {
-	# Applies contracts on an exports scope.
-	applyContracts: (scope) ->
-		e = scope
-
-		e.Node :: TNode
-		e.Node = e.Node
-
 	TNodeAddr
 	TRoutes
 	TServicesSignal

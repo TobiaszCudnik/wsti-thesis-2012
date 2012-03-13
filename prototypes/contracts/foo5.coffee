@@ -1,9 +1,9 @@
 #Foo :: (Num, Any) ==> { attr1: Any, attr2: Any, x: Any }
 TCustomContract = ? { a: Num }
-foo :: ({ TCustomContract }) -> Any
+foo :: (@{ a: Str }) -> Any
 foo = ->
 
-foo.call a: 2
+foo.call a: 'b'
 
 #signal_val2 = new Bar 1
 #
