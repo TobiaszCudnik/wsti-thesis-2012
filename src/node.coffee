@@ -2,7 +2,6 @@ RestServer = require('./server').RestServer
 Server = require('./server').Server
 Client = require './client'
 Service = require './service'
-PlannerNode = require './plannernode'
 require 'sugar'
 EventEmitter2Async = require('eventemitter2async').EventEmitter2
 config = require '../config'
@@ -17,11 +16,11 @@ mixin = require('./utils').mixin
 
 if config.contracts
 	{
-		TNode
+		TNodeConstructor
 		TNodeClass
 	} = require './contracts/node'
 
-Node :: TNodeClass
+Node :: TNodeConstructor
 Node = class Node extends EventEmitter2Async
 	mixin Node, jsprops.SignalsMixin
 	# TODO EventEmitter2Async, inherit from general object
@@ -46,19 +45,23 @@ Node = class Node extends EventEmitter2Async
 		# mixed in method from Signals
 		@initSignals()
 
+		# register callback
+		@start().once next
+
 		@requires []
 		@provides []
 		@address address
 
-		@addRequire requires for requires in services?.requires?
-		@addProvide provides for provides in services?.provides?
+		@addRequire services.requires if services?.requires?
+		@addProvide services.provides if services?.provides?
 
 		@initScope()
 
 		# creates @server
-		@connectToGraph()
-
-		@start().once next
+		if @connectToGraph?
+			@connectToGraph?()
+		else
+			@start ->
 
 	initScope: ->
 		signals = {}
@@ -89,57 +92,53 @@ Node = class Node extends EventEmitter2Async
 		-> @next @ret
 	))
 
-	initializeServer: ->
-		addr = @this.address()
-		if addr.rest_port
-			@this.server new RestServer(
-				addr, addr.rest_port, @this.getRestRoutes(), @this.scope(),
-					@MULTI 'server'
-			)
-		# Init socket-only server if applicable.
-		else @this.server new Server(
-			addr, @this.scope(), @MULTI 'server'
+	connectToPlannerNode_: (address, next) ->
+		@this.planner_node = @this.connectToNode(
+			address.host, address.port, next
 		)
 
-	connectToPlannerNode: flow.define(
-		->
-			@this.planner_node = @this.connectToNode(
-				config.planner_node.host, config.planner_node.port, @
+	initializeServer_: (flow) ->
+		addr = @address()
+		if addr.rest_port
+			@server new RestServer(
+				addr, addr.rest_port, @getRestRoutes(), @scope(),
+					flow.MULTI 'server'
 			)
-		->
-			@this.planner_node.remote.emit 'getConnections', address, @
-		-> @MULTI 'connections'
-	)
+		# Init socket-only server if applicable.
+		else @server new Server(
+			addr, @scope(), flow.MULTI 'server'
+		)
 
 	# Asyncly initialize all connections/servers 
 	# Emits 'start' signal
 	connectToGraph: flow.define(
-		(@next) ->
-			# Init REST server if applicable.
-			@this.initializeServer.call @
+		->
+			# Init REST server if applicable, pass the flow object.
+			@this.initializeServer_ @
 			# Connect to the planner node.
 			# Only if node planner configured.
-			# TODO define plannernode skip for this logic
-			# override? setting flag?
-			return if not config.planner_node? or @graph
-			# Planner flow
-			@this.connectToPlannerNode.call @
+			if not config.planner_node or not @this.connectToPlannerNode
+				do @MULTI 'planner_node'
+			else
+				@this.connectToPlannerNode config.planner_node, @MULTI 'planner_node'
 		(args) ->
-			# connect only if node planner configured
-			# TODO define plannernode skip for this logic (override?)
-			return @() if not config.planner_node? or @graph
-			graph_connections = args[1]
+			# emit 'start' if there's no planner node
+			if not args.planner_node
+				@this.start ->
+			# continue otherwise
+			else do @
+		->
+			@this.planner_node().remote().getConnections @this.address(), @
+		(graph_connections) ->
 			for addr in graph_connections
 				@this.connectToNode addr.host, addr.port, @MULTI()
 		-> @this.start @
-		-> @next?()
 	)
 
-	# just bind a listener, not override the signal
-	restRoutes: signal('restRoutes', on: (next, ret) ->
-#		ret.push ...
-		next ret
-	)
+#	restRoutes: signal('restRoutes', on: (next, ret) ->
+##		ret.push ...
+#		next ret
+#	)
 
 	start: signal('start')
 
@@ -160,20 +159,22 @@ Node = class Node extends EventEmitter2Async
 				next @provides()
 	)
 
-	getRequiredServices: signal( 'getRequiredServices', on: flow.define(
-		(@next, @ret = [], include_connections = no) ->
-			if not include_connections
-				@next @ret.union @this.requires()
-			return
+	getRequiredServices: signal( 'getRequiredServices',
+		on: flow.define(
+			(@next, @ret = [], include_connections = no) ->
+				if not include_connections
+					@next @ret.union @this.requires()
+				return
 
-			clients = @this.clients()
-			# broadcast the request to all clients in parallel
-			for client in clients
-				client.getRequiredServices @MULTI()
-		(services) ->
-			# after fetching ALL callbacks, merge and push to main callback
-			@next @ret.union services
-	))
+				clients = @this.clients()
+				# broadcast the request to all clients in parallel
+				for client in clients
+					client.getRequiredServices @MULTI()
+			(services) ->
+				# after fetching ALL callbacks, merge and push to main callback
+				@next @ret.union services
+		)
+	)
 
 	###*
 	Bind to server start event.
@@ -190,20 +191,24 @@ Node = class Node extends EventEmitter2Async
 			next ret
 	)
 
-	connectToNode: (host, port, next) ->
-		@clients.push new Client host, port, next
+	connectToNode: (address, port, next) ->
+		@clients.push new Client address, port, next
 		@clients[-1]
 
-	# getters / setters
-	addRequire: (req) -> @requires.push req
-	deleteRequire: (req) -> @requires = @requires.remove req
+	addProvide: (name, service_names...) ->
+		@provides().push arg for arg in service_names
+		
+	deleteProvide: (service_name) ->
+		@provides @provides().remove service_name
 
-	addProvide: (name, args...) ->
-		@provides.push 
-	deleteProvide: (provide) -> # TODO
+	addRequire: (name, service_names...) ->
+		@requires().push arg for arg in service_names
+		
+	deleteRequire: (service_name) ->
+		@requires @requires().remove service_name
 
 if config.contracts
-	for prop, Tcontr of TNode.oc
+	for prop, Tcontr of TNodeClass.oc
 		continue if not Node::[prop] or
 			prop is 'constructor'
 		Node.prototype :: Tcontr

@@ -22,7 +22,6 @@ properties = require './properties'
 
 # Contract, depends on dnode.
 TDnodeClient = ?! (x) ->
-	console.log 'TDnodeClient', x
 	x.remoteStore isnt undefined
 
 TDnodeConnection = ? {

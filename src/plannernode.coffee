@@ -4,48 +4,50 @@ jsprops = require 'jsprops'
 property = jsprops.property
 signal = jsprops.signal
 require '../src/utils'
+mixin = require('./utils').mixin
 
-class PlannerNode extends Node
+PlannerNode = class PlannerNode extends Node
+	mixin PlannerNode, jsprops.SignalsMixin
 
 	constructor: (@graph, address, services, next) ->
 		super address, services, next
-		
-		# bind to signals
-		@onGetConnections @getConnections_
-		@onGetGraphMap @getGraphMap_
 
-	# TODO docme
-	getRoutes: ->
-		super().union [
-			[ 'getGraph', @rest 'get', @getGraph_ ]
-			[ 'getConnections', @rest 'get', @getConnections_ ]
-		]
+	graph: property( 'graph', null, {} )
 
-	getConnections: signal('getConnections', on: (next, ret, node_addr) ->
-		debugger
-		connections = $ [
-				":root >"
-				" :has( .host:val('#{node_addr.host}') )"
-				":has( .port:val('#{node_addr.port}') )"
-				" .connections"
-			].join(''), @graph
-#		matching_nodes = _.filter @graph, (v) ->
-#			v.host is node_addr.host and
-#				v.port is node_addr.port
-#
-#		connections = matching_nodes.map (v) -> v.connections
+	# TODO
+	# PlannerNode should expose these essential signals via REST API
+#	restRoutes: @signal('restRoutes', on: (next, ret) ->
+#		next (ret or []).union [
+#			[ 'getGraph', @rest 'get', @getGraph_ ]
+#			[ 'getConnections', @rest 'get', @getConnections_ ]
+#		]
+#	)
 
-		nodes_to_connect = []
-		for c in connections
-			nodes_to_connect.push @graph[ i ] for i in c
+	getConnections: signal('getConnections',
+		on: (next, ret, node_addr) ->
+			debugger
 
-		ret ?= []
-		next (ret or []).union nodes_to_connect
+			# find all connection for requested node from the graph object
+			connections = @graph
+				.filter (v) ->
+					addr = v.address
+					addr.host is node_addr.host and addr.port is node_addr.port
+				.map (v) ->
+					v.connections
+				.flatten()
+
+			nodes_to_connect = []
+			for i in connections
+				nodes_to_connect.push @graph[ i ].address
+
+			next ( ret or [] ).union nodes_to_connect
 	)
 
-	getGraphMap: signal('getGraphMap', on: (next, ret, node_addr) ->
-		# TODO
-		next (ret or []).union @graph
+	getGraphMap: signal('getGraphMap',
+		on: (next, ret) -> next (ret or []).union @graph
 	)
+
+	# disable connecting to the node graph
+	connectToPlannerNode: null
 		
 module.exports = PlannerNode

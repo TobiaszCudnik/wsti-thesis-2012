@@ -17,7 +17,7 @@ if config.contracts
 
 mixin = require('./utils').mixin
 
-# TODO mixin, inherit from common object
+# TODO mixin EventEmitter2Async, inherit from common object
 Client :: TClientClass
 Client = class Client extends EventEmitter2Async
 	mixin Client, SignalsMixin
@@ -68,7 +68,7 @@ if config.contracts
 	for prop, Tcontr of TClient.oc
 		continue if not Client::[prop] or
 			prop is 'constructor'
-		Client.prototype :: Tcontr
+		Client::[prop] :: Tcontr
 		Client::[prop] = Client::[prop]
 
 	dnode.connect :: TDnodeConnect

@@ -55,8 +55,6 @@ Server = class extends EventEmitter2Async
 			block: @newClient.bind @
 
 		@dnode().listen params
-#		@dnode().use (client, remote) =>
-#			@newClient client, remote
 		@server @dnode().server
 		@dnode().on 'ready', next
 		@dnode().on 'error', @error
@@ -76,8 +74,8 @@ Server = class extends EventEmitter2Async
 		next ret
 	)
 
-	clientDisconnect: signal('clientDisconnect', on:
-		(next, ret, connection) ->
+	clientDisconnect: signal('clientDisconnect',
+		on: (next, ret, connection) ->
 			# remove the dead client, then remove empty array elements
 			# TODO use proto sugar
 			@clients _.compact _.map @clients(), (client) ->

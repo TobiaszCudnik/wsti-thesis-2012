@@ -73,7 +73,8 @@ module.exports = {
 	TServicesSignalListener
 	TRoutesSignal
 	TRoutesSignalListener
-	TNode
+	TNodeClass
+	TNodeConstructor
 	TPlannerNode
 	TService
 }

@@ -4,5 +4,11 @@ module.exports =
 	contracts: no
 #	contracts: no
 	log: []
+	planner_node: null
 
-global.contracts = module.exports.contracts
+if module.exports.contracts
+	global.contracts = yes
+
+else
+	contracts = require 'contracts.js'
+	contracts.enabled false

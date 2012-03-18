@@ -10,19 +10,18 @@ BUILD=${1:-$build}
 	--harmony_proxies \
 	--harmony-collections \
 	$ROOT/../node_modules/.bin/mocha \
+	$ROOT/$BUILD/test/bootstrap.js \
 	$ROOT/$BUILD/node_modules/semaphores/semaphore.js \
-	$ROOT/$BUILD/node_modules/jsprops/properties_test.js \
+	$ROOT/$BUILD/node_modules/jsprops/test/properties_test.js \
 	$ROOT/$BUILD/test/server.js \
 	$ROOT/$BUILD/test/client.js \
 	$ROOT/$BUILD/test/node.js \
+	$ROOT/$BUILD/test/plannernode.js \
 	$ROOT/$BUILD/test/prototypes/dnode-signals.js \
 	$ROOT/$BUILD/test/prototypes/rpc-image-exchange.js \
 	-r should \
 	-R spec
 
-#	$ROOT/$BUILD/test/node.js \
-#	$ROOT/$BUILD/test/prototypes/dnode-signals.js \
-#	$ROOT/$BUILD/test/prototypes/rpc-image-exchange.js \
 # TODO add asyncemitter tests
 
 #	$ROOT/../test/*.coffee \

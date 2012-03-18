@@ -58,11 +58,13 @@ TServer = ? {
 TServerClass = ? (TAddress, Any, TCallback?) ==> TServer
 
 #### TRestServer
+TRestAddressProperty = ? (TRestAddress?) -> TRestAddress?
+
 # TRestServer instance object.
 TRestServer = ? {
 	rest: (TRestServerComposed?) -> TRestServerComposed
-	address: TRestAddress
-	initServers_: (Self, TAddress, TCallback, { MULTI: -> Any }) -> Any
+	address: TRestAddressProperty
+	initServers_: (Self, TAddress, TCallback) -> Any
 	close: TCloseSignal
 }
 

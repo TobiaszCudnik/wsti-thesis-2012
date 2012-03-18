@@ -12,10 +12,11 @@ BUILD=${1:-$build}   # Defaults to /tmp dir.
 	$ROOT/node_modules/.bin/mocha \
 	--timeout 600000 \
 	$ROOT/build/$BUILD/node_modules/semaphores/test/semaphore.js \
-	$ROOT/build/$BUILD/node_modules/jsprops/properties_test.js \
+	$ROOT/build/$BUILD/node_modules/jsprops/test/properties_test.js \
 	$ROOT/build/$BUILD/test/server.js \
 	$ROOT/build/$BUILD/test/client.js \
 	$ROOT/build/$BUILD/test/node.js \
+	$ROOT/build/$BUILD/test/plannernode.js \
 	$ROOT/build/$BUILD/test/prototypes/dnode-signals.js \
 	$ROOT/build/$BUILD/test/prototypes/rpc-image-exchange.js \
 
