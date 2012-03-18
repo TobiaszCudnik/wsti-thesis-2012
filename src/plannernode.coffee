@@ -6,11 +6,12 @@ signal = jsprops.signal
 require '../src/utils'
 mixin = require('./utils').mixin
 
+# TODO inherit only for a subset of Node?
 PlannerNode = class PlannerNode extends Node
 	mixin PlannerNode, jsprops.SignalsMixin
 
-	constructor: (@graph, address, services, next) ->
-		super address, services, next
+	constructor: (@graph, address, next) ->
+		super address, next
 
 	graph: property( 'graph', null, {} )
 
@@ -25,8 +26,6 @@ PlannerNode = class PlannerNode extends Node
 
 	getConnections: signal('getConnections',
 		on: (next, ret, node_addr) ->
-			debugger
-
 			# find all connection for requested node from the graph object
 			connections = @graph
 				.filter (v) ->

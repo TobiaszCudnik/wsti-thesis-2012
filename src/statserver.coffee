@@ -1,7 +1,7 @@
 flow = require 'flow'
-server = require './server'
+{ RestServer } = require './server'
 
-class StatServer extends server.RestServer
+class StatServer extends RestServer
 	constructor: (host, rest_port, port, next) ->
 		routes = {}
 
@@ -10,4 +10,6 @@ class StatServer extends server.RestServer
 	addTransfer: (transfer) ->
 
 	addTransaction: (transaction) ->
-		
+
+
+module.exports = StatServer

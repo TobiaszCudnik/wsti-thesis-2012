@@ -11,48 +11,12 @@ sinon = require 'sinon'
 jsprops = require 'jsprops'
 
 # debug
-config.debug = no
 i = require('util').inspect
 l = (ms...) -> console.log i m for m in ms
 
 describe 'Node', ->
 
-	describe 'object', ->
-
-		it 'should construct with a callback', (next) ->
-			addr = host: 'localhost', port: 1234
-			node = new Node addr, null, ->
-				# requires async to get node value
-				node.address().host.should.equal addr.host
-				node.address().port.should.equal addr.port
-				node.close next
-
-		it 'should close with a callback', (next) ->
-			addr = host: 'localhost', port: 1234
-			node = new Node addr, null, ->
-				node.close ->
-					process.nextTick next
-
-		it 'should create dnode server', (next) ->
-			addr = host: 'localhost', port: 1234
-			node = new Node addr, null, ->
-				node.server().dnode().server.connections.should.equal 0
-				node.close next
-
-#		it 'should create REST server', (next) ->
-#			addr = host: 'localhost', port: 1234
-#			node = new Node addr, null, (on_start_finish) ->
-#				request = require 'request'
-#				request "http://localhost:1234/", (err, res, body) ->
-#					# TODO check
-#					err.should.be.false()
-#					next()
-
-		it 'should expose signals', (next) ->
-			addr = host: 'localhost', port: 1234
-			node = new Node addr, null, ->
-				node.scope().length > 0
-				node.close next
+	describe 'event emitter', ->
 
 		it 'should have an async event emitter', (next) ->
 			addr = host: 'localhost', port: 1234
@@ -65,15 +29,49 @@ describe 'Node', ->
 			for name, fn of emiter_proto
 				continue if not emiter_proto.hasOwnProperty name
 				Node.prototype[ name ].restore?()
-			@node = new Node addr, null, ->
-			@node.on 'foo', (next, ret) ->
+			node = new Node addr, ->
+			node.on 'foo', (next, ret) ->
 				# TODO test out the ret value
 				setTimeout next, 0
-			@node.emit 'foo', ->
+			node.emit 'foo', ->
 				# unstub Node class
 				for name, fn of Node.prototype
 					Node.prototype[ name ].restore?()
 				next()
+
+	describe 'object', ->
+		node = addr = null
+
+		beforeEach (done) ->
+			addr = host: 'localhost', port: 1234
+			node = new Node addr, ->
+				node.start done
+
+		it 'should construct with a callback', (next) ->
+			# requires async to get node value
+			node.address().host.should.equal addr.host
+			node.address().port.should.equal addr.port
+			node.close next
+
+		it 'should close with a callback', (next) ->
+			node.close next
+
+		it 'should create dnode server', (next) ->
+			node.server().dnode().server.connections.should.equal 0
+			node.close next
+
+#		it 'should create REST server', (next) ->
+#			addr = host: 'localhost', port: 1234
+#			node = new Node addr, null, (on_start_finish) ->
+#				request = require 'request'
+#				request "http://localhost:1234/", (err, res, body) ->
+#					# TODO check
+#					err.should.be.false()
+#					next()
+
+		it 'should expose signals', (next) ->
+			node.scope().length > 0
+			node.close next
 
 	describe 'integration', ->
 		spy = client = node =  scope = null
@@ -81,21 +79,23 @@ describe 'Node', ->
 		beforeEach (next) ->
 			scope = {}
 			scope.addr = addr = host: 'localhost', port: 1234
-			node = new Node addr, null, ->
+			node = new Node addr, ->
 				client = new Client addr, null, next
+			node.start ->
 
 		it 'should allow client to connect', (next) ->
 			client.remote().should.be.ok
-			client.close -> node.close next
+			client.close ->
+				node.close next
 
 		it 'should provide signals', (test_done) ->
 			fired = no
 			# bind to signal
-			client.remote().getProvidedServices_.on (next, ret) ->
+			client.remote().newClient_.on (next, ret) ->
 				fired = yes
 				next ret
 			# emit signal
-			client.remote().getProvidedServices ->
+			client.remote().newClient ->
 				fired.should.be.ok
 				client.close ->
 					node.close test_done
