@@ -1,6 +1,8 @@
 config = require '../config'
 PlannerNode = require '../src/plannernode'
 sinon = require 'sinon'
+{ Graph } = require '../src/graph'
+require 'sugar'
 
 describe 'plannernode', ->
 	describe 'statnode data', ->
@@ -23,17 +25,19 @@ describe 'plannernode', ->
 		beforeEach (next) ->
 			addr = port: 1234, host: 'localhost'
 			config.planner_node = addr
-			planner_node = new PlannerNode graph, addr, null, next
+			planner_node = new PlannerNode graph, addr, next
 #			mock = sinon.mock planner_node
 		
 		afterEach (next) ->
 			planner_node.close next
 
 		describe 'unit', ->
-			it 'should return connections for a node', (next) ->
-				planner_node.getConnections graph[0].address, (connections) ->
-					connections.should.eql [ graph[1].address, graph[2].address ]
-					next()
+			it 'should return connections for a node', (done) ->
+				planner_node.getGraph (graph_json) ->
+					graph = Graph.fromJson graph_json
+					connections = graph.getConnections graph_json[0].address
+					connections.should.eql [ graph_json[1].address, graph_json[2].address ]
+					done()
 
 #		describe 'properties', ->
 #			beforeEach ->

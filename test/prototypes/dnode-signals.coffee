@@ -2,7 +2,7 @@ jsprops = require 'jsprops'
 Server = require('../../src/server').Server
 Client = require '../../src/client'
 EventEmitter2Async = require('eventemitter2async').EventEmitter2
-#expect = require 'expect'
+flow = require 'flow'
 require 'should'
 
 describe 'dnode and signals prototype', ->

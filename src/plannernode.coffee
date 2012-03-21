@@ -1,19 +1,24 @@
 Node = require '../src/node'
 require 'sugar'
-jsprops = require 'jsprops'
-property = jsprops.property
-signal = jsprops.signal
-require '../src/utils'
-mixin = require('./utils').mixin
+{
+	property
+	signal
+	SignalsMixin
+} = require 'jsprops'
+{ mixin } = require './utils'
+{ Graph } = require './graph'
 
-# TODO inherit only for a subset of Node?
-PlannerNode = class PlannerNode extends Node
-	mixin PlannerNode, jsprops.SignalsMixin
-
-	constructor: (@graph, address, next) ->
-		super address, next
+class PlannerNode extends Node
+	mixin PlannerNode, SignalsMixin
 
 	graph: property( 'graph', null, {} )
+
+	# TODO change @graph connections to services
+	# once strategies will be implemented
+	# then use implementation of GraphConnectionsStrategy
+	constructor: (graph, address, next) ->
+		@graph new Graph graph
+		super address, next
 
 	# TODO
 	# PlannerNode should expose these essential signals via REST API
@@ -24,29 +29,10 @@ PlannerNode = class PlannerNode extends Node
 #		]
 #	)
 
-	getConnections: signal('getConnections',
-		on: (next, ret, node_addr) ->
-			# find all connection for requested node from the graph object
-			connections = @graph
-				.filter (v) ->
-					addr = v.address
-					addr.host is node_addr.host and addr.port is node_addr.port
-				.map (v) ->
-					v.connections
-				.flatten()
-
-			nodes_to_connect = []
-			for i in connections
-				nodes_to_connect.push @graph[ i ].address
-
-			next ( ret or [] ).union nodes_to_connect
+	getGraph: signal('getGraph',
+		on: (next, ret) ->
+			# TODO manual casting to json, consider better options
+			next (ret or []).union @graph().toJson()
 	)
-
-	getGraphMap: signal('getGraphMap',
-		on: (next, ret) -> next (ret or []).union @graph
-	)
-
-	# disable connecting to the node graph
-	connectToPlannerNode: null
 		
 module.exports = PlannerNode

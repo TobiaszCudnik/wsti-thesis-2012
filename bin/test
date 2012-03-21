@@ -11,8 +11,10 @@ BUILD=${1:-$build}
 	--harmony-collections \
 	$ROOT/../node_modules/.bin/mocha \
 	$ROOT/$BUILD/test/bootstrap.js \
-	$ROOT/$BUILD/node_modules/semaphores/semaphore.js \
-	$ROOT/$BUILD/node_modules/jsprops/test/properties_test.js \
+	$ROOT/../node_modules/semaphores/test/semaphores.js \
+	$ROOT/../node_modules/eventemitter2async/test/async/test.js \
+	$ROOT/../node_modules/jsprops/test/properties.js \
+	$ROOT/../node_modules/jsprops/test/signals.js \
 	$ROOT/$BUILD/test/server.js \
 	$ROOT/$BUILD/test/client.js \
 	$ROOT/$BUILD/test/node.js \

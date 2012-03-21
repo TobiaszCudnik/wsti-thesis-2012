@@ -1,3 +1,3 @@
-[submodule "node_modules/eventemitter2async"]
-	path = node_modules/eventemitter2async
-	url = git@github.com:TobiaszCudnik/EventEmitter2Async.git
+#[submodule "node_modules/eventemitter2async"]
+#	path = node_modules/eventemitter2async
+#	url = git@github.com:TobiaszCudnik/EventEmitter2Async.git
