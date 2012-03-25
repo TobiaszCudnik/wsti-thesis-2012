@@ -9,13 +9,6 @@ sugar = require 'sugar'
 EventEmitter2 = require('eventemitter2async').EventEmitter2
 assert = require('assert').ok
 
-# debug
-config.debug = no
-i = require('util').inspect
-l = (ms...) ->
-	console.log i m for m in ms if config.debug
-	ms
-
 #
 # PROTOTYPE 2
 #

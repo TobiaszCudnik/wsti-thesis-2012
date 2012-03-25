@@ -1,5 +1,5 @@
 module.exports =
-	debug: yes
+	debug: no
 #	debug: yes
 	contracts: no
 #	contracts: no
@@ -8,7 +8,6 @@ module.exports =
 
 if module.exports.contracts
 	global.contracts = yes
-
 else
 	contracts = require 'contracts.js'
 	contracts.enabled false

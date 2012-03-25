@@ -7,9 +7,6 @@ _ = require 'underscore'
 require('should')
 
 # debug
-config.debug = no
-i = require('util').inspect
-l = (ms...) -> console.log i m for m in ms  
 
 describe 'Connection Graph', ->
 	describe 'Connections', ->

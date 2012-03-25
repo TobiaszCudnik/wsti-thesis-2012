@@ -10,7 +10,6 @@ EventEmitter = require('events').EventEmitter
 assert = require('assert').ok
 
 # debug
-config.debug = no
 i = require('util').inspect
 l = (ms...) ->
 	console.log i m for m in ms if config.debug

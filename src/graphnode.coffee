@@ -1,7 +1,13 @@
 require 'sugar'
 config = require '../config'
 flow = require 'flow'
-jsprops = require('jsprops')
+{
+	SignalsMixin
+	property
+	signal
+} = require 'jsprops'
+Node = require './node'
+{ Graph } = require './graph'
 
 class GraphNode extends Node
 
@@ -9,6 +15,7 @@ class GraphNode extends Node
 	# PROPERTIES #
 	##############
 
+	# (TClient?) -> TClient?
 	planner_node: property 'planner_node'
 	graph: property 'graph'
 	requires: property 'requires'
@@ -28,33 +35,26 @@ class GraphNode extends Node
 			@addRequire services.requires if services?.requires?
 			@addProvide services.provides if services?.provides?
 
-			@connectToGraph =>
-				# bind next to the start signal
-				@start().once next
-				# emit the start signal
-				@start ->
+			# emit the start signal after conecting to the graph
+			@connectToGraph @start.bind @, next
 
 	connectToPlannerNode_: (address, next) ->
-		@this.planner_node = @this.connectToNode(
-			address.host, address.port, next
-		)
+		@planner_node @connectToNode address, next
 
-	# Asyncly initialize all connections/servers
-	# Emits 'start' signal
 	connectToGraph: signal('connectToGraph', on: flow.define(
-		(@next) ->
+		(@next, @ret) ->
 			# Connect to the planner node.
 			# Only if planner node configured.
-			if not config.planner_node or not @this.connectToPlannerNode
+			if not config.planner_node
 				@next()
 			else
-				@this.connectToPlannerNode config.planner_node, @
+				@this.connectToPlannerNode_ config.planner_node, @
 		->
 			@this.planner_node().remote().getGraph @
 		(graph_json) ->
 			@this.setGraph graph_json, @
 		->
-			@next()
+			@next @ret
 	))
 
 	addProvide: (name, service_names...) ->
@@ -102,28 +102,31 @@ class GraphNode extends Node
 
 	setGraph: signal('setGraph', on: flow.define(
 		(@next, @ret, graph) ->
-			@this.graph new Graph graph_json
+			@this.graph new Graph graph
 			graph_connections = @this.graph().getConnections @this.address()
 			for addr in graph_connections
-				@this.connectToNode addr.host, addr.port, @MULTI()
+				@this.connectToNode addr, @MULTI()
 		->
 			@next @ret
 	))
 
-	establishGraphConnections: signal('establishConnections',
+	establishGraphConnections: signal('establishGraphConnections',
 		init: (emit) ->
 			# estabilish new connections if graph changes
 			@setGraph().on (next, ret) ->
-				emit next.fill ret
+				# forward the return value
+				emit next.bind undefined, ret
 		on: flow.define(
 			(@next, ret) ->
-				# TODO preserve if connection overlaps
+				# TODO preserve if connections overlaps
 				for client in @this.clients()
 					client.close @MULTI()
 			->
 				graph_connections = @this.graph().getConnections @this.address()
 				for addr in graph_connections
-					@this.connectToNode addr.host, addr.port, @MULTI()
+					@this.connectToNode addr, @MULTI()
 			-> @next @ret
 		)
 	)
+
+module.exports = GraphNode

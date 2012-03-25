@@ -6,7 +6,8 @@ cd $ROOT/build
 build='contracts'
 BUILD=${1:-$build}
 
-~/node_modules/.bin/runjs \
+#~/node_modules/.bin/runjs \
+/home/bob/Sources/arch/nodejs2/src/nodejs/out/Release/node --debug-brk \
 	--harmony_proxies \
 	--harmony-collections \
 	$ROOT/../node_modules/.bin/mocha \
@@ -19,6 +20,7 @@ BUILD=${1:-$build}
 	$ROOT/$BUILD/test/client.js \
 	$ROOT/$BUILD/test/node.js \
 	$ROOT/$BUILD/test/plannernode.js \
+	$ROOT/$BUILD/test/graphnode.js \
 	$ROOT/$BUILD/test/prototypes/dnode-signals.js \
 	$ROOT/$BUILD/test/prototypes/rpc-image-exchange.js \
 	-r should \

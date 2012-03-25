@@ -1,23 +1,19 @@
 config = require '../config'
 Client = require '../src/client'
-Server = require('../src/server').Server
-RestServer = require('../src/server').RestServer
+{
+	Server
+	RestServer
+} = require '../src/server'
 flow = require 'flow'
 net = require 'net'
-events = require 'events'
+{ EventEmitter } = require 'events'
 request = require 'request'
-_ = require 'underscore'
-
-# debug
-config.debug = no
-i = require('util').inspect
-l = (ms...) -> console.log i m for m in ms
 
 describe 'Server', ->
 	port = 8756
 	server = addr = null
 	scope = (client, connection) ->
-		emitter = new events.EventEmitter
+		emitter = new EventEmitter
 		# string property
 		@foo = 'bar'
 		# echo function

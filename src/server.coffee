@@ -1,19 +1,17 @@
 dnode = require 'dnode'
-# TODO loose
-_ = require 'underscore'
 flow = require 'flow'
 connect = require 'connect'
-
-jsprops = require 'jsprops'
-property = jsprops.property
-signal = jsprops.signal
-SignalsMixin = jsprops.SignalsMixin
+{
+	property
+	signal
+	SignalsMixin
+} = require 'jsprops'
 EventEmitter2Async = require('eventemitter2async').EventEmitter2
 
 config = require '../config'
 Logger = require './logger'
 
-mixin = require('./utils').mixin
+{ mixin } = require './utils'
 
 if config.contracts
 	{
@@ -24,7 +22,7 @@ if config.contracts
 	} = require './contracts/server'
 
 Server :: TServerClass
-Server = class extends EventEmitter2Async
+Server = class Server extends EventEmitter2Async
 	mixin @, SignalsMixin
 
 	dnode: property 'dnode'
@@ -41,8 +39,8 @@ Server = class extends EventEmitter2Async
 		super
 
 	constructor: (address, scope, next) ->
-		@initSignals()
 		@address address
+		@initSignals()
 #		@log "Starting server on #{address.host}:#{address.port}"
 		@dnode dnode scope
 		@clients []
@@ -78,8 +76,11 @@ Server = class extends EventEmitter2Async
 		on: (next, ret, connection) ->
 			# remove the dead client, then remove empty array elements
 			# TODO use proto sugar
-			@clients _.compact _.map @clients(), (client) ->
-				client if client.connection isnt connection
+			filtered = @clients()
+				.map (client) ->
+					client if client.connection isnt connection
+				.compact()
+			@clients filtered
 	)
 
 	close: signal( 'close', after: (next, ret) ->
@@ -91,13 +92,19 @@ Server = class extends EventEmitter2Async
 
 	start: signal('start')
 
-	log: signal('log', on: (next, ret, args...) ->
+	log: (args...) ->
 #		return next ret if not Logger.log.apply @, args
 		return if not config.debug
-		{ host, port } = @address()
+		{ host, port } = @address()?
 		console.log "[SERVER:#{host}:#{port}] #{args}"
-		next ret
-	)
+
+#	log: signal('log', on: (next, ret, args...) ->
+##		return next ret if not Logger.log.apply @, args
+#		return if not config.debug
+#		{ host, port } = @address()
+#		console.log "[SERVER:#{host}:#{port}] #{args}"
+#		next ret
+#	)
 
 	error: signal('error', on: (next, ret, msg) ->
 		@log "[ERROR] #{msg}"
@@ -115,7 +122,7 @@ if config.contracts
 #	listen: (next) ->
 
 RestServer :: TRestServerClass
-RestServer = class extends Server
+RestServer = class RestServer extends Server
 #	mixin @, SignalsMixin
 	@signal = SignalsMixin.signal
 
@@ -129,7 +136,7 @@ RestServer = class extends Server
 			app[ r[0] ] r[1], r[2] for r in routes
 
 		@rest connect()
-			.use('/', handler)
+			.use '/', handler
 			.use (req, res) ->
 				res.statusCode = 404
 				res.end()

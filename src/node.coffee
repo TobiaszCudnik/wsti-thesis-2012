@@ -8,13 +8,13 @@ require 'sugar'
 EventEmitter2Async = require('eventemitter2async').EventEmitter2
 config = require '../config'
 flow = require 'flow'
-jsprops = require('jsprops')
-#Semaphore = require('semaphores').Semaphore
+{
+	SignalsMixin
+	property
+	signal
+} = require 'jsprops'
 
-# shorthands
-property = jsprops.property
-signal = jsprops.signal
-mixin = require('./utils').mixin
+{ mixin } = require './utils'
 
 if config.contracts
 	{
@@ -25,7 +25,7 @@ if config.contracts
 # TODO EventEmitter2Async, inherit from general object
 Node :: TNodeConstructor
 Node = class Node extends EventEmitter2Async
-	mixin Node, jsprops.SignalsMixin
+	mixin Node, SignalsMixin
 
 	##############
 	# PROPERTIES #
@@ -68,9 +68,9 @@ Node = class Node extends EventEmitter2Async
 #			signals[ name ].constructor = jsprops.Signal
 		@scope signals
 
-	connectToNode: (address, port, next) ->
-		@clients.push new Client address, port, next
-		@clients[-1]
+	connectToNode: (address, next) ->
+		@clients().push new Client address, @scope(), next
+		@clients().last()
 
 	initializeServer_: (next) ->
 		addr = @address()
@@ -130,11 +130,13 @@ Node = class Node extends EventEmitter2Async
 
 	serverClose: signal( 'serverClose', (emit) ->
 		# FIXME double once error in eventemitterasync !!!
+		# rebasing the github fork should fix it
 #		@start().once (next, ret) =>
 #			@server().on 'close', emit
 #			next ret
 	)
 
+	# TODO
 #	restRoutes: signal('restRoutes', on: (next, ret) ->
 ##		ret.push ...
 #		next ret

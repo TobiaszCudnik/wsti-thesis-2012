@@ -33,13 +33,13 @@ class Graph
 
 	map: property('map',
 		set: (set, val) ->
-			debugger
+			# TODO uncovered?
+			console.log 'maaaaaaaaaaaaaaaaap set'
 			set val
 		, []
 	)
 
 	constructor: (map = null) ->
-		debugger
 		@map map if map
 
 	addNode: (address, connections) ->
@@ -62,13 +62,18 @@ class Graph
 	getConnections: (address) ->
 		# find all connection for requested node from the graph object
 		map = @map()
+#		console.log 'in', map
 		connections = map
-			.filter (v, a) ->
+			.filter (v) ->
 				addr = v.address
 				addr.host is address.host and addr.port is address.port
 			.map (v) ->
-				v.connections
+				v.connections or []
 			.flatten()
+
+#		console.log 'out', connections
+#		console.log (new Error).stack
+		# -> [...TAddress?]
 		map[ i ].address for i in connections
 
 	toJson: -> @map()

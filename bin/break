@@ -2,24 +2,29 @@
 ROOT=`dirname $0`/..
 
 build='contracts'
-BUILD=${1:-$build}   # Defaults to /tmp dir.
+BUILD=${1:-$build}
 
-#buzz /home/bob/Sources/arch/nodejs/src/nodejs/out/Release/node \
-~/node_modules/.bin/runjs \
+#node-harmony \
+#~/node_modules/.bin/runjs \
+#/home/bob/Sources/arch/nodejs/src/nodejs2/out/Release/node \
+buzz /home/bob/Sources/arch/nodejs2/src/nodejs/out/Release/node \
 	--debug-brk \
 	--harmony_proxies \
 	--harmony-collections \
 	$ROOT/node_modules/.bin/mocha \
 	--timeout 600000 \
-	$ROOT/build/$BUILD/node_modules/semaphores/test/semaphore.js \
-	$ROOT/build/$BUILD/node_modules/jsprops/test/properties_test.js \
-	$ROOT/build/$BUILD/test/server.js \
-	$ROOT/build/$BUILD/test/client.js \
-	$ROOT/build/$BUILD/test/node.js \
-	$ROOT/build/$BUILD/test/plannernode.js \
+	$ROOT/build/$BUILD/test/graphnode.js \
 	$ROOT/build/$BUILD/test/prototypes/dnode-signals.js \
 	$ROOT/build/$BUILD/test/prototypes/rpc-image-exchange.js \
 
+
+#	$ROOT/node_modules/semaphores/test/semaphores.js \
+#	$ROOT/node_modules/jsprops/test/properties.js \
+#	$ROOT/node_modules/jsprops/test/signals.js \
+#	$ROOT/build/$BUILD/test/server.js \
+#	$ROOT/build/$BUILD/test/client.js \
+#	$ROOT/build/$BUILD/test/node.js \
+#	$ROOT/build/$BUILD/test/plannernode.js \
 
 #	$ROOT/../node_modules/.bin/mocha  ./test/node.js
 #/home/bob/Sources/js/node-inspector-fork1/node-inspector/bin

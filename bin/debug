@@ -6,7 +6,7 @@ BUILD=${1:-$build}   # Defaults to /tmp dir.
 
 cd $ROOT/build/$BUILD
 
-~/node_modules/.bin/runjs debug \
+node-harmony debug \
 	--harmony_proxies \
 	--harmony-collections \
 	$ROOT/../node_modules/.bin/mocha \

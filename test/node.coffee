@@ -4,17 +4,20 @@ Client = require '../src/client'
 PlannerNode = require '../src/plannernode'
 Service = require '../src/service'
 flow = require 'flow'
-_ = require 'underscore'
 require '../src/utils'
 require 'should'
 sinon = require 'sinon'
-jsprops = require 'jsprops'
-
-# debug
-i = require('util').inspect
-l = (ms...) -> console.log i m for m in ms
 
 describe 'Node', ->
+
+	config_planner_node = config.planner_node
+
+	beforeEach ->
+		# disable planner node in the config
+		config.planner_node = null
+	afterEach ->
+		# restore planner node in the config
+		config.planner_node = config_planner_node
 
 	describe 'event emitter', ->
 
@@ -60,6 +63,7 @@ describe 'Node', ->
 			node.server().dnode().server.connections.should.equal 0
 			node.close next
 
+		# TODO uncomment once REST is activated
 #		it 'should create REST server', (next) ->
 #			addr = host: 'localhost', port: 1234
 #			node = new Node addr, null, (on_start_finish) ->
@@ -99,7 +103,7 @@ describe 'Node', ->
 				fired.should.be.ok
 				client.close ->
 					node.close test_done
-		
+
 ###
 	describe 'services', ->
 		new_service = (name) ->

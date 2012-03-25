@@ -8,11 +8,6 @@ events = require 'events'
 request = require 'request'
 _ = require 'underscore'
 
-# debug
-config.debug = no
-i = require('util').inspect
-l = (ms...) -> console.log i m for m in ms
-
 describe 'Client', ->
 	port = 8756
 	server = null

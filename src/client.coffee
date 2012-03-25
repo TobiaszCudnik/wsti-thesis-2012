@@ -1,11 +1,11 @@
 dnode = require 'dnode'
 config = require '../config'
 Logger = require './logger'
-
-jsprops = require 'jsprops'
-property = jsprops.property
-signal = jsprops.signal
-SignalsMixin = jsprops.SignalsMixin
+{
+	SignalsMixin
+	property
+	signal
+} = require 'jsprops'
 EventEmitter2Async = require('eventemitter2async').EventEmitter2
 
 if config.contracts
