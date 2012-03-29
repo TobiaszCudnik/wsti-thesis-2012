@@ -31,7 +31,8 @@ Client = class Client extends EventEmitter2Async
 	address: property 'address'
 
 	constructor: (connection_info, scope, next) ->
-		@log "Connecting to ", connection_info
+		@address connection_info
+		@log "Connecting to ", @address()
 		@initSignals()
 
 		@scope scope
@@ -43,7 +44,8 @@ Client = class Client extends EventEmitter2Async
 			@connection().on 'error', (e) =>
 				@log "[ClientError] #{e}"
 			@connection().on 'end', =>
-				@log "[ClientEnd] #{@address()}"
+				{ host, port } = @address()?
+				@log "ClientEnd"
 			next remote, connection
 #			@connection.on 'read', ->
 #				next remote, connection
@@ -61,7 +63,8 @@ Client = class Client extends EventEmitter2Async
 	log: signal('log', on: (next, ret, args...) ->
 #		return next ret if not Logger.log.apply @, args
 		return if not config.debug
-		console.log "[CLIENT:#{@address()}] #{args?.join ', '}"
+				{ host, port } = @address()?
+		console.log "[CLIENT:#{host}:#{port}] #{args?.join ', '}"
 	)
 
 if config.contracts

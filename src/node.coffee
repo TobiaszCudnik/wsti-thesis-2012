@@ -92,7 +92,7 @@ Node = class Node extends EventEmitter2Async
 		super
 
 	log: (args...) ->
-		console.log.apply null, args if config.debug
+		console.log.apply null, args if config.debug-
 
 	###########
 	# SIGNALS #
@@ -115,11 +115,12 @@ Node = class Node extends EventEmitter2Async
 	start: signal('start')
 
 	# TODO
-	newClient: signal( 'newClient', (emit) ->
-	)
+	newClient: signal( 'newClient' )
 
-	# TODO
-	clientClose: signal( 'clientClose', (emit) ->
+	# clientClose().on :: (TCallback, Any, TClient) -> Any
+	clientClose: signal( 'clientClose', on: (next, ret, client) ->
+		@clients().remove client
+		next ret
 	)
 
 	serverStart: signal( 'serverStart', (emit) ->
@@ -135,6 +136,21 @@ Node = class Node extends EventEmitter2Async
 #			@server().on 'close', emit
 #			next ret
 	)
+
+	getClients: signal('getClient', on: (next, ret) ->
+		next ret.union @clients()
+	)
+
+	setClients: signal('setClients', on: (next, ret, val) ->
+		val ?= []
+		new_clients = for i in val
+			val[ i ] if val[ i ] not in @clients()
+		val.forEach (client, i) =>
+			new_clients[ i ].on 'close', =>
+				@clientClose client, next
+		# TODO unbind from non existing clients
+		@clients val
+	, [])
 
 	# TODO
 #	restRoutes: signal('restRoutes', on: (next, ret) ->

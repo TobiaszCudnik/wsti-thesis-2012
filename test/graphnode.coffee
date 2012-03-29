@@ -33,7 +33,10 @@ describe 'GraphNode', ->
 				->
 					# disable planner node in the config
 					config.planner_node = planner_node_address
-					planner_node = new PlannerNode graph, planner_node_address, @MULTI()
+					debugger
+					planner_node = new PlannerNode graph, planner_node_address, @
+				->
+					debugger
 					nodes = []
 					for row in graph
 						nodes.push new GraphNode row.address, null, @MULTI()
