@@ -34,7 +34,6 @@ class Graph
 	map: property('map',
 		set: (set, val) ->
 			# TODO uncovered?
-			console.log 'maaaaaaaaaaaaaaaaap set'
 			set val
 		, []
 	)

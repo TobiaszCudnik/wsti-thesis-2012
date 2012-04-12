@@ -6,7 +6,7 @@ TGraphEntry = ? {
 	#   non-existing index
 }
 
-TGraphMap = [...TGraphEntry]
+TGraphMap = ? [...TGraphEntry]
 
 TPlannerNodeClass = ? {
 	graph: TGraphMap

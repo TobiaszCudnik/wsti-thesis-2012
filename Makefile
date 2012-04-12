@@ -1,5 +1,5 @@
-NODE = node-harmony --harmony
-NODE_DEBUG = node-harmony debug --harmony
+NODE = node-harmony
+NODE_DEBUG = node debug --harmony
 MOCHA = node_modules/.bin/mocha
 BUILDER = node_modules/contracts.coffee/bin/coffee
 
@@ -60,13 +60,13 @@ build-deps:
 
 build:
 	$(BUILDER) \
-		-o $ROOT/build/vanilla \
-		-c $ROOT/build/vanilla-sources
+		-o build/vanilla \
+		-c build/vanilla-sources
 
 build-live:
 	$(BUILDER) \
-		-o $ROOT/build/vanilla \
-		-cw $ROOT/build/vanilla-sources
+		-o build/vanilla \
+		-cw build/vanilla-sources
 
 # TODO build-contracts build-contracts-live
 

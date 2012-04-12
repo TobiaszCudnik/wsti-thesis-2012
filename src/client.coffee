@@ -13,7 +13,7 @@ if config.contracts
 		TDnodeConnect
 		TClientClass
 		TClient
-	} = require('./contracts/client')
+	} = require './contracts/client'
 
 mixin = require('./utils').mixin
 

@@ -36,7 +36,7 @@ class GraphNode extends Node
 			@addProvide services.provides if services?.provides?
 
 			# emit the start signal after conecting to the graph
-			@connectToGraph @start.bind @, next
+			@connectToGraph => @start next
 
 	connectToPlannerNode_: (address, next) ->
 		@planner_node @connectToNode address, next
@@ -103,19 +103,18 @@ class GraphNode extends Node
 	setGraph: signal('setGraph', on: flow.define(
 		(@next, @ret, graph) ->
 			@this.graph new Graph graph
-			graph_connections = @this.graph().getConnections @this.address()
-			for addr in graph_connections
-				@this.connectToNode addr, @MULTI()
-		->
 			@next @ret
 	))
 
+	###*
+	Handles setGraph signal.
+	###
 	establishGraphConnections: signal('establishGraphConnections',
 		init: (emit) ->
 			# estabilish new connections if graph changes
 			@setGraph().on (next, ret) ->
 				# forward the return value
-				emit next.bind undefined, ret
+				emit -> next ret
 		on: flow.define(
 			(@next, ret) ->
 				# TODO preserve if connections overlaps
@@ -123,8 +122,13 @@ class GraphNode extends Node
 					client.close @MULTI()
 			->
 				graph_connections = @this.graph().getConnections @this.address()
-				for addr in graph_connections
-					@this.connectToNode addr, @MULTI()
+				if graph_connections.length
+					for addr in graph_connections
+						@this.connectToNode addr, @MULTI()
+				else
+					# TODO gc
+#				  @dispose()
+					@next @ret
 			-> @next @ret
 		)
 	)

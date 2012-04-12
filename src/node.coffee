@@ -92,7 +92,7 @@ Node = class Node extends EventEmitter2Async
 		super
 
 	log: (args...) ->
-		console.log.apply null, args if config.debug-
+		console.log.apply null, args if config.debug
 
 	###########
 	# SIGNALS #
@@ -137,7 +137,7 @@ Node = class Node extends EventEmitter2Async
 #			next ret
 	)
 
-	getClients: signal('getClient', on: (next, ret) ->
+	getClients: signal('getClients', on: (next, ret) ->
 		next ret.union @clients()
 	)
 

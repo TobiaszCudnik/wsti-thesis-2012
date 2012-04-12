@@ -33,15 +33,15 @@ describe 'GraphNode', ->
 				->
 					# disable planner node in the config
 					config.planner_node = planner_node_address
-					debugger
 					planner_node = new PlannerNode graph, planner_node_address, @
 				->
-					debugger
 					nodes = []
 					for row in graph
 						nodes.push new GraphNode row.address, null, @MULTI()
-				-> do done
+				->
+					do done
 			)
+
 		afterEach (done) ->
 			flow.exec(
 				->
@@ -52,7 +52,7 @@ describe 'GraphNode', ->
 				-> do done
 			)
 
-		it 'should connect to the planner node', ->
+		it 'should connect to the planner node', (done) ->
 			throw new Error 'not implemented'
 
 
