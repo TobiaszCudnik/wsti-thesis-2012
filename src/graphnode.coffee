@@ -121,6 +121,7 @@ class GraphNode extends Node
 				for client in @this.clients()
 					client.close @MULTI()
 			->
+				# TODO merge with setClients
 				graph_connections = @this.graph().getConnections @this.address()
 				if graph_connections.length
 					for addr in graph_connections

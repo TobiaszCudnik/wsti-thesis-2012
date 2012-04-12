@@ -49,11 +49,21 @@ describe 'GraphNode', ->
 					config.planner_node = config_planner_node
 					planner_node.close @MULTI()
 					node.close @MULTI() for node in nodes
+				# FIXME
 				-> do done
 			)
 
-		it 'should connect to the planner node', (done) ->
-			throw new Error 'not implemented'
+		it 'should connect to the planner node', ->
+			planner_node.server().clients().length.
+				should.equal 3
+
+		it 'should connect to the other nodes according to the graph map', ->
+			nodes[0].clients().length
+				.should.equal 2
+			nodes[1].clients().length
+				.should.equal 1
+			nodes[0].clients().length
+				.should.equal 0
 
 
 #		it 'should fetch the graph structure', ->
