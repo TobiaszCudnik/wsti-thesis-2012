@@ -59,11 +59,11 @@ describe 'GraphNode', ->
 
 		it 'should connect to the other nodes according to the graph map', ->
 			nodes[0].clients().length
-				.should.equal 2
+				.should.equal 3
 			nodes[1].clients().length
+				.should.equal 2
+			nodes[2].clients().length
 				.should.equal 1
-			nodes[0].clients().length
-				.should.equal 0
 
 
 #		it 'should fetch the graph structure', ->

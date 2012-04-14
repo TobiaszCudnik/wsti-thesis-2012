@@ -63,7 +63,7 @@ Client = class Client extends EventEmitter2Async
 	log: signal('log', on: (next, ret, args...) ->
 #		return next ret if not Logger.log.apply @, args
 		return if not config.debug
-				{ host, port } = @address()?
+		{ host, port } = @address() or host: 'none', port: 'none'
 		console.log "[CLIENT:#{host}:#{port}] #{args?.join ', '}"
 	)
 

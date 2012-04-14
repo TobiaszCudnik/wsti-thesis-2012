@@ -118,8 +118,10 @@ class GraphNode extends Node
 		on: flow.define(
 			(@next, ret) ->
 				# TODO preserve if connections overlaps
-				for client in @this.clients()
+				clients = @this.clients().exclude @this.planner_node()
+				for client in clients
 					client.close @MULTI()
+				do @ if not clients.length
 			->
 				# TODO merge with setClients
 				graph_connections = @this.graph().getConnections @this.address()

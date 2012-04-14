@@ -28,7 +28,7 @@ Server = class Server extends EventEmitter2Async
 	dnode: property 'dnode'
 	address: property 'address'
 	server: property 'server'
-	clients: property 'clients'
+	clients: property('clients', null, [])
 
 	emit: (name) ->
 		@log "emit #{name}" if config.debug
@@ -41,9 +41,7 @@ Server = class Server extends EventEmitter2Async
 	constructor: (address, scope, next) ->
 		@address address
 		@initSignals()
-#		@log "Starting server on #{address.host}:#{address.port}"
 		@dnode dnode scope
-		@clients []
 
 		# Socket listener
 		# TODO move to method
@@ -58,17 +56,18 @@ Server = class Server extends EventEmitter2Async
 		@dnode().on 'error', @error
 
 	newClient: signal('newClient', on: (next, ret, remote, connection) ->
-		@log 'newClient'
+		ret ?= []
+
 		# Add a new client.
 		@clients().push
 			remote: remote
 			connection: connection
 
 		# Bind signal to the connection.
-		connection.on 'end', @clientDisconnect.bind @, connection
+		connection.on 'end', => @clientDisconnect connection
 
-		@log "Client #{connection.id} connected."
-		(ret ?= []).push connection.id
+		@log "Client #{connection.id} connected (clients == #{@clients().length})."
+		ret.push connection.id
 		next ret
 	)
 
@@ -95,7 +94,7 @@ Server = class Server extends EventEmitter2Async
 	log: (args...) ->
 #		return next ret if not Logger.log.apply @, args
 		return if not config.debug
-		{ host, port } = @address()?
+		{ host, port } = @address() or host: 'none', port: 'none'
 		console.log "[SERVER:#{host}:#{port}] #{args}"
 
 #	log: signal('log', on: (next, ret, args...) ->
