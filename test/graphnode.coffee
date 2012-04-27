@@ -49,7 +49,6 @@ describe 'GraphNode', ->
 					config.planner_node = config_planner_node
 					planner_node.close @MULTI()
 					node.close @MULTI() for node in nodes
-				# FIXME
 				-> do done
 			)
 
@@ -64,6 +63,15 @@ describe 'GraphNode', ->
 				.should.equal 2
 			nodes[2].clients().length
 				.should.equal 1
+
+		it 'should update graph connections\' state when the graph changes', (done) ->
+			graph2 = clone graph
+			graph2.push {
+				address: { host: 'localhost', port: 2003 },
+				connections: [ 0, 2 ]
+			}
+			graph = new Graph graph2
+			planner_node.setGraph graph, done
 
 
 #		it 'should fetch the graph structure', ->

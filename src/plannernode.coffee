@@ -32,7 +32,19 @@ class PlannerNode extends Node
 	getGraph: signal('getGraph',
 		on: (next, ret) ->
 			# TODO manual casting to json, consider better options
-			next (ret or []).union @graph().toJson()
+			# TODO merge???
+			ret ?= []
+			next ret.union @graph().toJson()
+	)
+
+	setGraph: signal('setGraph',
+		on: @flow(
+			(@next, @ret, graph) ->
+				for client in @this.clients()
+					client.remote().setGraph graph, @MULTI()
+				do @ if not @this.clients().length
+			-> @next @ret
+		)
 	)
 		
 module.exports = PlannerNode

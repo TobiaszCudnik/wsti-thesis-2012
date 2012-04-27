@@ -63,8 +63,20 @@ build:
 		-o build/vanilla \
 		-c build/vanilla-sources
 
+build-contracts:
+	$(BUILDER) \
+		--contracts \
+		-o build/vanilla \
+		-c build/vanilla-sources
+
 build-live:
 	$(BUILDER) \
+		-o build/vanilla \
+		-cw build/vanilla-sources
+
+build-contracts-live:
+	$(BUILDER) \
+		--contracts \
 		-o build/vanilla \
 		-cw build/vanilla-sources
 

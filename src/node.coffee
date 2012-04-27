@@ -27,6 +27,8 @@ Node :: TNodeConstructor
 Node = class Node extends EventEmitter2Async
 	mixin Node, SignalsMixin
 
+	@flow = flow.define
+
 	##############
 	# PROPERTIES #
 	##############

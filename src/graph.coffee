@@ -58,6 +58,7 @@ class Graph
 			row.address.host is address.host and
 				row.address.port is address.port
 
+	# TODO include connection weight
 	getConnections: (address) ->
 		# find all connection for requested node from the graph object
 		map = @map()
