@@ -1,9 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="deeebug" type="NodeJSConfigurationType" factoryName="Node JS" path-to-node="/usr/bin/node-harmony" path-to-js-file="node_modules/mocha/bin/mocha" application-parameters="build/vanilla/test/bootstrap.js &#9;&#9;build/node_modules/semaphores/test/semaphores.js &#9;&#9;build/node_modules/eventemitter2async/test/async/test.js &#9;&#9;build/node_modules/jsprops/test/properties.js &#9;&#9;build/node_modules/jsprops/test/signals.js &#9;&#9;build/vanilla/test/server.js &#9;&#9;build/vanilla/test/client.js &#9;&#9;build/vanilla/test/node.js &#9;&#9;build/vanilla/test/plannernode.js &#9;&#9;build/vanilla/test/graphnode.js" node-parameters="--harmony " working-dir="$PROJECT_DIR$">
-    <RunnerSettings RunnerId="NodeJS.debug" />
-    <RunnerSettings RunnerId="NodeJS.run" />
-    <ConfigurationWrapper RunnerId="NodeJS.debug" />
-    <ConfigurationWrapper RunnerId="NodeJS.run" />
-    <method />
-  </configuration>
-</component>
