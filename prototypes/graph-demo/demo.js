@@ -34,7 +34,7 @@
         }).attr("cy", function(d) {
           return d.y;
         });
-        return link.attr("x1", function(d) {
+        return svg.selectAll("line.link").attr("x1", function(d) {
           return d.source.x;
         }).attr("y1", function(d) {
           return d.source.y;
@@ -50,27 +50,43 @@
   });
 
   testAdd = function() {
-    var index;
+    var id, index, new_link, target, weight;
+    id = Math.ceil(Math.random() * 100);
     index = data.nodes.push({
-      name: 'TEST 1',
+      name: "TEST " + id,
       group: 1
     });
     index--;
-    data.links.push({
-      source: index,
-      target: 0,
-      value: 1
-    });
+    target = Math.ceil(Math.random() * 100) % (data.nodes.length - 1);
+    weight = Math.ceil(Math.random() * 100) % 5;
+    new_link = {
+      source: data.nodes[index],
+      target: data.nodes[target],
+      value: weight
+    };
+    data.links.push(new_link);
     svg.selectAll('circle.node').data(data.nodes).enter().append("circle").attr("class", "node").attr("r", 5).style("fill", function(d) {
       return color(d.group || 0);
     });
-    return force.start();
+    svg.selectAll("line.link").data(data.links).enter().append("line").attr("class", "link").style("stroke-width", function(d) {
+      return Math.sqrt(d.value);
+    });
+    force.start();
+    return null;
   };
 
   testRemove = function() {
+    var removed_index;
     data.nodes.pop();
+    removed_index = data.nodes.length;
+    data.links = data.links.filter(function(v) {
+      return v.source.index !== removed_index && v.target.index !== removed_index;
+    });
     svg.selectAll('circle.node').data(data.nodes).exit().remove();
-    return force.start();
+    svg.selectAll('line.link').data(data.links).exit().remove();
+    force.links(data.links);
+    force.start();
+    return null;
   };
 
   window.testAdd = testAdd;
