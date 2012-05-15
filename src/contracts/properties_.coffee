@@ -1,1 +1,0 @@
-/home/bob/workspace/dropbox/engineer-thesis/node_modules/jsprops/contracts/properties_.coffee
